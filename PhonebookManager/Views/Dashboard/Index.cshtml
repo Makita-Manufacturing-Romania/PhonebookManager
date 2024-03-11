@@ -1,0 +1,73 @@
+﻿@{
+    ViewData["Title"] = "Dashboard | Phonebook Manager";
+
+
+    List<Employee> Employees = new List<Employee> {
+               new Employee { FullName = "Lenny Castravete", EmployeeID = "9000", Department = "7213" } ,
+               new Employee { FullName = "Nicolae Cusca", EmployeeID = "9100", Department = "7321" },
+               new Employee { FullName = "Ion Bidon", EmployeeID = "9200", Department = "7201" }
+            };
+}
+
+
+
+
+<div class="input-div">
+    <input placeholder="All departments" style="width: 35%;"/>
+    <div style="position: relative; display: inline-block; width: 65%;">
+        <i class="bi bi-search" role="button" style="position: absolute;right: 10px; top: 50%;transform: translateY(-50%); color:#000;"></i>
+        <input placeholder="Search by employee id, name or telephone number"  />
+
+    </div>
+    <div class="dropdown">
+        <button class="btn-dropdown dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Select option
+        </button>
+        <ul class="dropdown-menu" style="z-index:9999;">
+            <li><a class="dropdown-item" href="#">Action</a></li>
+            <li><a class="dropdown-item" href="#">Another action</a></li>
+            <li><a class="dropdown-item" href="#">Something else here</a></li>
+        </ul>
+    </div>
+
+</div>
+
+<div class="list-container">
+
+    <div>
+        <table class="table">
+            <thead class="sticky-top bg-white">
+                <tr>
+                    <th scope="col">Employee name</th>
+                    <th scope="col">Employee ID</th>
+                    <th scope="col">Phone Line</th>
+                    <th scope="col">Department name</th>
+                    <th scope="col">Department code</th>
+                    <th scope="col">Line type</th>
+                    <th scope="col">Actions</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var emp in Employees)
+                {
+                    <tr class="border-0">
+                        <td>@emp.FullName</td>
+                        <td>@emp.EmployeeID</td>
+                        <td>0721 234 567</td>
+                        <td>Production Systems</td>
+                        <td>@emp.Department</td>
+                        <td>Multi use</td>
+                        <td>
+                            <span class="action-btn me-2" type="button"> <i class="bi bi-eye-fill"></i> </span>
+                            <span class="action-btn me-2" type="button"> <i class="bi bi-pencil-fill"></i> </span>
+                            <span class="action-btn me-2" type="button"> <i class="bi bi-trash-fill"></i> </span>
+                        </td>
+
+                    </tr>
+
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,50 @@
+﻿@{
+    ViewData["Title"] = "Test Page";
+    // Layout = null; 
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<h2>Pages TEST</h2>
+
+<p class="one" id="demo">JavaScript can change the style of an HTML element.</p>
+
+<button type="button" onclick="changeClass('one')">Click Me</button>
+
+
+<style>
+    .one {
+        color: red;
+    }
+
+    .two {
+        color: blue;
+    }
+</style>
+
+<script>
+
+    function changeClass(className) {
+        const car = { type: "Fiat", model: "500", color: "white" };
+
+        var one = document.getElementById("demo");
+        one.className = "two";
+        one.textContent = "test";
+        setTimeout(function () { one.innerHTML = car.type, one.className = className; }, 3000);
+        //console.log("test");
+
+
+
+    }
+    //document.getElementById('demo').className = 'two'
+</script>
+
+@* <script src="https://www.w3schools.com/js/myScript.js"></script> 
+<script src="/js/myScript.js"></script>*@
+
+@*<script>
+    var x = 10;
+    var y = 20;
+    document.getElementById("demo").innerHTML =
+        "The result is: " + x + " " + y;
+</script>*@
