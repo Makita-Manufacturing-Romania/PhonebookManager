@@ -3,7 +3,7 @@
 html, body {
     font-size: 14px;
     font-family: 'Roboto', sans-serif;
-    color: #fff;
+    color: #000;
 }
 
 @media (min-width: 768px) {
@@ -13,7 +13,7 @@ html, body {
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+    /*box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;*/
 }
 
 html {
@@ -26,6 +26,10 @@ body {
     background-color: #000;
 }
 
+.body-container{
+    width: 95%;
+    margin: 0 auto;
+}
 .logo {
     width: 200px;
 }
@@ -37,6 +41,7 @@ body {
     width: 100%;
     padding: 0 20px 0 20px;
     bottom: 0;
+    color: #fff;
 }
 
 .headr {
@@ -44,7 +49,8 @@ body {
     width: 100%;
     padding: 20px 20px 50px 20px;
     justify-content: space-between;
-    align-items:center;
+    align-items: center;
+    color: #fff;
 }
 
 .menu {
@@ -107,5 +113,5 @@ input {
     color: #fff;
     background-color: #008A99;
     border-radius: 10px;
-    border: solid 1px #fff;
+    border: none;
 }

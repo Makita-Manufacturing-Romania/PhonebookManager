@@ -13,7 +13,7 @@
     <header>
         <div class="headr">
             <div>
-                <img src="~/images/logo.png" class="logo" />
+                <a asp-area="" asp-controller="Dashboard" asp-action="Index"> <img src="~/images/logo.png" class="logo" /> </a>
             </div>
             <div>
                 <h4>Phonebook Manager</h4>
@@ -21,7 +21,7 @@
             </div>
 
             <div class="menu">
-                <a class="menu-item" asp-area="" asp-controller="#" asp-action="Index">Line allocation</a>
+                <a class="menu-item" asp-area="" asp-controller="Dashboard" asp-action="Index">Line allocation</a>
                 <a class="menu-item" asp-area="" asp-controller="#" asp-action="Index">Reports</a>
                 <a class="menu-item" asp-area="" asp-controller="#" asp-action="Index">Settings</a>
             </div>
@@ -47,7 +47,7 @@
             </div>
         </nav>*@
     </header>
-    <div class="container">
+    <div class="body-container">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
