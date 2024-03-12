@@ -24,12 +24,12 @@
     </div>
     <div class="dropdown">
         <button class="btn-dropdown dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Select option
+            Add new phone line
         </button>
         <ul class="dropdown-menu" style="z-index:9999;">
-            <li><a class="dropdown-item" href="AddPhoneUser">Allocate new line to user</a></li>
-            <li><a class="dropdown-item" href="#">Add new phone line</a></li>
-            <li><a class="dropdown-item" href="#">Import phone lines</a></li>
+            <li><a class="dropdown-item" href="AddPhoneUser">Create and allocate</a></li>
+            <li><a class="dropdown-item" href="#">Quick add</a></li>
+            <li><a class="dropdown-item" id="" role="button" onclick="importFunction(this)">Import phone lines</a></li>
         </ul>
     </div>
 
@@ -62,10 +62,14 @@
                         <td>@emp.Department</td>
                         <td>Multi use</td>
                         <td>
-                            <span class="action-btn me-2" type="button"> <i class="bi bi-eye-fill" onclick="viewFunction(this)" 
-                                                                            emp-name="@emp.FullName" emp-id="@emp.EmployeeID" emp-department="@emp.Department"></i> </span>
-                            <span class="action-btn me-2" type="button"> <i class="bi bi-pencil-fill" onclick="editFunction(this)" 
-                                                                            emp-name="@emp.FullName" emp-id="@emp.EmployeeID" emp-department="@emp.Department"></i> </span>
+                            <span class="action-btn me-2" type="button">
+                                <i class="bi bi-eye-fill" onclick="viewFunction(this)"
+                                   emp-name="@emp.FullName" emp-id="@emp.EmployeeID" emp-department="@emp.Department"></i>
+                            </span>
+                            <span class="action-btn me-2" type="button">
+                                <i class="bi bi-pencil-fill" onclick="editFunction(this)"
+                                   emp-name="@emp.FullName" emp-id="@emp.EmployeeID" emp-department="@emp.Department"></i>
+                            </span>
 
                             <span class="action-btn me-2" type="button"> <i class="bi bi-trash-fill" onclick="deleteFunction(this)" emp-name="@emp.FullName" emp-id="@emp.EmployeeID"></i> </span>
                         </td>
@@ -81,16 +85,16 @@
 
 
 <!-- Modal View -->
-<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="viewModalLabel" aria-hidden="true">
+<div class="modal fade" id="viewModal" tabindex="-1" aria-labelledby="viewModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="viewModalLabel">Confirmation</h1>
+                <h1 class="modal-title fs-5" id="viewModalLabel">Details</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <label id="mEmpName"></label>
-                <input hidden id="mEmpId" />
+                <input id="mViewEmpName" class="mb-2" disabled />
+                <input id="mViewEmpId" disabled />
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -102,20 +106,20 @@
 
 
 <!-- Modal Edit -->
-<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="editModalLabel">Confirmation</h1>
+                <h1 class="modal-title fs-5" id="editModalLabel">Edit confirmation</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <label id="mEmpName"></label>
-                <input hidden id="mEmpId" />
+                <input id="mEditEmpName" class="mb-2" />
+                <input id="mEditEmpId" />
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-danger" id="editBtn">Edit</button>
+                <button type="button" class="btn btn-success" id="editBtn" onclick="closeEditModal()">Edit</button>
             </div>
         </div>
     </div>
@@ -127,12 +131,13 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="deleteModalLabel">Confirmation</h1>
+                <h1 class="modal-title fs-5" id="deleteModalLabel">Delete confirmation</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <label id="mEmpName"></label>
-                <input hidden id="mEmpId" />
+                <input id="mDelEmpName" class="mb-2" disabled />
+
+                <input id="mDelEmpId" disabled />
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -143,22 +148,39 @@
 </div>
 
 
-@*<script>
-        document.getElementById("deleteIcon").addEventListener("click", function () {
-            Toastify({
-                text: "Are you sure?",
-                duration: 3000,
-                newWindow: true,
-                close: true,
-                gravity: "bottom", // `top` or `bottom`
-                position: "left", // `left`, `center` or `right`
-                stopOnFocus: true, // Prevents dismissing of toast on hover
-                style: {
-                    background: "linear-gradient(to right, #ff0000, #FDE063)",
-                },
-            }).showToast();
-        });
-    </script>*@
+
+<!-- Modal Import data -->
+<div class="modal fade" id="importModal" tabindex="-1" aria-labelledby="importModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 60%;">
+        <div class="modal-content">
+            <div class="modal-header border-0">
+                <h2 class="" id="importModalLabel" style="color: #008A99; text-decoration: underline 2px; text-underline-offset: 0.5em; ">Import data</h2>
+                @*<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>*@
+            </div>
+            <div class="modal-body">
+                <div style="padding: 100px; display: flex; justify-content: center;">
+
+                    <div style="display: flex; flex-direction: column; ">
+
+                        <div class="d-flex gap-2 justify-content-end align-items-center mb-5">
+                            <h5>Get our template</h5>
+                            <button class="btn btn-success" style="width: 200px;" onclick="closeImportModal()">Download template</button>
+                        </div>
+                        <div class="d-flex gap-2 justify-content-end align-items-center">
+                            <h5>Import data</h5>
+                            <button class="btn btn-secondary" style="width: 200px;" onclick="closeImportModal()">Select file</button>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="modal-footer border-0 d-flex justify-content-center">
+                <button type="button" class="btn btn-success" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 <script>
@@ -166,29 +188,41 @@
     // VIEW
     function viewFunction(clicked_id) {
         const button = clicked_id;
-        var idproject = button.getAttribute("id-project");
+        var empName = button.getAttribute("emp-name");
+        var empId = button.getAttribute("emp-id");
 
-        Toastify({
-            text: "View: " + idproject + "  ?",
-            duration: 3000,
-            newWindow: true,
-            close: true,
-            gravity: "bottom", // `top` or `bottom`
-            position: "left", // `left`, `center` or `right`
-            stopOnFocus: true, // Prevents dismissing of toast on hover
-            style: {
-                background: "linear-gradient(to right, #008A99, #55B1BB)",
-            },
-        }).showToast();
+        var modalEmpName = document.getElementById("mViewEmpName");
+        modalEmpName.value = empName; // if it's an input use .value
+        //modalEmpName.innerHTML = empName; // if it's a label use .innerHTML
+
+        var modalEmpId = document.getElementById("mViewEmpId");
+        modalEmpId.value = empId;
+        //modalEmpId.innerHTML = empId;
+
+        $('#viewModal').modal('show');
     }
 
     // EDIT
     function editFunction(clicked_id) {
         const button = clicked_id;
-        var idproject = button.getAttribute("id-project");
+        var empName = button.getAttribute("emp-name");
+        var empId = button.getAttribute("emp-id");
 
+        var modalEmpName = document.getElementById("mEditEmpName");
+        modalEmpName.value = empName; // if it's an input use .value
+        //modalEmpName.innerHTML = empName; // if it's a label use .innerHTML
+
+        var modalEmpId = document.getElementById("mEditEmpId");
+        modalEmpId.value = empId;
+        //modalEmpId.innerHTML = empId;
+
+        $('#editModal').modal('show');
+    }
+
+    // Close the edit modal
+    function closeEditModal() {
         Toastify({
-            text: "Are you sure you want to edit: " + idproject + "  ?",
+            text: "Not implemented",
             duration: 3000,
             newWindow: true,
             close: true,
@@ -196,37 +230,42 @@
             position: "left", // `left`, `center` or `right`
             stopOnFocus: true, // Prevents dismissing of toast on hover
             style: {
-                background: "linear-gradient(to right, green, #55B1BB)",
+                background: "linear-gradient(to right, red, #55B1BB)",
             },
         }).showToast();
+
+        $('#editModal').modal('hide');
     }
 
 
     // DELETE
     function deleteFunction(clicked_id) {
         const button = clicked_id;
-        var idName = button.getAttribute("emp-name");
-        var idEmp = button.getAttribute("emp-id");
+        var empName = button.getAttribute("emp-name");
+        var empId = button.getAttribute("emp-id");
 
-        var modalEmpName = document.getElementById("mEmpName");
-        // modalEmpName.value = idName;
-        modalEmpName.innerHTML = idName;
-        var modalEmpId = document.getElementById("mEmpId");
-        modalEmpId.value = idEmp;
-        //modalEmpId.innerHTML = idEmp;
+        var modalEmpName = document.getElementById("mDelEmpName");
+        modalEmpName.value = empName; // if it's an input use .value
+        //modalEmpName.innerHTML = empName; // if it's a label use .innerHTML
+
+        var modalEmpId = document.getElementById("mDelEmpId");
+        modalEmpId.value = empId;
+        //modalEmpId.innerHTML = empId;
 
         $('#deleteModal').modal('show');
     }
-
+    // ajax for delete function
     $("body").on("click", "#deleteBtn", function () {
-        //var idModalEmpName = $("#mEmpName");
-        var idModalEmpId = $("#mEmpId");
-        //alert(idModalEmpId.val())
-        //alert(idModalEmpName.val())
+        var modalEmpId = $("#mDelEmpId");
+
+        //var modalEmpName = $("#mEmpName");
+        //alert(modalEmpId.val())
+        //alert(modalEmpName.val())
+
         $.ajax({
             type: "POST",
             url: "/Dashboard/ModalDelete",
-            data: { 'id': idModalEmpId.val()/*, 'name': idModalEmpName.val()*/ },
+            data: { 'id': modalEmpId.val() }, // send only id /*, 'name': modalEmpName.val()*/
             dataType: 'json',
             success: function (result) {
                 if (result == "invalidData") {
@@ -248,7 +287,7 @@
                 }
                 else {
                     Toastify({
-                        text: " " + idModalEmpId.val() + " deleted ?",
+                        text: " " + modalEmpId.val() + " deleted? Nope.",
                         duration: 3000,
                         newWindow: true,
                         close: true,
@@ -271,7 +310,48 @@
         });
     });
 
+    // IMPORT DATA
+    function importFunction(clicked_id) {
 
 
+        $('#importModal').modal('show');
+    }
+    // Close the import modal
+    function closeImportModal() {
+        Toastify({
+            text: "Not implemented",
+            duration: 3000,
+            newWindow: true,
+            close: true,
+            gravity: "bottom", // `top` or `bottom`
+            position: "left", // `left`, `center` or `right`
+            stopOnFocus: true, // Prevents dismissing of toast on hover
+            style: {
+                background: "linear-gradient(to right, red, #55B1BB)",
+            },
+        }).showToast();
+
+       /* $('#importModal').modal('hide');*/
+    }
 
 </script>
+
+
+
+
+@*<script>
+        document.getElementById("deleteIcon").addEventListener("click", function () {
+            Toastify({
+                text: "Are you sure?",
+                duration: 3000,
+                newWindow: true,
+                close: true,
+                gravity: "bottom", // `top` or `bottom`
+                position: "left", // `left`, `center` or `right`
+                stopOnFocus: true, // Prevents dismissing of toast on hover
+                style: {
+                    background: "linear-gradient(to right, #ff0000, #FDE063)",
+                },
+            }).showToast();
+        });
+    </script>*@
