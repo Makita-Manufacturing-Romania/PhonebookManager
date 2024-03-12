@@ -15,38 +15,43 @@ html, body {
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
     /*box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;*/
 }
+
 .btn-success {
     background-color: #008A99;
 }
+
     .btn-success:hover, .btn-success:active {
         background-color: #005C66 !important;
     }
 
-    html {
-        position: relative;
-        min-height: 100%;
-    }
+html {
+    position: relative;
+    min-height: 100%;
+}
 
 body {
     margin-bottom: 60px;
     background-color: #000;
 }
 
-.body-container{
+.body-container {
     width: 95%;
     margin: 0 auto;
 }
+
 .logo {
-   
 }
-.bi-question-circle{
+
+.bi-question-circle {
     font-size: 25px;
 }
+
 tr, td {
     border-bottom: 1px solid #008A99;
 }
-table{
-    text-align:center;
+
+table {
+    text-align: center;
 }
 
 .footr {
@@ -70,13 +75,15 @@ table{
 
 .menu {
     display: flex;
-    align-items:center;
+    align-items: center;
     gap: 1rem;
 }
-.menu-item{
-    color:#fff;
-    text-decoration:none;
+
+.menu-item {
+    color: #fff;
+    text-decoration: none;
 }
+
     .menu-item:hover, .btn-dropdown-menu:hover {
         text-decoration: underline 2px;
         text-underline-offset: 0.5em;
@@ -97,10 +104,18 @@ table{
     font-size: 20px;
     color: #424242;
 }
+
     .action-btn:hover {
         text-shadow: 0px 0px 20px #008A99;
     }
 
+.action-btn-danger {
+    font-size: 20px;
+    color: #424242;
+}
+.action-btn-danger:hover {
+    text-shadow: 0px 0px 20px red;
+}
 
 input {
     width: 100%;
@@ -115,14 +130,15 @@ input {
         outline: none;
     }
 
-.input-div{
+.input-div {
     width: 100%;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     gap: 0.5rem;
     margin-bottom: 20px;
 }
+
 .btn-dropdown {
     width: 250px;
     height: 45px;
@@ -131,17 +147,21 @@ input {
     border-radius: 10px;
     border: none;
 }
-.btn-dropdown-menu{
+
+.btn-dropdown-menu {
     background-color: #000;
-    color:#fff;
-    border:none;
+    color: #fff;
+    border: none;
 }
+
 .dropdown-item {
     color: #333 !important;
 }
+
     .dropdown-item:hover {
         color: #000 !important;
     }
+
     .dropdown-item:active {
         background-color: #008A99;
         color: #fff !important;

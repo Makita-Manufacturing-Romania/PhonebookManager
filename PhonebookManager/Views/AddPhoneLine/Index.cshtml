@@ -1,0 +1,94 @@
+﻿
+@{
+    ViewData["Title"] = "Add phone line | Phonebook Manager";
+
+    List<PhoneLine> lines = new List<PhoneLine>
+{
+        new PhoneLine {PhoneNumber ="0721 234 567"  },
+        new PhoneLine {PhoneNumber ="0721 234 567"  },
+        new PhoneLine {PhoneNumber ="0721 234 567"  },
+
+    };
+}
+
+<div style="width: 50%; margin: 0 auto;">
+
+    <div style="position: relative; display: inline-block; width: 100%; margin-bottom: 10px;">
+        <i class="bi bi-search" role="button" style="position: absolute;right: 10px; top: 50%;transform: translateY(-50%);"></i>
+        <input placeholder="Search by employee id, name or telephone number" />
+
+        <a class="btn btn-success" style="position: absolute; right: -210px; width: 200px; height: 45px; line-height: 30px; margin-bottom: 10px;" id="addUserBtn">Add new phone number</a>
+
+    </div>
+
+
+    <br />
+
+    <div class="list-container">
+
+        <div>
+            <table class="table">
+                <thead class="sticky-top bg-white">
+                    <tr>
+                        <th scope="col">Phone number</th>
+                        <th scope="col">Status </th>
+
+                        <th scope="col">Actions</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var line in lines)
+                    {
+                        <tr class="border-0">
+                            <td>@line.PhoneNumber</td>
+                            <td>Allocated</td>
+
+                            <td>
+                                <span class="action-btn me-2" type="button"> <i class="bi bi-pencil-fill" onclick="editFunction(this)" id="editBtn"></i> </span>
+
+                                <span class="action-btn-danger me-2" type="button"> <i class="bi bi-trash-fill" onclick="deleteFunction(this)" id="deleteBtn"></i> </span>
+                            </td>
+
+                        </tr>
+
+                    }
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+</div>
+<script>
+    document.getElementById("editBtn").addEventListener("click", function () {
+        Toastify({
+            text: "Not implemented",
+            duration: 3000,
+            newWindow: true,
+            close: true,
+            gravity: "bottom", // `top` or `bottom`
+            position: "left", // `left`, `center` or `right`
+            stopOnFocus: true, // Prevents dismissing of toast on hover
+            style: {
+                background: "linear-gradient(to right, red, #55B1BB)",
+
+            },
+        }).showToast();
+    });
+    document.getElementById("deleteBtn").addEventListener("click", function () {
+        Toastify({
+            text: "Not implemented",
+            duration: 3000,
+            newWindow: true,
+            close: true,
+            gravity: "bottom", // `top` or `bottom`
+            position: "left", // `left`, `center` or `right`
+            stopOnFocus: true, // Prevents dismissing of toast on hover
+            style: {
+                background: "linear-gradient(to right, red, #55B1BB)",
+
+            },
+        }).showToast();
+    });
+</script>

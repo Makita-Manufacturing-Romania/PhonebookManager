@@ -1,7 +1,7 @@
 ﻿
 @{
 
-    ViewData["Title"] = "Line Allocation | Phonebook Manager";
+    ViewData["Title"] = "Add phone user | Phonebook Manager";
 
     List<Employee> Employees = new List<Employee> {
            new Employee { FullName = "Lenny Castravete", EmployeeID = "9000", Department = "7213", Email="castravete@mmrmakita.eu" } ,
@@ -25,7 +25,7 @@
 
     <div class="d-flex gap-3">
         <p style="width: 15%; padding-top:5px;">Employee responsible:</p> <input style="width: 35%;" placeholder="Please select an employee" disabled />
-        <p style="width: 15%; padding-top: 5px;">Assigned department:</p> <input style="width:35%;" placeholder="Please select an employee" disabled />
+        <p style="width: 15%; padding-top: 5px;">Assigned department:</p> <input style="width:35%;" placeholder="Please select a department" disabled />
 
     </div>
 
@@ -67,7 +67,7 @@
                             <td>@emp.Email</td>
                             <td>Main user</td>
                             <td>
-                                <span class="action-btn me-2" type="button"> <i class="bi bi-trash-fill"></i> </span>
+                                <span class="action-btn-danger me-2" type="button"> <i class="bi bi-trash-fill"></i> </span>
                             </td>
 
                         </tr>
