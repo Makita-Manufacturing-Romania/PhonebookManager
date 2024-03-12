@@ -39,7 +39,7 @@
         <div class="d-flex justify-content-between w-100">
             <h4>Users</h4>
             <div class="d-flex w-50 gap-2">
-                <input placeholder="Search for user" disabled /> <a class="btn btn-success" style="width:25%; line-height: 30px;" onclick="viewFunction(this)">Add user</a>
+                <input placeholder="Search for user" disabled /> <a class="btn btn-success" style="width:25%; line-height: 30px;" onclick="viewFunction()">Add user</a>
             </div>
         </div>
 
@@ -83,10 +83,10 @@
     <div class="d-flex justify-content-between">
         <a class="btn btn-danger" asp-area="" asp-controller="Dashboard" asp-action="Index">Cancel</a>
         <div class="@show">
-            <button class="btn btn-secondary" onclick="changeFunction(this)">Create request of ownership</button>
+            <button class="btn btn-secondary" onclick="openModalChange(this)">Create request of ownership</button>
         </div>
 
-        <a class="btn btn-success" onclick="viewFunction(this)">Save</a>
+        <a class="btn btn-success" onclick="viewFunction()">Save</a>
     </div>
 </div>
 
@@ -157,9 +157,7 @@
 
     }
 
-    function viewFunction(clicked_id) {
-        const button = clicked_id;
-        var idproject = button.getAttribute("id-project");
+    function viewFunction() {
 
         Toastify({
             text: "Not yet",
@@ -177,7 +175,7 @@
 
 
 
-    function changeFunction(clicked_id) {
+    function openModalChange(clicked_id) {
 
 
         $('#changeModal').modal('show');

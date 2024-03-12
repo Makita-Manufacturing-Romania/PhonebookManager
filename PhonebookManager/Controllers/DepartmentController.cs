@@ -2,7 +2,7 @@
 
 namespace PhonebookManager.Controllers
 {
-    public class AddDepartmentController : Controller
+    public class DepartmentController : Controller
     {
         public IActionResult Index()
         {

@@ -1,15 +1,7 @@
-﻿using CererePermisiuneAccesMAP.Models;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
-using PhonebookManager.Models;
-using Microsoft.Extensions.Localization;
-using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
-using static Org.BouncyCastle.Math.EC.ECCurve;
-using System.Net.Mail;
-using System.Net;
+﻿using Microsoft.AspNetCore.Mvc;
 using PhonebookManager.Data;
+using PhonebookManager.Models;
+using System.Diagnostics;
 
 namespace PhonebookManager.Controllers
 {
@@ -30,7 +22,7 @@ namespace PhonebookManager.Controllers
         public IActionResult Test()
         {
             return View();
-        } 
+        }
         public IActionResult Dashboard()
         {
             return View();

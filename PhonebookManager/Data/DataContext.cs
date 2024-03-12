@@ -9,6 +9,7 @@ namespace PhonebookManager.Data
         {
             
         }
+        //public DbSet<Employee> Employees { get; set; } = default!;
         public DbSet<AppUser> AppUsers { get; set; }
         public DbSet<AppRole> AppRoles { get; set; }
         public DbSet<AppClaim> AppClaims { get; set; }
@@ -16,7 +17,7 @@ namespace PhonebookManager.Data
         public DbSet<PhoneLine> PhoneLines { get; set; }
         public DbSet<PhoneUser> PhoneUsers { get; set; }
         public DbSet<ChangeRequest> ChangeRequests { get; set; }
-        
+
 
     }
 }

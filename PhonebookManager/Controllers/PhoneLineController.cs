@@ -2,7 +2,7 @@
 
 namespace PhonebookManager.Controllers
 {
-    public class AddDBUserController : Controller
+    public class PhoneLineController : Controller
     {
         public IActionResult Index()
         {

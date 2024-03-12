@@ -7,5 +7,6 @@
         public string? Name { get; set; }
         public AppUser? Manager { get; set; }
         public AppUser? Responsible { get; set; }
+        public List<PhoneLine>? Lines { get; set; }
     }
 }
