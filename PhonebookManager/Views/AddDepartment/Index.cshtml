@@ -1,0 +1,122 @@
+﻿
+@{
+    ViewData["Title"] = "Add department | Phonebook Manager";
+    List<Department> departments = new List<Department>
+{
+        new Department {Code = "7000", Manager = new AppUser{ Name="Shinji Yamazaki"}, Name ="Production Systems", Responsible = new AppUser {Name ="Cosmin Duican Alexandru" } },
+        new Department {Code = "1000", Manager = new AppUser{ Name="Yto"}, Name ="IT&C", Responsible = new AppUser {Name ="Andreea Ioana Popescu" } },
+        new Department {Code = "6000", Manager = new AppUser{ Name="S.O."}, Name ="HR", Responsible = new AppUser {Name ="Andrei Ion" } }
+    };
+}
+
+
+<div class="input-div">
+   
+    <div style="position: relative; display: inline-block; width: 100%;">
+        <i class="bi bi-search" role="button" style="position: absolute;right: 10px; top: 50%;transform: translateY(-50%);"></i>
+        <input placeholder="Search for department group, code or name" />
+
+    </div>
+    <a class="btn btn-success" style="width: 200px; height: 45px; line-height: 30px;" id="addDepBtn">Add department</a>
+
+</div>
+
+<div class="list-container">
+
+    <div>
+        <table class="table">
+            <thead class="sticky-top bg-white">
+                <tr>
+                    <th scope="col">Department code</th>
+                    <th scope="col">Department name</th>
+                    <th scope="col">Department manager</th>
+                    <th scope="col">Department responsible</th>
+                    <th scope="col">Actions</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var dep in departments)
+                {
+                    <tr class="border-0">
+                        <td>@dep.Code</td>
+                        <td>@dep.Name</td>
+                        <td>@dep.Manager.Name</td>
+                        <td>@dep.Responsible.Name</td>
+                        <td>
+                            <span class="action-btn me-2" type="button"> <i class="bi bi-pencil-fill" onclick="editFunction(this)" dep-code="@dep.Code"></i> </span>
+
+                            <span class="action-btn me-2" type="button"> <i class="bi bi-trash-fill" onclick="deleteFunction(this)" dep-code="@dep.Code"></i> </span>
+                        </td>
+
+                    </tr>
+
+                }
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+
+
+
+<!-- Modal Edit -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="editModalLabel">Confirmation</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <label id="mEmpName"></label>
+                <input hidden id="mEmpId" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-danger" id="deleteBtn">Edit</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Delete -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="deleteModalLabel">Confirmation</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <label id="mEmpName"></label>
+                <input hidden id="mEmpId" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-danger" id="deleteBtn">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+    document.getElementById("addDepBtn").addEventListener("click", function () {
+        Toastify({
+            text: "Nope",
+            duration: 3000,
+            newWindow: true,
+            close: true,
+            gravity: "bottom", // `top` or `bottom`
+            position: "left", // `left`, `center` or `right`
+            stopOnFocus: true, // Prevents dismissing of toast on hover
+            style: {
+                background: "linear-gradient(to right, #008A99, #55B1BB)",
+
+            },
+        }).showToast();
+    });
+</script>

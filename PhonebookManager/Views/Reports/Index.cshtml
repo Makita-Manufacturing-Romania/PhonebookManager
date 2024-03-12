@@ -1,0 +1,98 @@
+﻿
+@{
+
+    ViewData["Title"] = "Dashboard | Phonebook Manager";
+
+    List<ChangeRequest> changes = new List<ChangeRequest>
+    {
+        new ChangeRequest{PhoneLine = new PhoneLine{ PhoneNumber = "0721 234 567"}, OldName = new PhoneUser {Name ="Ion Ionescu"}, NewName = new PhoneUser { Name ="Valentin Stan"},
+            RequestDate = DateTime.Now, RequesterId = new AppUser{ Name = "Radu Edward", BadgeNo ="9375" }, ItOperator = new AppUser {Name ="Iulia Iulia" }, 
+            ImplementationDate = DateTime.Now, Status = "CLOSED" },
+        new ChangeRequest{PhoneLine = new PhoneLine{ PhoneNumber = "0721 234 567"}, OldName = new PhoneUser {Name ="Ion Ionescu"}, NewName = new PhoneUser { Name ="Valentin Stan"},
+            RequestDate = DateTime.Now, RequesterId = new AppUser{ Name = "Radu Edward", BadgeNo ="9375" }, ItOperator = new AppUser {Name ="Iulia Iulia" }, 
+            ImplementationDate = DateTime.Now, Status = "CLOSED" },
+        new ChangeRequest{PhoneLine = new PhoneLine{ PhoneNumber = "0721 234 567"}, OldName = new PhoneUser {Name ="Ion Ionescu"}, NewName = new PhoneUser { Name ="Valentin Stan"},
+            RequestDate = DateTime.Now, RequesterId = new AppUser{ Name = "Radu Edward", BadgeNo ="9375" }, ItOperator = new AppUser {Name ="Iulia Iulia" }, 
+            ImplementationDate = DateTime.Now, Status = "CLOSED" },
+        new ChangeRequest{PhoneLine = new PhoneLine{ PhoneNumber = "0721 234 567"}, OldName = new PhoneUser {Name ="Ion Ionescu"}, NewName = new PhoneUser { Name ="Valentin Stan"},
+            RequestDate = DateTime.Now, RequesterId = new AppUser{ Name = "Radu Edward", BadgeNo ="9375" }, ItOperator = new AppUser {Name ="Iulia Iulia" }, 
+            ImplementationDate = DateTime.Now, Status = "CLOSED" },
+    };
+
+}
+
+
+
+
+<div class="input-div">
+    <input placeholder="All departments" style="width: 35%;" />
+    <div style="position: relative; display: inline-block; width: 65%;">
+        <i class="bi bi-search" role="button" style="position: absolute;right: 10px; top: 50%;transform: translateY(-50%);"></i>
+        <input placeholder="Search for user" />
+
+    </div>
+    <a class="btn btn-success" style="width: 200px; height: 45px; line-height: 30px;" id="reportsBtn">Download report</a>
+
+</div>
+
+<div class="list-container">
+
+    <div>
+        <table class="table">
+            <thead class="sticky-top bg-white">
+                <tr>
+                    <th scope="col">Phone Line</th>
+                    <th scope="col">Old owner</th>
+                    <th scope="col">New owner</th>
+                    <th scope="col">Request date</th>
+                    <th scope="col">Requester</th>
+                    <th scope="col">Badge id</th>
+                    <th scope="col">IT&C Operator</th>
+                    <th scope="col">Change date</th>
+                    <th scope="col">Status</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var cx in changes)
+                {
+                    <tr class="border-0">
+                        <td>@cx.PhoneLine.PhoneNumber</td>
+                        <td>@cx.OldName.Name</td>
+                        <td>@cx.NewName.Name</td>
+                        <td>@cx.RequestDate</td>
+                        <td>@cx.RequesterId.Name</td>
+                        <td>@cx.RequesterId.BadgeNo</td>
+                        <td>@cx.ItOperator.Name</td>
+                        <td>@cx.ImplementationDate</td>
+                        <td>@cx.Status</td>
+                        
+
+                    </tr>
+
+                }
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+
+
+<script>
+    document.getElementById("reportsBtn").addEventListener("click", function () {
+        Toastify({
+            text: "Nope",
+            duration: 3000,
+            newWindow: true,
+            close: true,
+            gravity: "bottom", // `top` or `bottom`
+            position: "left", // `left`, `center` or `right`
+            stopOnFocus: true, // Prevents dismissing of toast on hover
+            style: {
+                background: "linear-gradient(to right, #008A99, #55B1BB)",
+
+            },
+        }).showToast();
+    });
+</script>

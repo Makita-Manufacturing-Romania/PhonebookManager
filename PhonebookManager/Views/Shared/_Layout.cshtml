@@ -31,14 +31,14 @@
 
             <div class="menu">
                 <a class="menu-item" asp-area="" asp-controller="Dashboard" asp-action="Index">Line allocation</a>
-                <a class="menu-item" asp-area="" asp-controller="#" asp-action="Index">Reports</a>
+                <a class="menu-item" asp-area="" asp-controller="Reports" asp-action="Index">Reports</a>
                 <div class="dropdown">
                     <button class="btn-dropdown-menu dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                         Settings
                     </button>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="#">Departments</a></li>
-                        <li><a class="dropdown-item" href="#">User management</a></li>
+                        <li><a class="dropdown-item" href="AddDepartment">Departments</a></li>
+                        <li><a class="dropdown-item" href="AddDBUser">User management</a></li>
                     </ul>
                 </div>
                 <i class="bi bi-question-circle" role="button" id="ShowToastButton"></i>
