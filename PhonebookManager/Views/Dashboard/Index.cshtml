@@ -1,5 +1,6 @@
 ﻿@{
     ViewData["Title"] = "Dashboard | Phonebook Manager";
+    //await Html.RenderPartialAsync("_ValidationScriptsPartial");
 
 
     List<Employee> Employees = new List<Employee> {
@@ -7,16 +8,18 @@
        new Employee { FullName = "Nicolae Cusca", EmployeeID = "9100", Department = "7321", Email="cusca@mmrmakita.eu" },
        new Employee { FullName = "Ion Bidon", EmployeeID = "9200", Department = "7201", Email="bidon@mmrmakita.eu" }
     };
+
+
 }
 
 
 
 
 <div class="input-div">
-    <input placeholder="All departments" style="width: 35%;"/>
+    <input placeholder="All departments" style="width: 35%;" />
     <div style="position: relative; display: inline-block; width: 65%;">
         <i class="bi bi-search" role="button" style="position: absolute;right: 10px; top: 50%;transform: translateY(-50%);"></i>
-        <input placeholder="Search by employee id, name or telephone number"  />
+        <input placeholder="Search by employee id, name or telephone number" />
 
     </div>
     <div class="dropdown">
@@ -24,7 +27,7 @@
             Select option
         </button>
         <ul class="dropdown-menu" style="z-index:9999;">
-            <li><a class="dropdown-item" href="AddUser">Allocate new line to user</a></li>
+            <li><a class="dropdown-item" href="AddPhoneUser">Allocate new line to user</a></li>
             <li><a class="dropdown-item" href="#">Add new phone line</a></li>
             <li><a class="dropdown-item" href="#">Import phone lines</a></li>
         </ul>
@@ -59,9 +62,10 @@
                         <td>@emp.Department</td>
                         <td>Multi use</td>
                         <td>
-                            <span class="action-btn me-2" type="button"> <i class="bi bi-eye-fill"></i> </span>
-                            <span class="action-btn me-2" type="button"> <i class="bi bi-pencil-fill"></i> </span>
-                            <span class="action-btn me-2" type="button"> <i class="bi bi-trash-fill"></i> </span>
+                            <span class="action-btn me-2" type="button"> <i class="bi bi-eye-fill" onclick="viewFunction(this)" id-project="@emp.FullName"></i> </span>
+                            <span class="action-btn me-2" type="button"> <i class="bi bi-pencil-fill" onclick="editFunction(this)" id-project="@emp.FullName"></i> </span>
+
+                            <span class="action-btn me-2" type="button"> <i class="bi bi-trash-fill" onclick="deleteFunction(this)" emp-name="@emp.FullName" emp-id="@emp.EmployeeID"></i> </span>
                         </td>
 
                     </tr>
@@ -72,3 +76,157 @@
     </div>
 
 </div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="deleteModalLabel">Modal title</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <label id="mEmpName"></label>
+                <input hidden id="mEmpId" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-danger" id="deleteBtn">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+@*<script>
+        document.getElementById("deleteIcon").addEventListener("click", function () {
+            Toastify({
+                text: "Are you sure?",
+                duration: 3000,
+                newWindow: true,
+                close: true,
+                gravity: "bottom", // `top` or `bottom`
+                position: "left", // `left`, `center` or `right`
+                stopOnFocus: true, // Prevents dismissing of toast on hover
+                style: {
+                    background: "linear-gradient(to right, #ff0000, #FDE063)",
+                },
+            }).showToast();
+        });
+    </script>*@
+
+
+<script>
+
+    function viewFunction(clicked_id) {
+        const button = clicked_id;
+        var idproject = button.getAttribute("id-project");
+
+        Toastify({
+            text: "View: " + idproject + "  ?",
+            duration: 3000,
+            newWindow: true,
+            close: true,
+            gravity: "bottom", // `top` or `bottom`
+            position: "left", // `left`, `center` or `right`
+            stopOnFocus: true, // Prevents dismissing of toast on hover
+            style: {
+                background: "linear-gradient(to right, #008A99, #55B1BB)",
+            },
+        }).showToast();
+    }
+    function editFunction(clicked_id) {
+        const button = clicked_id;
+        var idproject = button.getAttribute("id-project");
+
+        Toastify({
+            text: "Are you sure you want to edit: " + idproject + "  ?",
+            duration: 3000,
+            newWindow: true,
+            close: true,
+            gravity: "bottom", // `top` or `bottom`
+            position: "left", // `left`, `center` or `right`
+            stopOnFocus: true, // Prevents dismissing of toast on hover
+            style: {
+                background: "linear-gradient(to right, green, #55B1BB)",
+            },
+        }).showToast();
+    }
+
+    function deleteFunction(clicked_id) {
+        const button = clicked_id;
+        var idName = button.getAttribute("emp-name");
+        var idEmp = button.getAttribute("emp-id");
+
+        var modalEmpName = document.getElementById("mEmpName");
+       // modalEmpName.value = idName;
+        modalEmpName.innerHTML = idName;
+        var modalEmpId = document.getElementById("mEmpId");
+        modalEmpId.value = idEmp;
+        //modalEmpId.innerHTML = idEmp;
+
+        $('#deleteModal').modal('show');
+    }
+
+    $("body").on("click", "#deleteBtn", function () {
+        //var idModalEmpName = $("#mEmpName");
+        var idModalEmpId = $("#mEmpId");
+        //alert(idModalEmpId.val())
+        //alert(idModalEmpName.val())
+        $.ajax({
+            type: "POST",
+            url: "/Dashboard/ModalDelete",
+            data: { 'id': idModalEmpId.val()/*, 'name': idModalEmpName.val()*/ },
+            dataType: 'json',
+            success: function (result) {
+                if (result == "invalidData") {
+
+                    Toastify({
+                        text: "Eroare",
+                        duration: 3000,
+                        newWindow: true,
+                        close: true,
+                        gravity: "bottom", // `top` or `bottom`
+                        position: "left", // `left`, `center` or `right`
+                        stopOnFocus: true, // Prevents dismissing of toast on hover
+                        style: {
+                            background: "linear-gradient(to right, red, #55B1BB)",
+                        },
+                    }).showToast();
+
+                    $('#deleteModal').modal('hide');
+                }
+                else {
+                    Toastify({
+                        text: " " + idModalEmpId.val() + " deleted ?",
+                        duration: 3000,
+                        newWindow: true,
+                        close: true,
+                        gravity: "bottom", // `top` or `bottom`
+                        position: "left", // `left`, `center` or `right`
+                        stopOnFocus: true, // Prevents dismissing of toast on hover
+                        style: {
+                            background: "linear-gradient(to right, red, #55B1BB)",
+                        },
+                    }).showToast();
+
+                    $('#deleteModal').modal('hide');
+                   //document.location.href = "/" + result;
+
+                }
+            },
+            //error: function (xhr, status, error) {
+            //    $("#dataDiv").html("Result: " + status + " " + error + " " + xhr.status + " " + xhr.statusText)
+            //}
+        });
+    });
+
+
+
+
+</script>

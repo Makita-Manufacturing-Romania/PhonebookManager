@@ -82,6 +82,28 @@ namespace PhonebookManager.Controllers
             }
         }
 
+        [HttpPost]
+        public async Task<JsonResult> ModalDelete(string id/*, string name*/)
+        {
+            string returnLink = "";
+            try
+            {
+
+                returnLink = "Dashboard/Index/";
+            }
+            catch (Exception)
+            {
+
+                returnLink = "invalidData";
+                throw;
+            }
+
+            return Json(returnLink);
+        }
+
+
+
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

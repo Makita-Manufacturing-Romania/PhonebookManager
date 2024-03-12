@@ -15,11 +15,17 @@ html, body {
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
     /*box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;*/
 }
-
-html {
-    position: relative;
-    min-height: 100%;
+.btn-success {
+    background-color: #008A99;
 }
+    .btn-success:hover, .btn-success:active {
+        background-color: #005C66 !important;
+    }
+
+    html {
+        position: relative;
+        min-height: 100%;
+    }
 
 body {
     margin-bottom: 60px;
@@ -31,7 +37,16 @@ body {
     margin: 0 auto;
 }
 .logo {
-    width: 200px;
+   
+}
+.bi-question-circle{
+    font-size: 25px;
+}
+tr, td {
+    border-bottom: 1px solid #008A99;
+}
+table{
+    text-align:center;
 }
 
 .footr {
@@ -47,7 +62,7 @@ body {
 .headr {
     display: flex;
     width: 100%;
-    padding: 20px 20px 50px 20px;
+    padding: 20px 20px 80px 20px;
     justify-content: space-between;
     align-items: center;
     color: #fff;
@@ -55,13 +70,14 @@ body {
 
 .menu {
     display: flex;
+    align-items:center;
     gap: 1rem;
 }
 .menu-item{
     color:#fff;
     text-decoration:none;
 }
-    .menu-item:hover {
+    .menu-item:hover, .btn-dropdown-menu:hover {
         text-decoration: underline 2px;
         text-underline-offset: 0.5em;
     }
@@ -90,7 +106,7 @@ input {
     width: 100%;
     border: 1px solid #CED4DA;
     border-radius: 10px !important;
-    height: 35px;
+    height: 45px;
     padding: 5px;
     text-align: center;
 }
@@ -109,9 +125,24 @@ input {
 }
 .btn-dropdown {
     width: 250px;
-    height: 35px;
+    height: 45px;
     color: #fff;
     background-color: #008A99;
     border-radius: 10px;
     border: none;
 }
+.btn-dropdown-menu{
+    background-color: #000;
+    color:#fff;
+    border:none;
+}
+.dropdown-item {
+    color: #333 !important;
+}
+    .dropdown-item:hover {
+        color: #000 !important;
+    }
+    .dropdown-item:active {
+        background-color: #008A99;
+        color: #fff !important;
+    }

@@ -1,5 +1,5 @@
-using DinkToPdf.Contracts;
 using DinkToPdf;
+using DinkToPdf.Contracts;
 using Microsoft.AspNetCore.Authentication.Negotiate;
 using Microsoft.EntityFrameworkCore;
 using PhonebookManager.Data;
@@ -22,7 +22,6 @@ builder.Services.AddAuthorization(options =>
     options.FallbackPolicy = options.DefaultPolicy;
 });
 builder.Services.AddRazorPages();
-
 
 builder.Services.AddHttpClient();
 
@@ -58,7 +57,6 @@ if (!app.Environment.IsDevelopment())
 app.UseStaticFiles();
 
 app.UseRouting();
-
 app.UseAuthorization();
 
 app.MapControllerRoute(

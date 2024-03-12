@@ -1,0 +1,112 @@
+﻿
+@{
+
+    ViewData["Title"] = "Line Allocation | Phonebook Manager";
+
+    List<Employee> Employees = new List<Employee> {
+           new Employee { FullName = "Lenny Castravete", EmployeeID = "9000", Department = "7213", Email="castravete@mmrmakita.eu" } ,
+           new Employee { FullName = "Nicolae Cusca", EmployeeID = "9100", Department = "7321", Email="cusca@mmrmakita.eu" },
+           new Employee { FullName = "Ion Bidon", EmployeeID = "9200", Department = "7201", Email="bidon@mmrmakita.eu" }
+        };
+    string show = "d-block";
+
+}
+
+<div class="list-container">
+
+    <div class="d-flex justify-content-between">
+        <h4>Details for 0721 234 567</h4>
+        <h4>New service</h4>
+        <h4 style="color:#008A99">Unallocated</h4>
+    </div>
+    <hr style="color:#000" />
+
+    <br />
+
+    <div class="d-flex gap-3">
+        <p style="width: 15%; padding-top:5px;">Employee responsible:</p> <input style="width: 35%;" placeholder="Please select an employee" disabled />
+        <p style="width: 15%; padding-top: 5px;">Assigned department:</p> <input style="width:35%;" placeholder="Please select an employee" disabled />
+
+    </div>
+
+    <br />
+
+    <div class="@show" style="opacity:1">
+        <p>Active options: Vodafone Mobile, Telekom Mobile, Orange Mobile Data, Adrana Telecom</p>
+
+       
+        <br />
+
+        <div class="d-flex justify-content-between w-100">
+            <h4>Users</h4>
+            <div class="d-flex w-50 gap-2">
+                <input placeholder="Search for user" disabled /> <a class="btn btn-success" style="width:25%; line-height: 30px;" onclick="viewFunction(this)">Add user</a>
+            </div>
+        </div>
+
+        <br />
+
+        <div>
+            <table class="table">
+                <thead class="sticky-top bg-white">
+                    <tr>
+                        <th scope="col">Employee ID</th>
+                        <th scope="col">Employee name</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Type</th>
+                        <th scope="col">Action</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var emp in Employees)
+                    {
+                        <tr class="border-0">
+                            <td>@emp.EmployeeID</td>
+                            <td>@emp.FullName</td>
+                            <td>@emp.Email</td>
+                            <td>Main user</td>
+                            <td>
+                                <span class="action-btn me-2" type="button"> <i class="bi bi-trash-fill"></i> </span>
+                            </td>
+
+                        </tr>
+
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <br />
+    <br />
+
+    <div class="d-flex justify-content-between">
+        <a class="btn btn-danger" asp-area="" asp-controller="Dashboard" asp-action="Index">Cancel</a>
+        <div class="@show">
+            <button class="btn btn-secondary" onclick="viewFunction(this)">Create request of ownership</button>
+        </div>
+
+        <a class="btn btn-success" onclick="viewFunction(this)">Save</a>
+    </div>
+    </div>
+
+<script>
+    function viewFunction(clicked_id) {
+        const button = clicked_id;
+        var idproject = button.getAttribute("id-project");
+
+        Toastify({
+            text: "Not yet",
+            duration: 3000,
+            newWindow: true,
+            close: true,
+            gravity: "bottom", // `top` or `bottom`
+            position: "left", // `left`, `center` or `right`
+            stopOnFocus: true, // Prevents dismissing of toast on hover
+            style: {
+                background: "linear-gradient(to right, #008A99, #55B1BB)",
+            },
+        }).showToast();
+    }
+</script>
