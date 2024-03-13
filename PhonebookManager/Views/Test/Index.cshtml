@@ -1,11 +1,21 @@
 ﻿@{
     ViewData["Title"] = "Test Page";
-    // Layout = null; 
+    // Layout = null;
 }
 
 <h1>@ViewData["Title"]</h1>
 
-<h2>Pages TEST</h2>
+
+
+<form method="get" action="@Url.Action("Index", "Home")">
+    <label for="search">Search</label>
+    <input type="text" name="search" id="search" />
+    <button type="submit">Perform Search</button>
+</form>
+
+
+
+
 
 <p class="one" id="demo">JavaScript can change the style of an HTML element.</p>
 
@@ -24,6 +34,14 @@
 
 <script>
 
+    function performSearch() {
+        const searchQuery = document.getElementById('searchbar').value;
+        // Process the search query (e.g., filter results on the frontend)
+        // Display the search results as needed
+    }
+
+
+
     function changeClass(className) {
         const car = { type: "Fiat", model: "500", color: "white" };
 
@@ -39,12 +57,12 @@
     //document.getElementById('demo').className = 'two'
 </script>
 
-@* <script src="https://www.w3schools.com/js/myScript.js"></script> 
-<script src="/js/myScript.js"></script>*@
+@* <script src="https://www.w3schools.com/js/myScript.js"></script>
+    <script src="/js/myScript.js"></script>*@
 
 @*<script>
-    var x = 10;
-    var y = 20;
-    document.getElementById("demo").innerHTML =
-        "The result is: " + x + " " + y;
-</script>*@
+        var x = 10;
+        var y = 20;
+        document.getElementById("demo").innerHTML =
+            "The result is: " + x + " " + y;
+    </script>*@

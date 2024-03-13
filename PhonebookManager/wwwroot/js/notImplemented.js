@@ -1,4 +1,4 @@
-﻿const words = ['Nope', 'Not happening', 'No way', 'Stop it', 'Not implemented', 'Nah'];
+﻿const words = ["Nope", "Not happening", "No way", "Stop it", "Not implemented", "Nah", "Impossible", "Can't do it", "No", "Out of the question", "Unlikely"];
 
 function notImplemented() {
     const randomIndex = Math.floor(Math.random() * words.length);

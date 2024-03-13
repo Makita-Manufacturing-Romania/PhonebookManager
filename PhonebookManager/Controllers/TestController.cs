@@ -1,6 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MailKit.Search;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.JSInterop;
 using PhonebookManager.Data;
 using PhonebookManager.Models;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 
 namespace PhonebookManager.Controllers
@@ -9,25 +14,20 @@ namespace PhonebookManager.Controllers
     {
         private readonly ILogger<TestController> _logger;
         private readonly DataContext _context;
-        public TestController(ILogger<TestController> logger, DataContext context)
+        private readonly IJSRuntime _js;
+
+        public TestController(ILogger<TestController> logger, DataContext context, IJSRuntime js)
         {
             _logger = logger;
             _context = context;
+            _js = js;
+
         }
         // [Authorize]
-        //public IActionResult Qwerty()
-        //{
-        //    return View();
-        //}
         public IActionResult Test()
         {
             return View();
         }
-        public IActionResult Dashboard()
-        {
-            return View();
-        }
-
 
         [HttpPost]
         public IActionResult ChangeText()
@@ -37,7 +37,19 @@ namespace PhonebookManager.Controllers
             string test = "qqqqq";
             return Json(test);
         }
+        public class SearchViewModel
+        {
+            [DisplayName("Search Query")]
+            [Required]
+            public string? Query { get; set; }
+        }
+        [HttpPost]
+        public async Task<ActionResult> Index(SearchViewModel model)
+        {
+           
 
+            return View();
+        }
 
 
         //public async Task<Exception> SendNotification(string email, string subject, string body)
