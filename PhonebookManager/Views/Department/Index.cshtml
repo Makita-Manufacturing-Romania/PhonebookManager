@@ -17,7 +17,7 @@
         <input placeholder="Search for department group, code or name" />
 
     </div>
-    <a class="btn btn-success" style="width: 200px; height: 45px; line-height: 30px;" id="addDepBtn">Add department</a>
+    <a class="btn btn-success" style="width: 200px; height: 45px; line-height: 30px;" onclick="notImplemented()">Add department</a>
 
 </div>
 
@@ -101,22 +101,3 @@
     </div>
 </div>
 
-
-
-<script>
-    document.getElementById("addDepBtn").addEventListener("click", function () {
-        Toastify({
-            text: "Nope",
-            duration: 3000,
-            newWindow: true,
-            close: true,
-            gravity: "bottom", // `top` or `bottom`
-            position: "left", // `left`, `center` or `right`
-            stopOnFocus: true, // Prevents dismissing of toast on hover
-            style: {
-                background: "linear-gradient(to right, #008A99, #55B1BB)",
-
-            },
-        }).showToast();
-    });
-</script>

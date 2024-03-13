@@ -39,7 +39,7 @@
         <div class="d-flex justify-content-between w-100">
             <h4>Users</h4>
             <div class="d-flex w-50 gap-2">
-                <input placeholder="Search for user" disabled /> <a class="btn btn-success" style="width:25%; line-height: 30px;" onclick="viewFunction()">Add user</a>
+                <input placeholder="Search for user" disabled /> <a class="btn btn-success" style="width:25%; line-height: 30px;" onclick="notImplemented()">Add user</a>
             </div>
         </div>
 
@@ -86,7 +86,7 @@
             <button class="btn btn-secondary" onclick="openModalChange(this)">Create request of ownership</button>
         </div>
 
-        <a class="btn btn-success" onclick="viewFunction()">Save</a>
+        <a class="btn btn-success" onclick="notImplemented()">Save</a>
     </div>
 </div>
 
@@ -157,46 +157,28 @@
 
     }
 
-    function viewFunction() {
-
-        Toastify({
-            text: "Not yet",
-            duration: 3000,
-            newWindow: true,
-            close: true,
-            gravity: "bottom", // `top` or `bottom`
-            position: "left", // `left`, `center` or `right`
-            stopOnFocus: true, // Prevents dismissing of toast on hover
-            style: {
-                background: "linear-gradient(to right, #008A99, #55B1BB)",
-            },
-        }).showToast();
-    }
-
-
-
     function openModalChange(clicked_id) {
 
 
         $('#changeModal').modal('show');
     }
     // Close the import modal
-    function closeChangeModal() {
-        Toastify({
-            text: "Not implemented",
-            duration: 3000,
-            newWindow: true,
-            close: true,
-            gravity: "bottom", // `top` or `bottom`
-            position: "left", // `left`, `center` or `right`
-            stopOnFocus: true, // Prevents dismissing of toast on hover
-            style: {
-                background: "linear-gradient(to right, red, #55B1BB)",
-            },
-        }).showToast();
+    //function closeChangeModal() {
+    //    Toastify({
+    //        text: "Not implemented",
+    //        duration: 3000,
+    //        newWindow: true,
+    //        close: true,
+    //        gravity: "bottom", // `top` or `bottom`
+    //        position: "left", // `left`, `center` or `right`
+    //        stopOnFocus: true, // Prevents dismissing of toast on hover
+    //        style: {
+    //            background: "linear-gradient(to right, red, #55B1BB)",
+    //        },
+    //    }).showToast();
 
-        /* $('#importModal').modal('hide');*/
-    }
+    //     $('#importModal').modal('hide');
+    //}
 </script>
 
 

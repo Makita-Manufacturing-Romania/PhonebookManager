@@ -164,11 +164,11 @@
 
                         <div class="d-flex gap-2 justify-content-end align-items-center mb-5">
                             <h5>Get our template</h5>
-                            <button class="btn btn-success" style="width: 200px;" onclick="closeImportModal()">Download template</button>
+                            <button class="btn btn-success" style="width: 200px;" onclick="notImplemented()">Download template</button>
                         </div>
                         <div class="d-flex gap-2 justify-content-end align-items-center">
                             <h5>Import data</h5>
-                            <button class="btn btn-secondary" style="width: 200px;" onclick="closeImportModal()">Select file</button>
+                            <button class="btn btn-secondary" style="width: 200px;" onclick="notImplemented()">Select file</button>
                         </div>
                     </div>
 
@@ -317,22 +317,22 @@
         $('#importModal').modal('show');
     }
     // Close the import modal
-    function closeImportModal() {
-        Toastify({
-            text: "Not implemented",
-            duration: 3000,
-            newWindow: true,
-            close: true,
-            gravity: "bottom", // `top` or `bottom`
-            position: "left", // `left`, `center` or `right`
-            stopOnFocus: true, // Prevents dismissing of toast on hover
-            style: {
-                background: "linear-gradient(to right, red, #55B1BB)",
-            },
-        }).showToast();
+    //function closeImportModal() {
+    //    Toastify({
+    //        text: "Not implemented",
+    //        duration: 3000,
+    //        newWindow: true,
+    //        close: true,
+    //        gravity: "bottom", // `top` or `bottom`
+    //        position: "left", // `left`, `center` or `right`
+    //        stopOnFocus: true, // Prevents dismissing of toast on hover
+    //        style: {
+    //            background: "linear-gradient(to right, red, #55B1BB)",
+    //        },
+    //    }).showToast();
 
-       /* $('#importModal').modal('hide');*/
-    }
+    //    $('#importModal').modal('hide');
+    //}
 
 </script>
 

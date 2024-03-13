@@ -17,7 +17,7 @@
         <input placeholder="Search by employee id, name or telephone number" />
 
     </div>
-    <a class="btn btn-success" style="width: 100px; height: 45px; line-height: 30px;" id="addUserBtn">Add user</a>
+    <a class="btn btn-success" style="width: 100px; height: 45px; line-height: 30px;" onclick="notImplemented()">Add user</a>
 
 </div>
 
@@ -105,20 +105,3 @@
 
 
 
-<script>
-    document.getElementById("addUserBtn").addEventListener("click", function () {
-        Toastify({
-            text: "Nope",
-            duration: 3000,
-            newWindow: true,
-            close: true,
-            gravity: "bottom", // `top` or `bottom`
-            position: "left", // `left`, `center` or `right`
-            stopOnFocus: true, // Prevents dismissing of toast on hover
-            style: {
-                background: "linear-gradient(to right, #008A99, #55B1BB)",
-
-            },
-        }).showToast();
-    });
-</script>
