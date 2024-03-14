@@ -6,7 +6,7 @@ namespace PhonebookManager.Controllers
     {
         public IActionResult Index(string phoneNumber)
         {
-            if(!string.IsNullOrEmpty(phoneNumber))
+            if(!string.IsNullOrEmpty(phoneNumber)) // phoneNumber.ToString().Length == 10
             {
                 ViewBag.PhoneNumber = phoneNumber;
             }
