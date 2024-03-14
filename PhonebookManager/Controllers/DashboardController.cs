@@ -223,10 +223,18 @@ namespace PhonebookManager.Controllers
             try
             {
                 var dbPhoneLine = await _context.PhoneLines.FirstOrDefaultAsync(x => x.PhoneNumber == phoneLine);
-                if (dbPhoneLine == null && !string.IsNullOrEmpty(phoneLine))
+                if (dbPhoneLine == null && !string.IsNullOrEmpty(phoneLine) && phoneLine.Length == 10)
                 {
                     _context.PhoneLines.Add(new PhoneLine { PhoneNumber = phoneLine });
                     await _context.SaveChangesAsync();
+                }
+                else if (dbPhoneLine is not null)
+                {
+                    return Json("Exists");
+                }
+                else
+                {
+                    return Json("Is null");
                 }
 
             }
@@ -238,6 +246,17 @@ namespace PhonebookManager.Controllers
 
 
             return RedirectToAction("Index");
+        }
+        [HttpGet]
+        public async Task<IActionResult> CheckPhoneNumber(string phoneNumber)
+        {
+            var dbPhoneNumber = await _context.PhoneLines.FirstOrDefaultAsync(x => x.PhoneNumber == phoneNumber);
+            if (dbPhoneNumber is not null)
+            {
+                return Json("Exists");
+            }
+            return Json("");
+
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

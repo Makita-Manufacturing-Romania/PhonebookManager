@@ -7,16 +7,46 @@
 //    $("#dummyBtn")[0].click();
 //}
 
-function gotoPhoneUserPage(clicked_id) {
+function GotoPhoneUserPage(clicked_id) {
     const button = clicked_id;
     var pNumber = button.getAttribute("phone-number");
 
-    if (pNumber != null) {
-        window.location.href = location.origin + "/PhoneUser?phoneNumber=" + pNumber;
+    if (pNumber != null && pNumber.length == 10) {
+        $.ajax({
+            url: '/Dashboard/CheckPhoneNumber/',
+            data: { "phoneNumber": pNumber },
+            type: "GET",
+            success: function (data) {
+                if (data == "Exists") {
+                    Toastify({
+                        text: "Phone number exists",
+                        duration: 3000,
+                        newWindow: true,
+                        close: true,
+                        gravity: "bottom", // `top` or `bottom`
+                        position: "left", // `left`, `center` or `right`
+                        stopOnFocus: true, // Prevents dismissing of toast on hover
+                        style: {
+                            background: "linear-gradient(to right, #008A99, #55B1BB)",
+
+                        },
+                    }).showToast();
+                }
+                else {
+                    window.location.href = location.origin + "/PhoneUser?phoneNumber=" + pNumber;
+                }
+
+            },
+            error: function (response) { // use error or failure
+                console.log("Error " + response)
+            }
+        });
+
+       // window.location.href = location.origin + "/PhoneUser?phoneNumber=" + pNumber;
     }
     else {
         Toastify({
-            text: "No phone number",
+            text: "Phone number not checked",
             duration: 3000,
             newWindow: true,
             close: true,
@@ -31,15 +61,48 @@ function gotoPhoneUserPage(clicked_id) {
     }
 }
 
-function quickAddPhoneLine() {
+function AddQuickPhoneLine() {
     var searchInputText = document.getElementById("searchInput");
     $.ajax({
         url: '/Dashboard/AddQuickPhoneLine/',
         data: { "phoneLine": searchInputText.value },
         type: "POST",
-        success: function () {
-            location.reload(true);
-            console.log("Success!")
+        success: function (data) {
+            if (data === "Is null") {
+                Toastify({
+                    text: "Invalid phone number",
+                    duration: 3000,
+                    newWindow: true,
+                    close: true,
+                    gravity: "bottom", // `top` or `bottom`
+                    position: "left", // `left`, `center` or `right`
+                    stopOnFocus: true, // Prevents dismissing of toast on hover
+                    style: {
+                        background: "linear-gradient(to right, #008A99, #55B1BB)",
+
+                    },
+                }).showToast();
+            }
+            else if (data === "Exists") {
+                Toastify({
+                    text: "Phone number exists",
+                    duration: 3000,
+                    newWindow: true,
+                    close: true,
+                    gravity: "bottom", // `top` or `bottom`
+                    position: "left", // `left`, `center` or `right`
+                    stopOnFocus: true, // Prevents dismissing of toast on hover
+                    style: {
+                        background: "linear-gradient(to right, #008A99, #55B1BB)",
+
+                    },
+                }).showToast();
+            }
+            else {
+                location.reload(true);
+                console.log("Success!")
+            }
+            
         },
         error: function (response) { // use error or failure
             console.log("Error " + response)
@@ -59,18 +122,18 @@ $(document).ready(function () {
 
     $("#searchInput").on("keydown", function (event) {
         if (event.key === "Enter") {
-            performSearch();
+            PerformSearch();
         }
     });
 });
 
 $(document).ready(function () {
     $("#searchButton").on("click", function () {
-        performSearch();
+        PerformSearch();
     });
 });
 
-function performSearch() {
+function PerformSearch() {
     var searchInputText = document.getElementById("searchInput");
     $.ajax({
         url: '/Dashboard/SearchPhoneLine/',
@@ -118,11 +181,13 @@ $(function () {
                 type: "POST",
                 success: function (data) {
                     response($.map(data, function (item) {
+                        
                         return item;
                     }));
                     $(window).resize(function () {
                         $(".ui-autocomplete").css('display', 'none');
                     });
+
                 },
                 error: function (response) {
                     $("#searchInput").val("Error: " + response);
@@ -269,7 +334,7 @@ $("body").on("click", "#deleteBtn", function () {
 });
 
 // IMPORT DATA
-function importFunction(clicked_id) {
+function ImportFunction(clicked_id) {
 
 
     $('#importModal').modal('show');

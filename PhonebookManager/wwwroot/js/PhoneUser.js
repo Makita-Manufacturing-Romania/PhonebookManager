@@ -1,4 +1,31 @@
-﻿
+﻿window.onload = function () {
+    const makeTransparent = document.getElementById('transparentDiv');
+    makeTransparent.style.opacity = '0.3';
+
+    const tableBody = document.getElementById('tBody'); 
+    tableBody.style.display = 'none';
+
+    const input = document.querySelector('#searchInput'); 
+    input.disabled = true;
+
+    const btnAddUser = document.querySelector("#addUserBtn"); 
+    btnAddUser.disabled = true;
+
+    const btnOwnership = document.querySelector("#ownershipBtn"); 
+    btnOwnership.disabled = true;
+
+    
+    //btnOwnership.disabled = false;
+
+};
+
+//OR
+//$(document).ready(function () {
+//    var makeTransparent = document.getElementById('transparentDiv');
+//    makeTransparent.style.opacity = '0.5';
+//});
+
+
 
 function changeConfirm() {
     var modalTitleOne = document.getElementById("changeModalLabelOne");
