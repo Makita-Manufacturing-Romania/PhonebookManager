@@ -14,7 +14,10 @@
 <div class="list-container">
 
     <div class="d-flex justify-content-between">
-        <h4>Details for 0721 234 567</h4>
+        @if (ViewBag.PhoneNumber != null)
+        {
+            <h4>Details for @ViewBag.PhoneNumber</h4>
+        }
         <h4>New service</h4>
         <h4 style="color:#008A99">Unallocated</h4>
     </div>

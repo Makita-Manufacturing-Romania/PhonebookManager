@@ -12,8 +12,21 @@ html, body {
     }
 }
 .ui-helper-hidden-accessible{
-    color:#000!important;
+    display:none;
 }
+.ui-autocomplete {
+    background-color: #fff;
+    z-index: 9999 ;
+    position: relative;
+    display: inline-block;
+    border: 1px solid black;
+    border-radius: 10px;
+    /*list-style-type: none!important;*/
+}
+.ui-menu-item {
+    cursor:pointer !important;
+}
+
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
     /*box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;*/
 }

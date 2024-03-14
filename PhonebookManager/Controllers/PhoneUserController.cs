@@ -4,8 +4,12 @@ namespace PhonebookManager.Controllers
 {
     public class PhoneUserController : Controller
     {
-        public IActionResult Index()
+        public IActionResult Index(string phoneNumber)
         {
+            if(!string.IsNullOrEmpty(phoneNumber))
+            {
+                ViewBag.PhoneNumber = phoneNumber;
+            }
             return View();
         }
     }

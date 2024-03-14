@@ -4,8 +4,6 @@ using Microsoft.JSInterop;
 using PhonebookManager.Data;
 using PhonebookManager.Models;
 using System.Diagnostics;
-using static Org.BouncyCastle.Asn1.Cmp.Challenge;
-using System.Runtime.CompilerServices;
 
 namespace PhonebookManager.Controllers
 {
@@ -20,9 +18,23 @@ namespace PhonebookManager.Controllers
 
         }
         // GET: DashboardController
-        public ActionResult Index()
+        public async Task<IActionResult> Index(string searchText)
         {
-            return View();
+            ViewBag.SearchText = searchText;
+            List<PhoneLine> dbPhoneLines = new List<PhoneLine>();
+
+            if (!string.IsNullOrEmpty(searchText) && searchText.Length == 10)
+            {
+                dbPhoneLines = await _context.PhoneLines.Include(x => x.LineOwner).Include(y => y.Department).Include(z => z.LineUsers).Include(u => u.Changes)
+                    .Where(x => x.PhoneNumber == searchText).ToListAsync();
+            }
+            else
+            {
+                dbPhoneLines = await _context.PhoneLines.Include(x => x.LineOwner).Include(y => y.Department).Include(z => z.LineUsers).Include(u => u.Changes).ToListAsync();
+
+            }
+            return View(dbPhoneLines);
+
         }
 
         // GET: DashboardController/Details/5
@@ -116,53 +128,117 @@ namespace PhonebookManager.Controllers
         [HttpPost]
         public async Task<JsonResult> SearchPhoneLine(string searchText)
         {
-            
             try
             {
-                string[] words = searchText.Split(' ');
-                string firstWord = words[0];
-                var dbPhoneLines = await _context.PhoneLines.ToListAsync();
-                // firstWord.GetType() == typeof(int) or int.TryParse(firstWord, out int value)
-
-                if (long.TryParse(firstWord, out long value) && firstWord.Length == 10)
+                if (!string.IsNullOrEmpty(searchText))
                 {
+                    string[] words = searchText.Split(' ');
+                    string firstWord = words[0];
+                    var dbPhoneLines = await _context.PhoneLines.ToListAsync();
+                    // firstWord.GetType() == typeof(int) or int.TryParse(firstWord, out int value)
 
-                    dbPhoneLines = dbPhoneLines.Where(p => p.PhoneNumber.Contains(firstWord) || p.LineOwner.Badge.Contains(firstWord)
-                    || p.LineOwner.Name.Contains(firstWord)).Take(10).ToList();
-
-                    if(dbPhoneLines.Count != 0)
+                    if (long.TryParse(firstWord, out long longValue) && firstWord.Length == 10)
                     {
-                        return Json(dbPhoneLines);
+                        dbPhoneLines = dbPhoneLines.Where(p => p.LineOwner == null ? p.PhoneNumber.Contains(firstWord) : p.LineOwner.Badge.Contains(firstWord) || p.LineOwner.Name.Contains(firstWord)
+                         || p.PhoneNumber.Contains(firstWord)).Take(10).ToList();
+                        var dbPhoneLinesFiltered = (from line in dbPhoneLines
+                                                    select new
+                                                    {
+                                                        label = line.PhoneNumber,
+                                                        val = line.Id
+                                                    }).ToList();
+
+                        if (dbPhoneLinesFiltered.Count != 0)
+                        {
+                            return Json(dbPhoneLinesFiltered);
+
+                        }
+                        else
+                        {
+                            ViewBag.PhoneNumber = firstWord;
+                            return Json("Not found");
+                        }
 
                     }
-                    else
+
+                    if (int.TryParse(firstWord, out int intValue))
                     {
-                        return Json("Not found");
+                        dbPhoneLines = dbPhoneLines.Where(p => p.PhoneNumber.Contains(firstWord)).Take(10).ToList();
+
+                        var dbPhoneLinesFiltered = (from line in dbPhoneLines
+                                                    select new
+                                                    {
+                                                        label = line.PhoneNumber,
+                                                        val = line.Id
+                                                    }).ToList();
+
+
+                        if (dbPhoneLinesFiltered.Count != 0)
+                        {
+                            return Json(dbPhoneLinesFiltered);
+
+                        }
+                        else
+                        {
+                            return Json("");
+                        }
                     }
 
+                    if (firstWord.Length >= 3)
+                    {
+                        dbPhoneLines = dbPhoneLines.Where(p => p.LineOwner == null ? p.PhoneNumber.Contains(firstWord) : p.LineOwner.Badge.Contains(firstWord) || p.LineOwner.Name.Contains(firstWord)
+                         || p.PhoneNumber.Contains(firstWord)).Take(10).ToList();
+
+                        var dbPhoneLinesFiltered = (from line in dbPhoneLines
+                                                    select new
+                                                    {
+                                                        label = line.PhoneNumber,
+                                                        val = line.Id
+                                                    }).ToList();
+                        if (dbPhoneLinesFiltered.Count != 0)
+                        {
+                            return Json(dbPhoneLinesFiltered);
+
+                        }
+                        else
+                        {
+                            return Json("");
+                        }
+                    }
                 }
-                else
-                {
-                    dbPhoneLines = dbPhoneLines.Where(p=> p.LineOwner.Name.Contains(firstWord) || p.LineOwner.Badge.Contains(firstWord)).Take(10).ToList();
-                    if (dbPhoneLines.Count != 0)
-                    {
-                        return Json(dbPhoneLines);
 
-                    }
-                    else
-                    {
-                        return Json("");
-                    }
-                }
+                return Json("");
+
             }
             catch (Exception ex)
             {
-                _js.InvokeAsync<string>("console.log", ex.Message, " Search Function");
+                await _js.InvokeAsync<string>("console.log", ex.Message, " Search Function");
                 return Json("Error-" + ex.Message + " stackTrace-" + ex.StackTrace);
             }
         }
 
+        [HttpPost]
+        public async Task<IActionResult> AddQuickPhoneLine(string phoneLine)
+        {
+            try
+            {
+                var dbPhoneLine = await _context.PhoneLines.FirstOrDefaultAsync(x => x.PhoneNumber == phoneLine);
+                if (dbPhoneLine == null && !string.IsNullOrEmpty(phoneLine))
+                {
+                    _context.PhoneLines.Add(new PhoneLine { PhoneNumber = phoneLine });
+                    await _context.SaveChangesAsync();
+                }
 
+            }
+            catch (Exception ex)
+            {
+
+                await _js.InvokeAsync<string>("console.log", ex.Message, " AddQuickPhoneLine");
+            }
+
+
+            return RedirectToAction("Index");
+        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
