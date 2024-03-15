@@ -1,12 +1,142 @@
-﻿@model IEnumerable<PhonebookManager.Models.AppUser>
+﻿@*@model IEnumerable<PhonebookManager.Models.AppUser>*@
+@model PhonebookManager.ViewModels.RoleAndUserViewModel.AppUserVM
 
 @{
     ViewData["Title"] = "Add users";
+
 }
 
-<div class="list-container">
-    <h1>Index</h1>
+<script src="~/js/AppUsers.js"></script>
 
+
+
+<div class="input-div">
+    <input placeholder="All departments" style="width: 35%;" />
+    <div style="position: relative; display: inline-block; width: 65%;">
+        <i class="bi bi-search" role="button" style="position: absolute;right: 10px; top: 50%;transform: translateY(-50%);"></i>
+        <input placeholder="Search by employee id, name or telephone number" />
+
+    </div>
+    <a class="btn btn-success" style="width: 100px; height: 45px; line-height: 30px;" data-bs-toggle="modal" data-bs-target="#addModal">Add user</a>
+
+</div>
+
+<div class="list-container">
+
+    <div>
+        <table class="table">
+            <thead class="sticky-top bg-white">
+                <tr>
+                    <th scope="col">Employee name</th>
+                    <th scope="col">Employee ID</th>
+                    <th scope="col">Department name</th>
+                    <th scope="col">Department code</th>
+                    <th scope="col">Role</th>
+                    <th scope="col">Actions</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in Model.AppUsersList)
+                {
+                    <tr class="border-0">
+                        <td>@user.Name</td>
+                        <td>@user.BadgeNo</td>
+                        <td>@user.DepartmentName</td>
+                        <td>@user.DepartmentCode</td>
+                        <td>@user.Role.Role</td>
+                        <td>
+                            <span class="action-btn me-2" type="button"> <i class="bi bi-pencil-fill" onclick="EditFunction(this)" id-project="@user.Name"></i> </span>
+
+                            <span class="action-btn me-2" type="button"> <i class="bi bi-trash-fill" onclick="DeleteFunction(this)" emp-name="@user.Name" emp-id="@user.BadgeNo"></i> </span>
+                        </td>
+
+                    </tr>
+
+                }
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+
+@*MODAL ADD USER *@
+<div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 60%;">
+        <div class="modal-content">
+            <div class="modal-header border-0">
+                <h2 class="" id="addModalLabel" style="color: #008A99; text-decoration: underline 2px; text-underline-offset: 0.5em; ">Add user</h2>
+
+            </div>
+            <div class="modal-body">
+                @*<div style=" width: 100%; display: flex; justify-content: center;">*@
+
+
+                <form asp-action="Create">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label asp-for="AdIdentity" class="control-label">Ad Identity</label>
+                        <input asp-for="AdIdentity" />
+                        <span asp-validation-for="AdIdentity" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Email" class="control-label"></label>
+                        <input asp-for="Email" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="BadgeNo" class="control-label">Badge number</label>
+                        <input asp-for="BadgeNo" id="badgeNoInput" />
+                        <span asp-validation-for="BadgeNo" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="DepartmentName" class="control-label">Department Name</label>
+                        <input asp-for="DepartmentName" />
+                        <span asp-validation-for="DepartmentName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="DepartmentCode" class="control-label">Department Code</label>
+                        <input asp-for="DepartmentCode" />
+                        <span asp-validation-for="DepartmentCode" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Name" class="control-label"></label>
+                        <input asp-for="Name"  />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <div>
+                        <label asp-for="RoleName">Role</label>
+                        <select class="select-box" asp-for="RoleName">
+
+                            @foreach (var role in Model.UserRolesList)
+                            {
+                                @*<option value="@role.Value">@role.Value</option>*@
+                                <option value="@role.Role">@role.Role</option>
+                            }
+                        </select>
+
+                    </div>
+
+                    <br />
+                    <div class="form-group">
+                        <input type="submit" value="Create" class="btn btn-success" />
+                    </div>
+                </form>
+
+
+            </div>
+            <div class="modal-footer border-0 d-flex justify-content-center">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<br/>
+<br/>
+
+<div class="list-container">
     <p>
         <a asp-action="Create">Create New</a>
     </p>
@@ -30,7 +160,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in Model)
+            @foreach (var item in Model.AppUsersList)
             {
                 <tr>
                     <td>
@@ -54,4 +184,5 @@
             }
         </tbody>
     </table>
+
 </div>

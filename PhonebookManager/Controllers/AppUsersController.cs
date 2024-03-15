@@ -20,13 +20,15 @@ namespace PhonebookManager
         // GET: AppUsers
         public async Task<IActionResult> Index()
         {
-            //var appRoles = await _context.AppRoles.ToListAsync();
-            //var appUsers = await _context.AppUsers.ToListAsync();
-            //var viewModel = new Tuple<List<AppRole>, List<AppUser>>(appRoles, appUsers);
+            var dbUsers = await _context.AppUsers.Include(x => x.Role).ToListAsync();
+            var dbRoles = await _context.AppRoles.ToListAsync();
 
-            //return View(viewModel);
-
-            return View(await _context.AppUsers.Include(x=>x.Role).ToListAsync());
+            var viewModel = new AppUserVM()
+            {
+                AppUsersList = dbUsers,
+                UserRolesList = dbRoles
+            };
+            return View(viewModel);
         }
 
         // GET: AppUsers/Details/5
@@ -61,7 +63,7 @@ namespace PhonebookManager
 
             var viewModel = new AppUserVM()
             {
-               // UserRoles = selectList,
+                // UserRoles = selectList,
                 UserRolesList = dbRoles
             };
             return View(viewModel);
@@ -74,10 +76,11 @@ namespace PhonebookManager
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(AppUserVM appUser) // [Bind("Id,AdIdentity,Email,BadgeNo,Name,RoleName")]
         {
+            var dbUser = await _context.AppUsers.FirstOrDefaultAsync(x => x.BadgeNo == appUser.BadgeNo);
             var dbRole = _context.AppRoles.FirstOrDefault(x => x.Role == appUser.RoleName);
             //ModelState.Remove("UserRoles");
 
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && dbUser == null)
             {
                 var user = new AppUser()
                 {
@@ -85,15 +88,17 @@ namespace PhonebookManager
                     Email = appUser.Email,
                     AdIdentity = appUser.AdIdentity,
                     BadgeNo = appUser.BadgeNo,
+                    DepartmentCode = appUser.DepartmentCode,
+                    DepartmentName = appUser.DepartmentName,
                     RoleId = dbRole.Id
                 };
-
 
                 _context.AppUsers.Add(user);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(appUser);
+
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: AppUsers/Edit/5
@@ -183,6 +188,21 @@ namespace PhonebookManager
         private bool AppUserExists(int id)
         {
             return _context.AppUsers.Any(e => e.Id == id);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CheckExistence(string badgeNo)
+        {
+            var dbUser = await _context.AppUsers.FirstOrDefaultAsync(x => x.BadgeNo == badgeNo);
+            if(dbUser != null)
+            {
+                return Json("Exists");
+            }
+            else
+            {
+                return Json("");
+
+            }
         }
     }
 }

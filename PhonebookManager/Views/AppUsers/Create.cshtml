@@ -37,18 +37,17 @@
                     <input asp-for="Name" class="form-control" />
                     <span asp-validation-for="Name" class="text-danger"></span>
                 </div>
-                <div>
+
+                @*<div>
                     <label asp-for="RoleName">Role</label>
                     <select class="form-select param-select" asp-for="RoleName">
-
                         @foreach (var role in Model.UserRolesList)
                         {
-                            @*<option value="@role.Value">@role.Value</option>*@
+                           
                             <option value="@role.Role">@role.Role</option>
                         }
                     </select>
-
-                </div>
+                </div>*@
 
                 <br />
                 <div class="form-group">
