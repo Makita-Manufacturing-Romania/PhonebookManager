@@ -16,6 +16,7 @@ $(document).ready(function () {
             },
         });
 });
+// Create and allocate button
 $(document).ready(function () {
     $("#createAndAllocate").on("click", function () {
         var searchInputText = document.getElementById("searchInput");
@@ -189,7 +190,7 @@ function PerformSearch() {
         data: { "searchText": searchInputText.value },
         type: "POST",
         success: function (data) {
-            if (data === "Not found") {
+            if (data === "No phone line found") {
                 //$("#searchInput").val("Not found"); // add a message in the input field
                 //$("#searchInput").blur(); // clear the focus
                 Toastify({

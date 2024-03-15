@@ -26,7 +26,7 @@ namespace PhonebookManager.Controllers
 
             if (!string.IsNullOrEmpty(searchText)) // && searchText.Length == 10
             {
-                if (long.TryParse(searchText, out long longValue) && searchText.Length > 3)
+                if (long.TryParse(searchText, out long longValue))
                 {
                     dbPhoneLines = await _context.PhoneLines.Include(x => x.LineOwner).Include(y => y.Department).Include(z => z.LineUsers).Include(u => u.Changes)
                                         .Where(x => x.PhoneNumber.Contains(searchText)).ToListAsync();
@@ -239,7 +239,7 @@ namespace PhonebookManager.Controllers
         {
             if (!string.IsNullOrEmpty(searchText))
             {
-                if (long.TryParse(searchText, out long longValue) && searchText.Length > 3)
+                if (long.TryParse(searchText, out long longValue)) // && searchText.Length == 10
                 {
                     searchText = searchText.Replace(" ", "");
                     var dbPhoneNumber = await _context.PhoneLines.FirstOrDefaultAsync(x => x.PhoneNumber.Contains(searchText));
