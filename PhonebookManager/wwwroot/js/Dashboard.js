@@ -6,6 +6,16 @@
 //    $("#dummyBtn").attr("href", url);
 //    $("#dummyBtn")[0].click();
 //}
+
+// Search text length
+$(document).ready(function () {
+    $("#searchInput").autocomplete({
+            source: function (request, response) { // response is the server response, request is the search term
+            var cont = document.getElementById("counter");
+            cont.innerHTML = request.term.length;
+            },
+        });
+});
 $(document).ready(function () {
     $("#createAndAllocate").on("click", function () {
         var searchInputText = document.getElementById("searchInput");
@@ -38,7 +48,7 @@ $(document).ready(function () {
                 }
             },
             error: function (response) {
-                //console.log("error");
+                console.log("error");
             }
 
         });
@@ -139,7 +149,7 @@ function AddQuickPhoneLine() {
             }
             else {
                 location.reload(true);
-                console.log("Success!")
+                //console.log("Success!")
             }
 
         },
@@ -209,6 +219,7 @@ function PerformSearch() {
 
     });
 }
+
 
 
 // Autocomplete
