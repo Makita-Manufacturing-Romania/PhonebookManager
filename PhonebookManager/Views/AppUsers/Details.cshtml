@@ -1,0 +1,44 @@
+﻿@model PhonebookManager.Models.AppUser
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<div class="list-container">
+    <h1>Details</h1>
+
+    <div>
+        <h4>AppUser</h4>
+        <hr />
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.AdIdentity)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.AdIdentity)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Email)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Email)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.BadgeNo)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.BadgeNo)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Name)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Name)
+            </dd>
+        </dl>
+    </div>
+    <div>
+        <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
+        <a asp-action="Index">Back to List</a>
+    </div>
+</div>

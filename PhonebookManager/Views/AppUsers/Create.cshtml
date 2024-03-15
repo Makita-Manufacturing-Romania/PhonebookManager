@@ -1,0 +1,69 @@
+﻿@model PhonebookManager.ViewModels.RoleAndUserViewModel.AppUserVM
+
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<div class="list-container">
+    <div>
+        <a asp-action="Index"><h5>Back to List</h5></a>
+    </div>
+    <h1>Create</h1>
+
+    <h4>AppUser</h4>
+    <hr />
+    <div class="row">
+        <div class="col-md-4">
+            <form asp-action="Create">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="AdIdentity" class="control-label">Ad Identity</label>
+                    <input asp-for="AdIdentity" class="form-control" />
+                    <span asp-validation-for="AdIdentity" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Email" class="control-label"></label>
+                    <input asp-for="Email" class="form-control" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="BadgeNo" class="control-label"> Badge number</label>
+                    <input asp-for="BadgeNo" class="form-control" />
+                    <span asp-validation-for="BadgeNo" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Name" class="control-label"></label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <div>
+                    <label asp-for="RoleName">Role</label>
+                    <select class="form-select param-select" asp-for="RoleName">
+
+                        @foreach (var role in Model.UserRolesList)
+                        {
+                            @*<option value="@role.Value">@role.Value</option>*@
+                            <option value="@role.Role">@role.Role</option>
+                        }
+                    </select>
+
+                </div>
+
+                <br />
+                <div class="form-group">
+                    <input type="submit" value="Create" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+</div>
+
+
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

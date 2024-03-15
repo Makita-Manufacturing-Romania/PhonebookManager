@@ -7,6 +7,7 @@
         public string? Email { get; set; }
         public string? BadgeNo { get; set; }
         public string? Name { get; set; }
+        public int RoleId { get; set; }
         public AppRole? Role { get; set; }
     }
 }
