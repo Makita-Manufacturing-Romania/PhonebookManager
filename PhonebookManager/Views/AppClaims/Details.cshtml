@@ -1,24 +1,28 @@
 ﻿@model PhonebookManager.Models.AppClaim
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Claim Details";
 }
+<div class="list-container">
 
-<h1>Details</h1>
+    <div class="d-flex gap-3">
+        <a asp-action="Edit" asp-route-id="@Model?.Id"><h5>Edit</h5></a> 
+        <a asp-action="Index"><h5>Back to List</h5></a>
+    </div>
 
-<div>
-    <h4>AppClaim</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Claim)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Claim)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <h1>Details</h1>
+
+    <div>
+        <h4>AppClaim</h4>
+        <hr />
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Claim)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Claim)
+            </dd>
+        </dl>
+    </div>
+
 </div>

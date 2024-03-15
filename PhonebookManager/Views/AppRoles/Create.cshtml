@@ -1,31 +1,34 @@
 ﻿@model PhonebookManager.Models.AppRole
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Create role";
 }
 
-<h1>Create</h1>
-
-<h4>AppRole</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Role" class="control-label"></label>
-                <input asp-for="Role" class="form-control" />
-                <span asp-validation-for="Role" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+<div class="list-container">
+    <div>
+        <a asp-action="Index"><h5>Back to List</h5></a>
     </div>
-</div>
+    <h1>Create</h1>
 
-<div>
-    <a asp-action="Index">Back to List</a>
+    <h4>AppRole</h4>
+    <hr />
+    <div class="row">
+        <div class="col-md-4">
+            <form asp-action="Create">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="Role" class="control-label"></label>
+                    <input asp-for="Role" class="form-control" />
+                    <span asp-validation-for="Role" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Create" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
+    </div>
+
+
 </div>
 
 @section Scripts {

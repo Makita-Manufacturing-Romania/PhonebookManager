@@ -170,18 +170,19 @@ function PerformSearch() {
     });
 }
 
+
 // Autocomplete
 $(function () {
     $("#searchInput").autocomplete({
-
         source: function (request, response) { // response is the server response, request is the search term
             $.ajax({
                 url: '/Dashboard/SearchPhoneLine/',
                 data: { "searchText": request.term },
                 type: "POST",
                 success: function (data) {
+                    //var cont = document.getElementById("counter");
+                    //cont.innerHTML = request.term.length;
                     response($.map(data, function (item) {
-                        
                         return item;
                     }));
                     $(window).resize(function () {
