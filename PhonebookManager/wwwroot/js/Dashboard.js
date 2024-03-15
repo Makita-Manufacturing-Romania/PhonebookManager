@@ -6,21 +6,25 @@
 //    $("#dummyBtn").attr("href", url);
 //    $("#dummyBtn")[0].click();
 //}
-
-function GotoPhoneUserPage(clicked_id) {
-    const button = clicked_id;
-    var pNumber = button.getAttribute("phone-number");
-
-    if (pNumber != null && pNumber.length == 10) {
+$(document).ready(function () {
+    $("#createAndAllocate").on("click", function () {
+        var searchInputText = document.getElementById("searchInput");
         $.ajax({
-            url: '/Dashboard/CheckPhoneNumber/',
-            data: { "phoneNumber": pNumber },
-            type: "GET",
+            url: '/Dashboard/SearchPhoneLine/',
+            data: { "searchText": searchInputText.value },
+            type: "POST",
             success: function (data) {
-                if (data == "Exists") {
+                if (data === "No phone line found") {
+                    window.location.href = location.origin + "/PhoneUser?phoneNumber=" + searchInputText.value;
+                    //console.log("success");
+
+                    //const createAndAllocateBtn = document.getElementById("createAndAllocate"); // get the create and allocate page button
+                    //createAndAllocateBtn.setAttribute('phone-number', searchInputText.value); // add the search text number into ViewBag.PhoneNumber
+                }
+                else {
                     Toastify({
-                        text: "Phone number exists",
-                        duration: 3000,
+                        text: "Invalid or exists",
+                        duration: 10000,
                         newWindow: true,
                         close: true,
                         gravity: "bottom", // `top` or `bottom`
@@ -32,34 +36,69 @@ function GotoPhoneUserPage(clicked_id) {
                         },
                     }).showToast();
                 }
-                else {
-                    window.location.href = location.origin + "/PhoneUser?phoneNumber=" + pNumber;
-                }
-
             },
-            error: function (response) { // use error or failure
-                console.log("Error " + response)
+            error: function (response) {
+                //console.log("error");
             }
+
         });
+    });
+});
 
-       // window.location.href = location.origin + "/PhoneUser?phoneNumber=" + pNumber;
-    }
-    else {
-        Toastify({
-            text: "Phone number not checked",
-            duration: 3000,
-            newWindow: true,
-            close: true,
-            gravity: "bottom", // `top` or `bottom`
-            position: "left", // `left`, `center` or `right`
-            stopOnFocus: true, // Prevents dismissing of toast on hover
-            style: {
-                background: "linear-gradient(to right, #008A99, #55B1BB)",
+/*GotoPhoneUserPage*/
+//function GotoPhoneUserPage(clicked_id) {
+//    const button = clicked_id;
+//    var pNumber = button.getAttribute("phone-number");
 
-            },
-        }).showToast();
-    }
-}
+//    if (pNumber != null) { //&& pNumber.length == 10
+//        $.ajax({
+//            url: '/Dashboard/CheckPhoneNumber/',
+//            data: { "phoneNumber": pNumber },
+//            type: "POST",
+//            success: function (data) {
+//                if (data == "Exists") {
+//                    Toastify({
+//                        text: "Phone number exists",
+//                        duration: 3000,
+//                        newWindow: true,
+//                        close: true,
+//                        gravity: "bottom", // `top` or `bottom`
+//                        position: "left", // `left`, `center` or `right`
+//                        stopOnFocus: true, // Prevents dismissing of toast on hover
+//                        style: {
+//                            background: "linear-gradient(to right, #008A99, #55B1BB)",
+
+//                        },
+//                    }).showToast();
+//                }
+//                else {
+//                    window.location.href = location.origin + "/PhoneUser?phoneNumber=" + pNumber;
+//                }
+
+//            },
+//            error: function (response) { // use error or failure
+//                console.log("Error " + response)
+//            }
+//        });
+
+//       // window.location.href = location.origin + "/PhoneUser?phoneNumber=" + pNumber;
+//    }
+//    else {
+//        Toastify({
+//            text: "Phone number not checked",
+//            duration: 3000,
+//            newWindow: true,
+//            close: true,
+//            gravity: "bottom", // `top` or `bottom`
+//            position: "left", // `left`, `center` or `right`
+//            stopOnFocus: true, // Prevents dismissing of toast on hover
+//            style: {
+//                background: "linear-gradient(to right, #008A99, #55B1BB)",
+
+//            },
+//        }).showToast();
+//    }
+//}
 
 function AddQuickPhoneLine() {
     var searchInputText = document.getElementById("searchInput");
@@ -102,7 +141,7 @@ function AddQuickPhoneLine() {
                 location.reload(true);
                 console.log("Success!")
             }
-            
+
         },
         error: function (response) { // use error or failure
             console.log("Error " + response)
@@ -144,7 +183,7 @@ function PerformSearch() {
                 //$("#searchInput").val("Not found"); // add a message in the input field
                 //$("#searchInput").blur(); // clear the focus
                 Toastify({
-                    text: "Phone line does not exist",
+                    text: "Not found",
                     duration: 10000,
                     newWindow: true,
                     close: true,
@@ -160,6 +199,7 @@ function PerformSearch() {
                 createAndAllocateBtn.setAttribute('phone-number', searchInputText.value); // add the search text number into ViewBag.PhoneNumber
             }
             else {
+                searchInputText.value = searchInputText.value.replace(/\s+/g, '');
                 window.location.href = location.origin + "/Dashboard?searchText=" + searchInputText.value;
             }
         },
@@ -172,41 +212,41 @@ function PerformSearch() {
 
 
 // Autocomplete
-$(function () {
-    $("#searchInput").autocomplete({
-        source: function (request, response) { // response is the server response, request is the search term
-            $.ajax({
-                url: '/Dashboard/SearchPhoneLine/',
-                data: { "searchText": request.term },
-                type: "POST",
-                success: function (data) {
-                    //var cont = document.getElementById("counter");
-                    //cont.innerHTML = request.term.length;
-                    response($.map(data, function (item) {
-                        return item;
-                    }));
-                    $(window).resize(function () {
-                        $(".ui-autocomplete").css('display', 'none');
-                    });
+//$(function () {
+//    $("#searchInput").autocomplete({
+//        source: function (request, response) { // response is the server response, request is the search term
+//            $.ajax({
+//                url: '/Dashboard/AutocompleteSearchPhoneLine/',
+//                data: { "searchText": request.term },
+//                type: "POST",
+//                success: function (data) {
+//                    //var cont = document.getElementById("counter");
+//                    //cont.innerHTML = request.term.length;
+//                    response($.map(data, function (item) {
+//                        return item;
+//                    }));
+//                    $(window).resize(function () {
+//                        $(".ui-autocomplete").css('display', 'none');
+//                    });
 
-                },
-                error: function (response) {
-                    $("#searchInput").val("Error: " + response);
-                },
-                //failure: function (response) { // use error or failure
-                //    $("#searchInput").val("Failure: " + response);
-                //}
-            });
-        },
+//                },
+//                error: function (response) {
+//                    $("#searchInput").val("Error: " + response);
+//                },
+//                //failure: function (response) { // use error or failure
+//                //    $("#searchInput").val("Failure: " + response);
+//                //}
+//            });
+//        },
 
-        select: function (e, i) {
-            $("#phoneLine").val(i.item.val);
-            window.location.href = location.origin + "/Dashboard?searchText=" + i.item.label;
-            //$(this).autocomplete("close");
-        },
-        minLength: 1
-    });
-});
+//        select: function (e, i) {
+//            $("#phoneLine").val(i.item.val);
+//            window.location.href = location.origin + "/Dashboard?searchText=" + i.item.label;
+//            //$(this).autocomplete("close");
+//        },
+//        minLength: 1
+//    });
+//});
 
 
 // VIEW

@@ -17,16 +17,33 @@ namespace PhonebookManager.Controllers
             _js = js;
 
         }
+
         // GET: DashboardController
         public async Task<IActionResult> Index(string searchText)
         {
             ViewBag.SearchText = searchText;
             List<PhoneLine> dbPhoneLines = new List<PhoneLine>();
 
-            if (!string.IsNullOrEmpty(searchText) && searchText.Length == 10)
+            if (!string.IsNullOrEmpty(searchText)) // && searchText.Length == 10
             {
-                dbPhoneLines = await _context.PhoneLines.Include(x => x.LineOwner).Include(y => y.Department).Include(z => z.LineUsers).Include(u => u.Changes)
-                    .Where(x => x.PhoneNumber == searchText).ToListAsync();
+                if (long.TryParse(searchText, out long longValue) && searchText.Length > 3)
+                {
+                    dbPhoneLines = await _context.PhoneLines.Include(x => x.LineOwner).Include(y => y.Department).Include(z => z.LineUsers).Include(u => u.Changes)
+                                        .Where(x => x.PhoneNumber.Contains(searchText)).ToListAsync();
+                }
+                else if (searchText.Length > 3)
+                {
+                    string[] words = searchText.Split(' ');
+                    string firstWord = words[0];
+                    dbPhoneLines = await _context.PhoneLines.Include(x => x.LineOwner).Include(y => y.Department).Include(z => z.LineUsers).Include(u => u.Changes)
+                    .Where(x => x.LineOwner.Name.Contains(firstWord)
+                    || x.LineOwner.Badge.Contains(firstWord)).ToListAsync();
+                }
+                else
+                {
+                    dbPhoneLines = await _context.PhoneLines.Include(x => x.LineOwner).Include(y => y.Department).Include(z => z.LineUsers).Include(u => u.Changes).ToListAsync();
+                }
+                    
             }
             else
             {
@@ -126,7 +143,7 @@ namespace PhonebookManager.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> SearchPhoneLine(string searchText)
+        public async Task<JsonResult> AutocompleteSearchPhoneLine(string searchText)
         {
             try
             {
@@ -218,12 +235,60 @@ namespace PhonebookManager.Controllers
         }
 
         [HttpPost]
+        public async Task<IActionResult> SearchPhoneLine(string searchText)
+        {
+            if (!string.IsNullOrEmpty(searchText))
+            {
+                if (long.TryParse(searchText, out long longValue) && searchText.Length > 3)
+                {
+                    searchText = searchText.Replace(" ", "");
+                    var dbPhoneNumber = await _context.PhoneLines.FirstOrDefaultAsync(x => x.PhoneNumber.Contains(searchText));
+                    if (dbPhoneNumber == null)
+                    {
+                        return Json("No phone line found");
+
+                    }
+                    else
+                    {
+                        return Json("");
+                    }
+                }
+                else if(searchText.Length > 3)
+                {
+                    string[] words = searchText.Split(' ');
+                    string firstWord = words[0];
+                    var dbPhoneLine = await _context.PhoneLines.Where(x => x.LineOwner.Name.Contains(firstWord)
+                    || x.LineOwner.Badge.Contains(firstWord)).FirstOrDefaultAsync();
+
+                    if (dbPhoneLine == null)
+                    {
+                        return Json("Not found");
+
+                    }
+                    else
+                    {
+                        return Json("");
+                    }
+
+                }
+                else
+                {
+                    return Json("Not found");
+                }
+
+
+            }
+            return Json("");
+
+        }
+
+        [HttpPost]
         public async Task<IActionResult> AddQuickPhoneLine(string phoneLine)
         {
             try
             {
                 var dbPhoneLine = await _context.PhoneLines.FirstOrDefaultAsync(x => x.PhoneNumber == phoneLine);
-                if (dbPhoneLine == null && !string.IsNullOrEmpty(phoneLine) && phoneLine.Length == 10)
+                if (dbPhoneLine == null && !string.IsNullOrEmpty(phoneLine)) // && phoneLine.Length == 10
                 {
                     _context.PhoneLines.Add(new PhoneLine { PhoneNumber = phoneLine });
                     await _context.SaveChangesAsync();
@@ -247,7 +312,7 @@ namespace PhonebookManager.Controllers
 
             return RedirectToAction("Index");
         }
-        [HttpGet]
+        [HttpPost]
         public async Task<IActionResult> CheckPhoneNumber(string phoneNumber)
         {
             var dbPhoneNumber = await _context.PhoneLines.FirstOrDefaultAsync(x => x.PhoneNumber == phoneNumber);
