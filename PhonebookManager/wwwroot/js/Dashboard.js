@@ -222,8 +222,8 @@ function PerformSearch() {
 }
 
 
+// Autocomplete - not used
 
-// Autocomplete
 //$(function () {
 //    $("#searchInput").autocomplete({
 //        source: function (request, response) { // response is the server response, request is the search term
@@ -261,93 +261,60 @@ function PerformSearch() {
 //});
 
 
-// VIEW
-function viewFunction(clicked_id) {
-    const button = clicked_id;
-    var empName = button.getAttribute("emp-name");
-    var empId = button.getAttribute("emp-id");
+// IMPORT DATA
 
-    var modalEmpName = document.getElementById("mViewEmpName");
-    modalEmpName.value = empName; // if it's an input use .value
-    //modalEmpName.innerHTML = empName; // if it's a label use .innerHTML
-
-    var modalEmpId = document.getElementById("mViewEmpId");
-    modalEmpId.value = empId;
-    //modalEmpId.innerHTML = empId;
-
-    $('#viewModal').modal('show');
-}
 
 // EDIT
-function editFunction(clicked_id) {
+function DashboardEditFunction(clicked_id) {
     const button = clicked_id;
-    var empName = button.getAttribute("emp-name");
-    var empId = button.getAttribute("emp-id");
+    var lineId = button.getAttribute("line-id");
+    var lineOwnerName = button.getAttribute("line-owner-name");
+    var lineOwnerBadge = button.getAttribute("line-owner-badge");
+    var lineNumber = button.getAttribute("line-number");
+    var lineDepartmentName = button.getAttribute("line-department-name");
+    var lineDepartmentCode = button.getAttribute("line-department-code");
 
-    var modalEmpName = document.getElementById("mEditEmpName");
-    modalEmpName.value = empName; // if it's an input use .value
-    //modalEmpName.innerHTML = empName; // if it's a label use .innerHTML
-
-    var modalEmpId = document.getElementById("mEditEmpId");
-    modalEmpId.value = empId;
-    //modalEmpId.innerHTML = empId;
+    var editModalPhoneId = document.getElementById("editModalPhoneId");
+    editModalPhoneId.value = lineId;
+    var editModalLineOwnerName = document.getElementById("editModalLineOwnerName");
+    editModalLineOwnerName.value = lineOwnerName;
+    var editModalLineOwnerbadge = document.getElementById("editModalLineOwnerBadge");
+    editModalLineOwnerbadge.value = lineOwnerBadge;
+    var editModalPhoneLine = document.getElementById("editModalPhoneLine");
+    editModalPhoneLine.value = lineNumber;
+    var modalDepartmentName = document.getElementById("editModalDepartmentName");
+    modalDepartmentName.value = lineDepartmentName;
+    var modalDepartmentCode = document.getElementById("editModalDepartmentCode");
+    modalDepartmentCode.value = lineDepartmentCode;
+   
 
     $('#editModal').modal('show');
 }
 
-// Close the edit modal
-function closeEditModal() {
-    Toastify({
-        text: "Not implemented",
-        duration: 3000,
-        newWindow: true,
-        close: true,
-        gravity: "bottom", // `top` or `bottom`
-        position: "left", // `left`, `center` or `right`
-        stopOnFocus: true, // Prevents dismissing of toast on hover
-        style: {
-            background: "linear-gradient(to right, red, #55B1BB)",
-        },
-    }).showToast();
-
-    $('#editModal').modal('hide');
-}
-
-
-// DELETE
-function deleteFunction(clicked_id) {
-    const button = clicked_id;
-    var empName = button.getAttribute("emp-name");
-    var empId = button.getAttribute("emp-id");
-
-    var modalEmpName = document.getElementById("mDelEmpName");
-    modalEmpName.value = empName; // if it's an input use .value
-    //modalEmpName.innerHTML = empName; // if it's a label use .innerHTML
-
-    var modalEmpId = document.getElementById("mDelEmpId");
-    modalEmpId.value = empId;
-    //modalEmpId.innerHTML = empId;
-
-    $('#deleteModal').modal('show');
-}
-// ajax for delete function
-$("body").on("click", "#deleteBtn", function () {
-    var modalEmpId = $("#mDelEmpId");
-
-    //var modalEmpName = $("#mEmpName");
-    //alert(modalEmpId.val())
-    //alert(modalEmpName.val())
+$("body").on("click", "#editBtn", function () {
+    var modalUserId = $("#editModalPhoneId");
+    var modalLineOwnerName = $("#editModalLineOwnerName");
+    var modalLineOwnerBadge = $("#editModalLineOwnerBadge");
+    var modalPhoneLine = $("#editModalPhoneLine");
+    var modalLineDepName = $("#editModalDepartmentName");
+    var modalLineDepCode = $("#editModalDepartmentCode");
 
     $.ajax({
         type: "POST",
-        url: "/Dashboard/ModalDelete",
-        data: { 'id': modalEmpId.val() }, // send only id /*, 'name': modalEmpName.val()*/
-        dataType: 'json',
+        url: "/Dashboard/Edit",
+        data: {
+            'id': modalUserId.val(),
+            'name': modalLineOwnerName.val(),
+            'badgeNo': modalLineOwnerBadge.val(),
+            'phonelineNo': modalPhoneLine.val(),
+            'depName': modalLineDepName.val(),
+            'depCode': modalLineDepCode.val(),
+        },
+        /*dataType: 'json',*/
         success: function (result) {
-            if (result == "invalidData") {
-
+            if (result == "Not found") {
                 Toastify({
-                    text: "Eroare",
+                    text: "Not found",
                     duration: 3000,
                     newWindow: true,
                     close: true,
@@ -355,38 +322,78 @@ $("body").on("click", "#deleteBtn", function () {
                     position: "left", // `left`, `center` or `right`
                     stopOnFocus: true, // Prevents dismissing of toast on hover
                     style: {
-                        background: "linear-gradient(to right, red, #55B1BB)",
+                        background: "linear-gradient(to right, #008A99, #55B1BB)",
+                    },
+                }).showToast();
+
+                $('#editModal').modal('hide');
+            }
+            else {
+                //$('#editModal').modal('hide');
+                window.location.href = location.origin + "/Dashboard";
+            }
+        },
+        error: function (error) {
+            console.log(error);
+        }
+    });
+});
+
+
+// DELETE
+function DashboardDeleteFunction(clicked_id) {
+    const button = clicked_id;
+    var lineId = button.getAttribute("line-Id");
+    var lineNumber = button.getAttribute("line-number");
+
+    var delModalPhoneId = document.getElementById("delModalPhoneId");
+    delModalPhoneId.value = lineId;
+    var delPhoneNumber = document.getElementById("delPhoneNumber");
+    delPhoneNumber.value = lineNumber;
+
+    $('#deleteModal').modal('show');
+}
+
+$("body").on("click", "#deleteBtn", function () {
+    var modalPhoneLineId = $("#delModalPhoneId");
+
+    $.ajax({
+        type: "POST",
+        url: "/Dashboard/DeleteConfirmed",
+        data: {
+            'id': modalPhoneLineId.val(),
+        },
+        /*dataType: 'json',*/
+        success: function (result) {
+            if (result == "Not found") {
+                Toastify({
+                    text: "Not found",
+                    duration: 3000,
+                    newWindow: true,
+                    close: true,
+                    gravity: "bottom", // `top` or `bottom`
+                    position: "left", // `left`, `center` or `right`
+                    stopOnFocus: true, // Prevents dismissing of toast on hover
+                    style: {
+                        background: "linear-gradient(to right, #008A99, #00ff80)",
                     },
                 }).showToast();
 
                 $('#deleteModal').modal('hide');
             }
             else {
-                Toastify({
-                    text: " " + modalEmpId.val() + " deleted? Nope.",
-                    duration: 3000,
-                    newWindow: true,
-                    close: true,
-                    gravity: "bottom", // `top` or `bottom`
-                    position: "left", // `left`, `center` or `right`
-                    stopOnFocus: true, // Prevents dismissing of toast on hover
-                    style: {
-                        background: "linear-gradient(to right, red, #55B1BB)",
-                    },
-                }).showToast();
 
-                $('#deleteModal').modal('hide');
-                //document.location.href = "/" + result;
+                //$('#deleteModal').modal('hide');
+                window.location.href = location.origin + "/Dashboard";
 
             }
         },
-        error: function (status, error) {
-            $("#deleteModal").html("Result: " + status + " " + error)
+        error: function (error) {
+            console.log(error);
         }
     });
 });
 
-// IMPORT DATA
 function ImportFunction(clicked_id) {
 
 

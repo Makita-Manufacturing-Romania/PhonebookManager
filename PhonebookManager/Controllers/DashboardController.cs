@@ -89,17 +89,38 @@ namespace PhonebookManager.Controllers
 
         // POST: DashboardController/Edit/5
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public async Task<IActionResult> Edit(int? id, string name, string badgeNo, string depName, string depCode, string phonelineNo)
         {
-            try
+            if (id == null)
             {
+                return Json("Not found");
+                // return NotFound();
+            }
+
+            var phoneLine = await _context.PhoneLines.FindAsync(id);
+            if (phoneLine == null)
+            {
+                return Json("Not found");
+                // return NotFound();
+            }
+            else
+            {
+                try
+                {
+                    phoneLine.PhoneNumber = phonelineNo;
+                    phoneLine.LineOwner = new PhoneUser { Name = name, Badge = badgeNo };
+                    phoneLine.Department = new Department { Name = depName, Code = depCode };
+
+                    _context.Update(phoneLine);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    return NotFound();
+                }
                 return RedirectToAction(nameof(Index));
             }
-            catch
-            {
-                return View();
-            }
+
         }
 
         // GET: DashboardController/Delete/5
@@ -108,39 +129,24 @@ namespace PhonebookManager.Controllers
             return View();
         }
 
-        // POST: DashboardController/Delete/5
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            try
+            var phoneLine = await _context.PhoneLines.FindAsync(id);
+            if (phoneLine != null)
             {
-                return RedirectToAction(nameof(Index));
+                _context.PhoneLines.Remove(phoneLine);
             }
-            catch
-            {
-                return View();
-            }
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
-        [HttpPost]
-        public async Task<JsonResult> ModalDelete(string id/*, string name*/)
-        {
-            string returnLink = "";
-            try
-            {
-
-                returnLink = "Dashboard/Index/";
-            }
-            catch (Exception)
-            {
-
-                returnLink = "invalidData";
-                throw;
-            }
-
-            return Json(returnLink);
-        }
+        //[HttpPost]
+        //public async Task<IActionResult> ModalDelete(string id/*, string name*/)
+        //{
+        //    return RedirectToAction(nameof(Index));
+        //}
 
         [HttpPost]
         public async Task<JsonResult> AutocompleteSearchPhoneLine(string searchText)

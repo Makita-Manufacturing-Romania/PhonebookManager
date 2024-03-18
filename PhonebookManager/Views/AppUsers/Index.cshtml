@@ -54,17 +54,17 @@
                                    user-DepartmentName="@user.DepartmentName"
                                    user-DepartmentCode="@user.DepartmentCode"
                                    user-Role-Role="@user.Role.Role"
-                                   onclick="EditFunction(this)"></i>
+                                   onclick="AppUserEditFunction(this)"></i>
                             </span>
 
-                            <span class="action-btn me-2" type="button">
-                                <i class="bi bi-trash-fill" data-bs-toggle="modal" data-bs-target="#deleteModal"
+                            <span class="action-btn-danger me-2" type="button">
+                                <i class="bi bi-trash-fill" 
                                    user-Id="@user.Id"
                                    user-Name="@user.Name"
                                    user-BadgeNo="@user.BadgeNo"
                                    user-DepartmentName="@user.DepartmentName"
                                    user-DepartmentCode="@user.DepartmentCode"
-                                   onclick="DeleteFunction(this)"></i>
+                                   onclick="AppUserDeleteFunction(this)"></i>
                             </span>
                         </td>
 
@@ -98,7 +98,7 @@
                         <span asp-validation-for="AdIdentity" class="text-danger"></span>
                     </div>
                     <div class="tall-input-box">
-                        <label asp-for="Email" class="control-label" style="cursor:pointer"  for="Email"></label>
+                        <label asp-for="Email" class="control-label" style="cursor:pointer" for="Email"></label>
                         <input class="input-no-border" asp-for="Email" id="Email" />
                         <span asp-validation-for="Email" class="text-danger"></span>
                     </div>

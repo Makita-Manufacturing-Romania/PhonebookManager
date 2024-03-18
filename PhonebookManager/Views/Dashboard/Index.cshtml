@@ -58,11 +58,12 @@
                     foreach (var line in Model)
                     {
                         <tr class="border-0">
-                            <td>@Html.DisplayFor(modelItem => line.LineOwner.Name)</td>
-                            <td>@Html.DisplayFor(modelItem => line.LineOwner.Badge)</td>
-                            <td>@Html.DisplayFor(modelItem => line.PhoneNumber)</td>
-                            <td>@Html.DisplayFor(modelItem => line.Department.Name)</td>
-                            <td>@Html.DisplayFor(modelItem => line.Department.Code)</td>
+                            <td>@line?.LineOwner?.Name</td>
+                            <td>@line?.LineOwner?.Badge</td>
+                            <td>@line?.PhoneNumber</td>
+                            <td>@line?.Department?.Name</td>
+                            <td>@line?.Department?.Code</td>
+
                             @if (line.LineUsers is not null && line.LineUsers.Count > 1)
                             {
                                 <td>Multi use</td>
@@ -73,17 +74,24 @@
                             }
                             <td>
                                 <!--<span class="action-btn me-2" type="button">
-                                    <i class="bi bi-eye-fill"--> @*onclick="viewFunction(this)"*@ <!--onclick="NotImplemented()"
+                                    <i class="bi bi-eye-fill"-->
+                                @*onclick="viewFunction(this)"*@
+                                <!--onclick="NotImplemented()"
                                        emp-name="=" emp-id="=" emp-department="="></i>
                                 </span>-->
                                 <span class="action-btn me-2" type="button">
-                                    <i class="bi bi-pencil-fill" @*onclick="editFunction(this)"*@ onclick="NotImplemented()"
-                                       emp-name="=" emp-id="=" emp-department="="></i>
+                                    <i class="bi bi-pencil-fill" 
+                                       line-id="@line?.Id"
+                                       line-owner-name="@line?.LineOwner?.Name"
+                                       line-owner-badge="@line?.LineOwner?.Badge"
+                                       line-number="@line?.PhoneNumber"
+                                       line-department-name="@line?.Department?.Name"
+                                       line-department-code="@line?.Department?.Code"
+                                       onclick="DashboardEditFunction(this)"></i>
                                 </span>
 
                                 <span class="action-btn-danger me-2" type="button">
-                                    <i class="bi bi-trash-fill" @*onclick="deleteFunction(this)"*@ onclick="NotImplemented()"
-                                       emp-name="" emp-id=""></i>
+                                    <i class="bi bi-trash-fill" onclick="DashboardDeleteFunction(this)" line-id="@line?.Id" line-number="@line?.PhoneNumber"></i>
                                 </span>
                             </td>
 
@@ -99,65 +107,103 @@
 </div>
 
 
-<!-- Modal View -->
-<div class="modal fade" id="viewModal" tabindex="-1" aria-labelledby="viewModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="viewModalLabel">Details</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <input id="mViewEmpName" class="mb-2" disabled />
-                <input id="mViewEmpId" disabled />
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                @*<button type="button" class="btn btn-danger" id="viewBtn">Not needed</button>*@
-            </div>
-        </div>
-    </div>
-</div>
 
 
-<!-- Modal Edit -->
+@*MODAL EDIT PHONE LINE *@
 <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 40%;">
         <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="editModalLabel">Edit confirmation</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="modal-header border-0">
+                <h2 class="" id="editModalLabel" style="color: #008A99; text-decoration: underline 2px; text-underline-offset: 0.5em; ">Edit phone line</h2>
+
             </div>
             <div class="modal-body">
-                <input id="mEditEmpName" class="mb-2" />
-                <input id="mEditEmpId" />
+                @*<div style=" width: 100%; display: flex; justify-content: center;">*@
+
+
+                <form asp-action="Edit">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input id="editModalPhoneId" hidden />
+
+                    
+                        <div class="tall-input-box">
+                            <label class="control-label" style="cursor:pointer" for="editModalLineOwnerName">Line owner name</label>
+                            <input class="input-no-border" id="editModalLineOwnerName" />
+                        </div>
+                    <div class="tall-input-box">
+                        <label class="control-label" style="cursor:pointer;" for="editModalLineOwnerBadge">Line owner badge</label>
+                        <input class="input-no-border" id="editModalLineOwnerBadge" />
+                    </div>
+                    <div class="tall-input-box">
+                        <label class="control-label" style="cursor:pointer" for="editModalPhoneLine">Phone line</label>
+                        <input class="input-no-border" id="editModalPhoneLine" />
+                    </div>
+                    <div class="tall-input-box">
+                        <label class="control-label" style="cursor:pointer" for="editModalDepartmentName">Department Name</label>
+                        <input class="input-no-border" id="editModalDepartmentName" />
+                    </div>
+                    <div class="tall-input-box">
+                        <label class="control-label" style="cursor:pointer" for="editModalDepartmentCode">Department Code</label>
+                        <input class="input-no-border" id="editModalDepartmentCode" />
+                    </div>
+
+
+                    <br />
+
+
+                    <div class="form-group w-100">
+                        <input class="btn btn-success" style="width:80%;" id="editBtn" value="Edit" />
+                        <input role="button" class="btn btn-secondary" data-bs-dismiss="modal" style="width:19%;" Value="Close" />
+                    </div>
+                </form>
+
+
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-success" id="editBtn" onclick="closeEditModal()">Edit</button>
-            </div>
+            @*<div class="modal-footer border-0 d-flex">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>*@
         </div>
     </div>
 </div>
 
 
-<!-- Modal Delete -->
+@*MODAL DELETE PHONE LINE *@
 <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 40%;">
         <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="deleteModalLabel">Delete confirmation</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="modal-header border-0">
+                <h2 class="" id="deleteModalLabel" style="color: #008A99; text-decoration: underline 2px; text-underline-offset: 0.5em; ">Confirm deletion</h2>
+
             </div>
             <div class="modal-body">
-                <input id="mDelEmpName" class="mb-2" disabled />
+                @*<div style=" width: 100%; display: flex; justify-content: center;">*@
 
-                <input id="mDelEmpId" disabled />
+
+                <form asp-action="Edit">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input id="delModalPhoneId" hidden />
+
+
+                    <div class="tall-input-box-delete">
+                        <label for="delPhoneNumber" class="control-label" disabled>Phone line</label>
+                        <input class="input-no-border" id="delPhoneNumber" disabled />
+                    </div>
+
+
+
+                    <br />
+
+                    <div class="form-group w-100">
+                        <input class="btn btn-danger" style="width:80%;" id="deleteBtn" value="Delete" />
+                        <input role="button" class="btn btn-secondary" data-bs-dismiss="modal" style="width:19%;" Value="Close" />
+                    </div>
+                </form>
+
+
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-danger" id="deleteBtn">Delete</button>
-            </div>
+            @*<div class="modal-footer border-0 d-flex">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>*@
         </div>
     </div>
 </div>

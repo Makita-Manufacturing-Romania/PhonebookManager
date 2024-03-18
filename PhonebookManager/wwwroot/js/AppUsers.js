@@ -4,6 +4,7 @@
 //    // You can perform further actions based on the input value
 //});
 
+// Check if user exists
 $(document).ready(function () {
     const badgeInputElement = document.querySelector('[badge-input="badgeNoInput"]');
     $(badgeInputElement).on('input', function () {
@@ -41,7 +42,7 @@ $(document).ready(function () {
 
 
 // EDIT
-function EditFunction(clicked_id) {
+function AppUserEditFunction(clicked_id) {
     const button = clicked_id;
     var userId = button.getAttribute("user-Id");
     var userName = button.getAttribute("user-Name");
@@ -126,7 +127,7 @@ $("body").on("click", "#editBtn", function () {
 
 
 // DELETE
-function DeleteFunction(clicked_id) {
+function AppUserDeleteFunction(clicked_id) {
     const button = clicked_id;
     var userId = button.getAttribute("user-Id");
     var userName = button.getAttribute("user-Name");
