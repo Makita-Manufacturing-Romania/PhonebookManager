@@ -101,7 +101,7 @@ namespace PhonebookManager
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: AppUsers/Edit/5
+        //GET: AppUsers/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -109,11 +109,13 @@ namespace PhonebookManager
                 return NotFound();
             }
 
-            var appUser = await _context.AppUsers.FindAsync(id);
+            var appUser = await _context.AppUsers
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (appUser == null)
             {
                 return NotFound();
             }
+
             return View(appUser);
         }
 
@@ -121,18 +123,33 @@ namespace PhonebookManager
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,AdIdentity,Email,BadgeNo,Name")] AppUser appUser)
+        //[ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int? id,string adIdentity, string email, string name, string badgeNo, string depName, string depCode, string role)
         {
-            if (id != appUser.Id)
+            if (id == null)
             {
-                return NotFound();
+                return Json("Not found");
+                // return NotFound();
             }
 
-            if (ModelState.IsValid)
+            var appUser = await _context.AppUsers.FindAsync(id);
+            if (appUser == null)
+            {
+                return Json("Not found");
+                // return NotFound();
+            }
+            else
             {
                 try
                 {
+                    var roleId = int.Parse(role);
+                    appUser.AdIdentity = adIdentity;
+                    appUser.Email = email;
+                    appUser.Name = name;
+                    appUser.BadgeNo = badgeNo;
+                    appUser.DepartmentCode = depCode;
+                    appUser.DepartmentName = depName;
+                    appUser.RoleId = roleId;
                     _context.Update(appUser);
                     await _context.SaveChangesAsync();
                 }
@@ -149,8 +166,13 @@ namespace PhonebookManager
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(appUser);
+
         }
+        //public async Task<JsonResult> Edit(string id)
+        //{
+        //        string returnLink = "Users/Index/";
+        //        return Json(returnLink);
+        //}
 
         // GET: AppUsers/Delete/5
         public async Task<IActionResult> Delete(int? id)
@@ -171,8 +193,8 @@ namespace PhonebookManager
         }
 
         // POST: AppUsers/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
+        [HttpPost] //, ActionName("Delete")
+        //[ValidateAntiForgeryToken] // don't use
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var appUser = await _context.AppUsers.FindAsync(id);

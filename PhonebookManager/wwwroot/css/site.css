@@ -136,6 +136,64 @@ table {
         text-shadow: 0px 0px 20px red;
     }
 
+.tall-input-box-delete {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    text-align: left;
+    padding: 5px 10px 5px 10px;
+    outline: 1px solid #CED4DA;
+    border-top: 2px solid transparent;
+    border-radius: 10px;
+    background-color: #F7F7F7;
+    margin-bottom: 10px;
+    animation: fadeOut 0.2s ease-out;
+    cursor: none;
+}
+
+.tall-input-box {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    text-align: left;
+    padding: 5px 10px 5px 10px;
+    outline: 1px solid #CED4DA;
+    border-top: 2px solid transparent;
+    border-radius: 10px;
+    background-color: #fff;
+    margin-bottom: 10px;
+    animation: fadeOut 0.2s ease-out;
+    cursor: pointer;
+}
+
+    .tall-input-box:hover, .tall-input-box:active, .tall-input-box-two:hover, .tall-input-box-two:active {
+        animation: fadeIn 0.1s ease-in forwards;
+    }
+
+@keyframes fadeIn {
+    0% {
+        border-top-color: #CED4DA;
+    }
+
+    100% {
+        border-top: 2px solid;
+        border-top-color: #008A99;
+    }
+}
+
+@keyframes fadeOut {
+    0% {
+        border-top: 2px solid;
+        border-top-color: #008A99;
+    }
+
+    100% {
+        border-top-color: #CED4DA;
+    }
+}
+
 input {
     width: 100%;
     border: 1px solid #CED4DA;
@@ -145,9 +203,17 @@ input {
     text-align: center;
 }
 
-    input:focus {
+    input:focus, .input-no-border:focus {
         outline: none;
     }
+
+.input-no-border {
+    width: 100%;
+    border: none;
+    height: 30px;
+    text-align: left;
+}
+
 .select-box {
     width: 100%;
     border: 1px solid #CED4DA;
@@ -156,9 +222,19 @@ input {
     padding: 5px;
     text-align: left;
 }
-    .select-box:focus {
+    .select-box:focus, .large-select-box:focus {
+        /*border: none;*/
         outline: none;
     }
+
+.large-select-box {
+    height: 55px;
+    width: 100%;
+    padding-top: 25px;
+    border: none;
+    cursor: pointer;
+    z-index: 99;
+}
 
 .input-div {
     width: 100%;
