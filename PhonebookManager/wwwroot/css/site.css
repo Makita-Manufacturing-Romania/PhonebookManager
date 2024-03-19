@@ -213,6 +213,13 @@ input {
     height: 30px;
     text-align: left;
 }
+.normal-select-box {
+    border: 1px solid #CED4DA;
+    border-radius: 10px !important;
+    height: 45px;
+    padding: 5px;
+    text-align: left;
+}
 
 .select-box {
     width: 100%;
@@ -222,7 +229,7 @@ input {
     padding: 5px;
     text-align: left;
 }
-    .select-box:focus, .large-select-box:focus {
+    .select-box:focus, .large-select-box:focus, .normal-select-box {
         /*border: none;*/
         outline: none;
     }

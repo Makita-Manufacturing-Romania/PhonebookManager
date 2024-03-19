@@ -1,23 +1,21 @@
-﻿
+﻿@model PhonebookManager.ViewModels.DepartmentViewModel.DepartmentVM
+
 @{
     ViewData["Title"] = "Add department | Phonebook Manager";
-    List<Department> departments = new List<Department>
-{
-        new Department {Code = "7000", Manager = new AppUser{ Name="Shinji Yamazaki"}, Name ="Production Systems", Responsible = new AppUser {Name ="Cosmin Duican Alexandru" } },
-        new Department {Code = "1000", Manager = new AppUser{ Name="Yto"}, Name ="IT&C", Responsible = new AppUser {Name ="Andreea Ioana Popescu" } },
-        new Department {Code = "6000", Manager = new AppUser{ Name="S.O."}, Name ="HR", Responsible = new AppUser {Name ="Andrei Ion" } }
-    };
+
 }
+
+<script src="~/js/Department.js"></script>
 
 
 <div class="input-div">
-   
+
     <div style="position: relative; display: inline-block; width: 100%;">
         <i class="bi bi-search" role="button" style="position: absolute;right: 10px; top: 50%;transform: translateY(-50%);"></i>
         <input placeholder="Search for department group, code or name" />
 
     </div>
-    <a class="btn btn-success" style="width: 200px; height: 45px; line-height: 30px;" onclick="NotImplemented()">Add department</a>
+    <a class="btn btn-success" style="width: 200px; height: 45px; line-height: 30px;" data-bs-toggle="modal" data-bs-target="#addModal">Add department</a>
 
 </div>
 
@@ -36,17 +34,17 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var dep in departments)
+                @foreach (var dep in Model.Departments)
                 {
                     <tr class="border-0">
                         <td>@dep.Code</td>
                         <td>@dep.Name</td>
-                        <td>@dep.Manager.Name</td>
-                        <td>@dep.Responsible.Name</td>
+                        <td>@dep?.Manager?.Name</td>
+                        <td>@dep?.Responsible?.Name</td>
                         <td>
-                            <span class="action-btn me-2" type="button"> <i class="bi bi-pencil-fill" onclick="editFunction(this)" dep-code="@dep.Code"></i> </span>
+                            <span class="action-btn me-2" type="button"> <i class="bi bi-pencil-fill" onclick="NotImplemented()" dep-code="@dep.Code"></i> </span>
 
-                            <span class="action-btn-danger me-2" type="button"> <i class="bi bi-trash-fill" onclick="deleteFunction(this)" dep-code="@dep.Code"></i> </span>
+                            <span class="action-btn-danger me-2" type="button"> <i class="bi bi-trash-fill" onclick="NotImplemented()" dep-code="@dep.Code"></i> </span>
                         </td>
 
                     </tr>
@@ -59,45 +57,96 @@
 </div>
 
 
-
-
-<!-- Modal Edit -->
-<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
+@*MODAL ADD DEPARTMENT *@
+<div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 90%;">
+        @*CHANGE WIDTH HERE*@
         <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="editModalLabel">Confirmation</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="modal-header border-0">
+                <h2 class="" id="addModalLabel" style="color: #008A99; text-decoration: underline 2px; text-underline-offset: 0.5em;">Add department</h2>
+
             </div>
             <div class="modal-body">
-                <label id="mEmpName"></label>
-                <input hidden id="mEmpId" />
+                <div style=" width: 100%; display: flex;flex-direction:column; justify-content: center;">
+
+                    <div class="d-flex gap-3">
+                        <p style="width: 15%; padding-top:5px;">Code:</p> <input style="width: 35%;" id="depCode"/>
+                        <p style="width: 15%; padding-top: 5px;">Name:</p> <input style="width:35%;" id="depName"/>
+                    </div>
+                    <br />
+
+                    <div class="d-flex gap-3">
+
+                        <p style="width: 15%; padding-top:5px;">Manager:</p>
+                        <select class="normal-select-box" asp-for="Manager" style="width: 35%;" id="selectManager">
+                            @foreach (var user in Model.AppUsers)
+                            {
+                                @*<option value="@role.Value">@role.Value</option>*@
+                                <option value="@user.Id">@user.Name</option>
+                            }
+                        </select>
+
+                        <p style="width: 15%; padding-top: 5px;">Responsible:</p>
+                        <select class="normal-select-box" asp-for="Responsible" style="width: 35%;" id="selectResponsible">
+                            @foreach (var user in Model.AppUsers)
+                            {
+                                @*<option value="@role.Value">@role.Value</option>*@
+                                <option value="@user.Id">@user.Name</option>
+                            }
+                        </select>
+                    </div>
+
+                    <br />
+
+                    <label asp-for="Lines">Phone lines:</label>
+                    <div class="d-flex row w-75" style="margin: 0 auto;">
+
+                        <div class="col-5">
+                            <span>Available lines</span>
+                            <select multiple style="width:100%; min-height: 300px; padding: 10px;border-radius: 10px; overflow:auto;" id="firstListSelect">
+                                @foreach (var line in Model?.PhoneLines)
+                                {
+                                    <option value="@line.Id">@line.PhoneNumber</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="flex-column col-2 align-self-center">
+                            <div style="margin-left: 30%;">
+                                <button class="btn btn-success mb-2" onclick="MoveLine()"><i class="bi bi-chevron-double-right"></i></button>
+                                <br />
+                                <button class="btn btn-success" onclick="RemoveLine()"><i class="bi bi-chevron-double-left"></i></button>
+                            </div>
+                        </div>
+
+                        <div class="col-5">
+                            <span>Active lines for this department</span>
+                            <select multiple style="width:100%; min-height: 300px; padding: 10px;border-radius: 10px; overflow:auto;" id="secondListSelect">
+
+                                @foreach (var line in Model?.SecondListPhoneLines)
+                                {
+                                    <option value="@line.Id">@line.PhoneNumber</option>
+                                }
+
+                            </select>
+                        </div>
+                    </div>
+
+
+
+                    <br />
+                    <div class="form-group w-100">
+                        <input value="Create" class="btn btn-success" style="width:80%;" onclick="AddDepartment()"/>
+                        <input role="button" class="btn btn-secondary" data-bs-dismiss="modal" style="width:19%;" Value="Close" />
+                    </div>
+
+
+
+                </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-danger" id="deleteBtn">Edit</button>
-            </div>
+            @*<div class="modal-footer border-0 d-flex">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>*@
         </div>
     </div>
 </div>
-
-<!-- Modal Delete -->
-<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="deleteModalLabel">Confirmation</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <label id="mEmpName"></label>
-                <input hidden id="mEmpId" />
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-danger" id="deleteBtn">Delete</button>
-            </div>
-        </div>
-    </div>
-</div>
-
