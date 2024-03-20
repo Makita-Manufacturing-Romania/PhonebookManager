@@ -1,13 +1,10 @@
-﻿@model IEnumerable<PhonebookManager.Models.PhoneLine>
-
+﻿@model PhonebookManager.ViewModels.PhoneLineViewModel.PhoneLineVM
 @{
 
     ViewData["Title"] = "Create and Allocate | Phonebook Manager";
-
 }
 
 <script src="~/js/PhoneUser.js"></script>
-
 
 
 <div class="list-container">
@@ -15,7 +12,7 @@
     <div class="d-flex justify-content-between">
         @if (ViewBag.PhoneNumber != null)
         {
-            <h4>Details for @ViewBag.PhoneNumber</h4>
+            <h4>Details for <span id="phoneNo">@ViewBag.PhoneNumber</span></h4>
         }
         <h4>New service</h4>
         <h4 style="color:#008A99">Unallocated</h4>
@@ -25,8 +22,22 @@
     <br />
 
     <div class="d-flex gap-3">
-        <p style="width: 15%; padding-top:5px;">Employee responsible:</p> <input style="width: 35%;" placeholder="Please select an employee" />
-        <p style="width: 15%; padding-top: 5px;">Assigned department:</p> <input style="width:35%;" placeholder="Please select a department" />
+
+        <p style="width: 15%; padding-top:5px;">Employee responsible:</p>
+        <select class="normal-select-box" asp-for="LineOwnerId" style="width: 35%;" id="selectAppUser" onchange="ReverseOpacity()">
+            @foreach (var user in Model.AppUsers ?? Enumerable.Empty<AppUser>())
+            {
+                <option value="@user.Id">@user.Name</option>
+            }
+        </select>
+
+        <p style="width: 15%; padding-top: 5px;">Assigned department:</p>
+        <select class="normal-select-box" asp-for="DepartmentId" style="width: 35%;" id="selectDepartments" onchange="ReverseOpacity()">
+            @foreach (var dep in Model.Departments ?? Enumerable.Empty<Department>())
+            {
+                <option value="@dep.Id">@dep.Name</option>
+            }
+        </select>
 
     </div>
 
@@ -40,7 +51,7 @@
         <div class="d-flex justify-content-between w-100">
             <h4>Users</h4>
             <div class="d-flex w-50 gap-2">
-                <input placeholder="Search for user" id="searchInput"/> <button class="btn btn-success" style="width:25%; line-height: 30px;" onclick="NotImplemented()" id="addUserBtn">Add user</button>
+                <input placeholder="Search for user" id="searchInput" /> <button class="btn btn-success" style="width:25%; line-height: 30px;" onclick="NotImplemented()" id="addUserBtn">Add user</button>
             </div>
         </div>
 
@@ -59,31 +70,30 @@
                     </tr>
                 </thead>
                 <tbody id="tBody">
-                    @if (Model is not null)
+
+                    @foreach (var line in Model.LineUsers ?? Enumerable.Empty<PhoneUser>())
                     {
-                        foreach (var line in Model)
-                        {
 
-                            <tr class="border-0">
-                                <td>@Html.DisplayFor(modelItem => line.LineOwner.Badge)</td>
-                                <td>@Html.DisplayFor(modelItem => line.LineOwner.Name)</td>
-                                <td>@Html.DisplayFor(modelItem => line.LineOwner.Email)</td>
-                                @if (line.LineUsers is not null && line.LineUsers.Count > 1)
-                                {
-                                    <td>Multi use</td>
-                                }
-                                else
-                                {
-                                    <td>Main user</td>
-                                }
-                                <td>
-                                    <span class="action-btn-danger me-2" role="button" onclick="NotImplemented()"> <i class="bi bi-trash-fill"></i> </span>
-                                </td>
+                        <tr class="border-0">
+                            <td>@line.Badge</td>
+                            <td>@line.Name</td>
+                            <td>@line.Email</td>
+                            @if (Model.LineUsers.Count > 1)
+                            {
+                                <td>Multi use</td>
+                            }
+                            else
+                            {
+                                <td>Main user</td>
+                            }
+                            <td>
+                                <span class="action-btn-danger me-2" role="button" onclick="NotImplemented()"> <i class="bi bi-trash-fill"></i> </span>
+                            </td>
 
-                            </tr>
+                        </tr>
 
-                        }
                     }
+
                 </tbody>
             </table>
         </div>
@@ -95,10 +105,10 @@
     <div class="d-flex justify-content-between">
         <a class="btn btn-danger" asp-area="" asp-controller="Dashboard" asp-action="Index">Cancel</a>
         <div>
-            <button class="btn btn-secondary" id="ownershipBtn" onclick="openModalChange(this)">Create request of ownership</button>
+            <button class="btn btn-secondary" id="ownershipBtn" onclick="OpenModalChange(this)">Create request of ownership</button>
         </div>
 
-        <a class="btn btn-success" onclick="NotImplemented()">Save</a>
+        <a class="btn btn-success" onclick="AllocateNumber()">Save</a>
     </div>
 </div>
 
@@ -129,7 +139,7 @@
 
                         <div style="display: flex; justify-content: center; margin-top:60px">
                             <button class="btn btn-danger me-5" data-bs-dismiss="modal">Cancel</button>
-                            <button class="btn btn-success" onclick="changeConfirm()">Confirm</button>
+                            <button class="btn btn-success" onclick="ChangeConfirm()">Confirm</button>
                         </div>
                     </div>
 
