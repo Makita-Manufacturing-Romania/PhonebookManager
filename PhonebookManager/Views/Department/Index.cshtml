@@ -43,12 +43,16 @@
                         <td>@dep?.Responsible?.Name</td>
                         <td>
 
-                           
                             <span class="action-btn me-2" type="button">
                                 <i class="bi bi-pencil-fill" onclick="EditDepartment(@dep.Id)"></i>
                             </span>
 
-                            <span class="action-btn-danger me-2" type="button"> <i class="bi bi-trash-fill" onclick="NotImplemented()"></i> </span>
+                            <span class="action-btn-danger me-2" type="button">
+                                <i class="bi bi-trash-fill"
+                                   dep-id="@dep.Id"
+                                   dep-name="@dep.Name"
+                                   onclick="DepartmentDeleteFunction(this)"></i>
+                            </span>
                         </td>
 
                     </tr>
@@ -110,7 +114,14 @@
                             <select multiple style="width:100%; min-height: 300px; padding: 10px;border-radius: 10px; overflow:auto;" id="firstListSelect">
                                 @foreach (var line in Model?.PhoneLines)
                                 {
-                                    <option value="@line.Id">@line.PhoneNumber</option>
+                                    if (line.Department is not null)
+                                    {
+                                        <option value="@line.Id">@line.PhoneNumber [@line.Department.Name]</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@line.Id">@line.PhoneNumber</option>
+                                    }
                                 }
                             </select>
                         </div>
@@ -174,3 +185,41 @@
     );
 }
 </script>
+
+
+@*MODAL DELETE DEPARTMENT *@
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 40%;">
+        @*CHANGE WIDTH HERE*@
+        <div class="modal-content">
+            <div class="modal-header border-0">
+                <h2 class="" id="deleteModalLabel" style="color: #008A99; text-decoration: underline 2px; text-underline-offset: 0.5em;">Confirm deletion</h2>
+
+            </div>
+            <div class="modal-body">
+                @*<div style=" width: 100%; display: flex; justify-content: center;">*@
+
+
+                <input id="delModalDepId" hidden />
+
+                <div class="tall-input-box-delete">
+                    <label for="delModalDepName" class="control-label" disabled>Department</label>
+                    <input class="input-no-border" id="delModalDepName" disabled />
+                </div>
+
+
+                <br />
+
+                <div class="form-group w-100">
+                    <input class="btn btn-danger" style="width:80%;" id="deleteBtn" value="Delete" />
+                    <input role="button" class="btn btn-secondary" data-bs-dismiss="modal" style="width:19%;" Value="Close" />
+                </div>
+
+
+            </div>
+            @*<div class="modal-footer border-0 d-flex">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>*@
+        </div>
+    </div>
+</div>

@@ -75,9 +75,9 @@ namespace PhonebookManager.Controllers
 
         public async Task<IActionResult> ShowEditModal(uint id)
         {
-            var dbDep = _context.Departments.FirstOrDefault(x => x.Id == id);
-            var dbPhoneLines = await _context.PhoneLines.ToListAsync();
+            var dbDep = _context.Departments.Include(x => x.Lines).FirstOrDefault(x => x.Id == id);
             var dbUsers = await _context.AppUsers.Include(x => x.Role).ToListAsync();
+            var dbPhoneLines = await _context.PhoneLines.Include(x=>x.Department).ToListAsync();
 
 
             if (dbDep == null) return NoContent();
@@ -125,6 +125,23 @@ namespace PhonebookManager.Controllers
 
             return RedirectToAction(nameof(Index));
             //return RedirectToAction("Index", "Department");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var dbDep = await _context.Departments.Include(x=>x.Lines).FirstOrDefaultAsync(x=>x.Id == id);
+            if (dbDep != null)
+            {
+                if(dbDep.Lines is not null || dbDep.Lines.Count != 0)
+                {
+                    dbDep.Lines.Clear();
+                }
+                _context.Departments.Remove(dbDep);
+            }
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
     }

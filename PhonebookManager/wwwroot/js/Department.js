@@ -52,62 +52,56 @@ function AddDepartment() {
 }
 
 
+// DELETE
+function DepartmentDeleteFunction(clicked_id) {
+    const button = clicked_id;
+    var depId = button.getAttribute("dep-id");
+    var depName = button.getAttribute("dep-name");
 
+    var delModalDepId = document.getElementById("delModalDepId");
+    delModalDepId.value = depId;
+    var delModalDepName = document.getElementById("delModalDepName");
+    delModalDepName.value = depName;
 
-// EDIT
-$(document).ready(function () {
+    $('#deleteModal').modal('show');
+}
 
-    let elementManager = document.querySelector('[dep-manager]');
-    let depManager = elementManager.getAttribute('dep-manager');
+$("body").on("click", "#deleteBtn", function () {
+    var delModalDepId = $("#delModalDepId");
 
-    let elementResponsible = document.querySelector('[dep-responsible]');
-    let depResponsible = elementResponsible.getAttribute('dep-responsible');
+    $.ajax({
+        type: "POST",
+        url: "/Department/DeleteConfirmed",
+        data: {
+            'id': delModalDepId.val(),
+        },
+        /*dataType: 'json',*/
+        success: function (result) {
+            if (result == "Not found") {
+                Toastify({
+                    text: "Not found",
+                    duration: 3000,
+                    newWindow: true,
+                    close: true,
+                    gravity: "bottom", // `top` or `bottom`
+                    position: "left", // `left`, `center` or `right`
+                    stopOnFocus: true, // Prevents dismissing of toast on hover
+                    style: {
+                        background: "linear-gradient(to right, #008A99, #00ff80)",
+                    },
+                }).showToast();
 
+                $('#deleteModal').modal('hide');
+            }
+            else {
 
-    var editModalSelectManager = document.getElementById("editModalSelectManager");
-    for (let i = 0; i < editModalSelectManager.options.length; i++) {
-        if (editModalSelectManager.options[i].text === depManager) {
-            editModalSelectManager.selectedIndex = i;
-            break;
-        }
-    }
+                //$('#deleteModal').modal('hide');
+                window.location.href = location.origin + "/Department";
 
-    var editModalSelectResponsible = document.getElementById("editModalSelectResponsible");
-    for (let i = 0; i < editModalSelectResponsible.options.length; i++) {
-        if (editModalSelectResponsible.options[i].text === depResponsible) {
-            editModalSelectResponsible.selectedIndex = i;
-            break;
-        }
-    }
-    $('#editFirstListSelect option').each(function () {
-        var optionValue = $(this).val();
-        if ($('#editSecondListSelect option[value="' + optionValue + '"]').length) {
-            $(this).remove();
+            }
+        },
+        error: function (error) {
+            console.log(error);
         }
     });
-
-
 });
-function EditMoveLine() {
-    const firstList = document.getElementById('editFirstListSelect');
-    const secondList = document.getElementById('editSecondListSelect');
-
-    // Move all selected options from firstList to secondList
-    const selectedOptions = Array.from(firstList.selectedOptions);
-    selectedOptions.forEach((option) => {
-        if (!secondList.contains(option)) {
-            secondList.appendChild(option);
-        }
-    });
-}
-
-function EditRemoveLine() {
-    const firstList = document.getElementById('editFirstListSelect');
-    const secondList = document.getElementById('editSecondListSelect');
-
-    // Move all selected options from secondList back to firstList
-    const selectedOptions = Array.from(secondList.selectedOptions);
-    selectedOptions.forEach((option) => {
-        firstList.appendChild(option);
-    });
-}
