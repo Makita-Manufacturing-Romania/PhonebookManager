@@ -42,9 +42,13 @@
                         <td>@dep?.Manager?.Name</td>
                         <td>@dep?.Responsible?.Name</td>
                         <td>
-                            <span class="action-btn me-2" type="button"> <i class="bi bi-pencil-fill" onclick="NotImplemented()" dep-code="@dep.Code"></i> </span>
 
-                            <span class="action-btn-danger me-2" type="button"> <i class="bi bi-trash-fill" onclick="NotImplemented()" dep-code="@dep.Code"></i> </span>
+                           
+                            <span class="action-btn me-2" type="button">
+                                <i class="bi bi-pencil-fill" onclick="EditDepartment(@dep.Id)"></i>
+                            </span>
+
+                            <span class="action-btn-danger me-2" type="button"> <i class="bi bi-trash-fill" onclick="NotImplemented()"></i> </span>
                         </td>
 
                     </tr>
@@ -70,8 +74,8 @@
                 <div style=" width: 100%; display: flex;flex-direction:column; justify-content: center;">
 
                     <div class="d-flex gap-3">
-                        <p style="width: 15%; padding-top:5px;">Code:</p> <input style="width: 35%;" id="depCode"/>
-                        <p style="width: 15%; padding-top: 5px;">Name:</p> <input style="width:35%;" id="depName"/>
+                        <p style="width: 15%; padding-top:5px;">Code:</p> <input style="width: 35%;" id="depCode" />
+                        <p style="width: 15%; padding-top: 5px;">Name:</p> <input style="width:35%;" id="depName" />
                     </div>
                     <br />
 
@@ -98,7 +102,7 @@
 
                     <br />
 
-                    <label asp-for="Lines">Phone lines:</label>
+                    <label>Phone lines:</label>
                     <div class="d-flex row w-75" style="margin: 0 auto;">
 
                         <div class="col-5">
@@ -136,7 +140,7 @@
 
                     <br />
                     <div class="form-group w-100">
-                        <input value="Create" class="btn btn-success" style="width:80%;" onclick="AddDepartment()"/>
+                        <input value="Create" class="btn btn-success" style="width:80%;" onclick="AddDepartment()" />
                         <input role="button" class="btn btn-secondary" data-bs-dismiss="modal" style="width:19%;" Value="Close" />
                     </div>
 
@@ -150,3 +154,23 @@
         </div>
     </div>
 </div>
+
+@*MODAL EDIT DEPARTMENT *@
+<div class="modal fade" id="editModal" role="dialog">
+    <div class="modal-dialog" id="editDepDialog" style="max-width: 90%;">
+        <!-- Modal content in partial view-->
+    </div>
+</div>
+
+<script>
+    function EditDepartment(id) {
+    $.get("@Url.Action("ShowEditModal", "Department")/" + id,
+        function (data) {
+            $("#editDepDialog").html(data);
+            if (status != "nocontent") {
+                $("#editModal").modal("show");
+            }
+        }
+    );
+}
+</script>

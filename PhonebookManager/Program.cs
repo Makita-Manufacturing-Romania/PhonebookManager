@@ -1,3 +1,5 @@
+using AspNetCoreHero.ToastNotification;
+using AspNetCoreHero.ToastNotification.Extensions;
 using DinkToPdf;
 using DinkToPdf.Contracts;
 using Microsoft.AspNetCore.Authentication.Negotiate;
@@ -43,7 +45,7 @@ builder.Services.AddSingleton(sp =>
         BaseAddress = new Uri(baseAddress)
     };
 });
-
+builder.Services.AddNotyf(config => { config.DurationInSeconds = 10; config.IsDismissable = true; config.Position = NotyfPosition.BottomLeft; });
 builder.Services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools())); // DinkToPdf
 
 
@@ -55,6 +57,8 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Dashboard/Error");
 }
 app.UseStaticFiles();
+
+app.UseNotyf();
 
 app.UseRouting();
 app.UseAuthorization();

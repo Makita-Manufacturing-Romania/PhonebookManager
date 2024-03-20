@@ -1,0 +1,112 @@
+﻿@model PhonebookManager.ViewModels.DepartmentViewModel.DepartmentVM
+@{
+    Layout = "";
+}
+
+<script src="~/js/Department.js"></script>
+
+
+@*MODAL EDIT DEPARTMENT *@
+@*<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 90%;">*@
+@*CHANGE WIDTH HERE*@
+
+
+<div class="modal-content">
+    <div class="modal-header border-0">
+        <h2 class="" id="editModalLabel" style="color: #008A99; text-decoration: underline 2px; text-underline-offset: 0.5em;">Edit department #@Model.Id</h2>
+
+    </div>
+    <div class="modal-body">
+        <div style=" width: 100%; display: flex;flex-direction:column; justify-content: center;">
+
+            <form asp-action="SubmitEdit" asp-controller="Department">
+                <input type="hidden" asp-for="Id" value="@Model.Id" />
+
+                <div class="d-flex gap-3">
+                    <p style="width: 15%; padding-top:5px;">Code:</p> <input style="width: 35%;" asp-for="Code" id="editModalDepCode" />
+                    <p style="width: 15%; padding-top: 5px;">Name:</p> <input style="width:35%;" asp-for="Name" id="editModalDepName" />
+                </div>
+                <br />
+
+                <div class="d-flex gap-3">
+
+                    <p style="width: 15%; padding-top:5px;" dep-manager="@Model.Manager.Name">Manager:</p>
+                    <select class="normal-select-box" asp-for="ManagerId" style="width: 35%;" id="editModalSelectManager">
+                        @foreach (var user in Model.AppUsers)
+                        {
+                            <option value="@user.Id">@user.Name</option>
+                        }
+                    </select>
+
+                    <p style="width: 15%; padding-top: 5px;" dep-responsible="@Model.Responsible.Name">Responsible:</p>
+                    <select class="normal-select-box" asp-for="ResponsibleId" style="width: 35%;" id="editModalSelectResponsible">
+                        @foreach (var user in Model.AppUsers)
+                        {
+                            <option value="@user.Id">@user.Name</option>
+                        }
+                    </select>
+                </div>
+
+                <br />
+
+                <label>Phone lines:</label>
+                <div class="d-flex row w-75" style="margin: 0 auto;">
+
+                    <div class="col-5">
+                        <span>Available lines</span>
+                        <select multiple style="width:100%; min-height: 300px; padding: 10px;border-radius: 10px; overflow:auto;" asp-for="RmoveLineIds" id="editFirstListSelect">
+                            @foreach (var line in Model?.PhoneLines)
+                            {
+                                <option value="@line.Id">@line.PhoneNumber</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="flex-column col-2 align-self-center">
+                        <div style="margin-left: 30%;">
+                            <button type="button" class="btn btn-success mb-2" onclick="EditMoveLine()"><i class="bi bi-chevron-double-right"></i></button>
+                            <br />
+                            <button type="button" class="btn btn-success" onclick="EditRemoveLine()"><i class="bi bi-chevron-double-left"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="col-5">
+                        <span>Active lines for this department</span>
+                        
+                            <select multiple style="width:100%; min-height: 300px; padding: 10px;border-radius: 10px; overflow:auto;" asp-for="AddLineIds" id="editSecondListSelect">
+                                @foreach (var line in Model?.Lines ?? Enumerable.Empty<PhoneLine>())
+                                {
+                                    <option value="@line.Id">@line.PhoneNumber</option>
+                                }
+                            </select>
+                        
+                     
+
+
+
+                    </div>
+
+                </div>
+
+
+                <br />
+                <div class="form-group w-100">
+                    <input value="Edit" class="btn btn-success" style="width:80%;" type="submit" />
+                    <input role="button" class="btn btn-secondary" data-bs-dismiss="modal" style="width:19%;" Value="Close" />
+                </div>
+            </form>
+
+        </div>
+
+
+    </div>
+</div>
+
+@*<div class="modal-footer border-0 d-flex">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+    </div>*@
+@*</div>
+    </div>*@
+
+

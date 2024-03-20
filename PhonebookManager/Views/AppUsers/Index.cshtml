@@ -58,7 +58,7 @@
                             </span>
 
                             <span class="action-btn-danger me-2" type="button">
-                                <i class="bi bi-trash-fill" 
+                                <i class="bi bi-trash-fill"
                                    user-Id="@user.Id"
                                    user-Name="@user.Name"
                                    user-BadgeNo="@user.BadgeNo"
@@ -137,16 +137,16 @@
 
                     <br />
                     <div class="form-group w-100">
-                        <input type="submit" value="Create" class="btn btn-success" style="width:80%;"/>
-                        <input role="button" class="btn btn-secondary" data-bs-dismiss="modal" style="width:19%;" Value="Close"/>
+                        <input type="submit" value="Create" class="btn btn-success" style="width:80%;" />
+                        <input role="button" class="btn btn-secondary" data-bs-dismiss="modal" style="width:19%;" Value="Close" />
                     </div>
                 </form>
 
 
             </div>
             @*<div class="modal-footer border-0 d-flex">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            </div>*@
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>*@
         </div>
     </div>
 </div>
@@ -164,68 +164,65 @@
                 @*<div style=" width: 100%; display: flex; justify-content: center;">*@
 
 
-                <form asp-action="Edit">
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                    <input id="editModalUserId" hidden />
+                <input id="editModalUserId" hidden />
 
-                    @*<div class="tall-input-box">
-            <label asp-for="AdIdentity" class="control-label" style="cursor:pointer" onclick="FocusInput(modalAdIdentity)">Ad Identity</label>
-            <input class="input-no-border" asp-for="AdIdentity" id="modalAdIdentity" />
-            <span asp-validation-for="AdIdentity" class="text-danger"></span>
-        </div>
-        <div class="tall-input-box">
-            <label asp-for="Email" class="control-label" style="cursor:pointer" onclick="FocusInput(modalEmail)"></label>
-            <input class="input-no-border" asp-for="Email" id="modalEmail" />
-            <span asp-validation-for="Email" class="text-danger"></span>
-        </div>*@
-                    <div class="tall-input-box">
-                        <label asp-for="Name" class="control-label" style="cursor:pointer;" for="editModalName"></label>
-                        <input class="input-no-border" asp-for="Name" id="editModalName" />
-                        <span asp-validation-for="Name" class="text-danger"></span>
+                @*<div class="tall-input-box">
+                        <label asp-for="AdIdentity" class="control-label" style="cursor:pointer" onclick="FocusInput(modalAdIdentity)">Ad Identity</label>
+                        <input class="input-no-border" asp-for="AdIdentity" id="modalAdIdentity" />
+                        <span asp-validation-for="AdIdentity" class="text-danger"></span>
                     </div>
                     <div class="tall-input-box">
-                        <label asp-for="BadgeNo" class="control-label" style="cursor:pointer" for="editModalBadgeNo">Badge number</label>
-                        <input class="input-no-border" asp-for="BadgeNo" id="editModalBadgeNo" />
-                        <span asp-validation-for="BadgeNo" class="text-danger"></span>
-                    </div>
-                    <div class="tall-input-box">
-                        <label asp-for="DepartmentName" class="control-label" style="cursor:pointer" for="editModalDepartmentName">Department Name</label>
-                        <input class="input-no-border" asp-for="DepartmentName" id="editModalDepartmentName" />
-                        <span asp-validation-for="DepartmentName" class="text-danger"></span>
-                    </div>
-                    <div class="tall-input-box">
-                        <label asp-for="DepartmentCode" class="control-label" style="cursor:pointer" for="editModalDepartmentCode">Department Code</label>
-                        <input class="input-no-border" asp-for="DepartmentCode" id="editModalDepartmentCode" />
-                        <span asp-validation-for="DepartmentCode" class="text-danger"></span>
-                    </div>
+                        <label asp-for="Email" class="control-label" style="cursor:pointer" onclick="FocusInput(modalEmail)"></label>
+                        <input class="input-no-border" asp-for="Email" id="modalEmail" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>*@
+                <div class="tall-input-box">
+                    <label asp-for="Name" class="control-label" style="cursor:pointer;" for="editModalName"></label>
+                    <input class="input-no-border" asp-for="Name" id="editModalName" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <div class="tall-input-box">
+                    <label asp-for="BadgeNo" class="control-label" style="cursor:pointer" for="editModalBadgeNo">Badge number</label>
+                    <input class="input-no-border" asp-for="BadgeNo" id="editModalBadgeNo" />
+                    <span asp-validation-for="BadgeNo" class="text-danger"></span>
+                </div>
+                <div class="tall-input-box">
+                    <label asp-for="DepartmentName" class="control-label" style="cursor:pointer" for="editModalDepartmentName">Department Name</label>
+                    <input class="input-no-border" asp-for="DepartmentName" id="editModalDepartmentName" />
+                    <span asp-validation-for="DepartmentName" class="text-danger"></span>
+                </div>
+                <div class="tall-input-box">
+                    <label asp-for="DepartmentCode" class="control-label" style="cursor:pointer" for="editModalDepartmentCode">Department Code</label>
+                    <input class="input-no-border" asp-for="DepartmentCode" id="editModalDepartmentCode" />
+                    <span asp-validation-for="DepartmentCode" class="text-danger"></span>
+                </div>
 
-                    <div class="tall-input-box">
-                        <div>
-                            <label asp-for="RoleName" style="position: absolute;">Role</label>
-                            <select class="large-select-box" asp-for="RoleName" id="editModalSelectBoxRole">
-                                @foreach (var role in Model.UserRolesList)
-                                {
-                                    @*<option value="@role.Value">@role.Value</option>*@
-                                    <option value="@role.Id">@role.Role</option>
-                                }
-                            </select>
-                        </div>
+                <div class="tall-input-box">
+                    <div>
+                        <label asp-for="RoleName" style="position: absolute;">Role</label>
+                        <select class="large-select-box" asp-for="RoleName" id="editModalSelectBoxRole">
+                            @foreach (var role in Model.UserRolesList)
+                            {
+                                @*<option value="@role.Value">@role.Value</option>*@
+                                <option value="@role.Id">@role.Role</option>
+                            }
+                        </select>
                     </div>
+                </div>
 
-                    <br />
+                <br />
 
-                   
-                    <div class="form-group w-100">
-                        <input class="btn btn-success" style="width:80%;" id="editBtn" value="Edit"/>
-                        <input role="button" class="btn btn-secondary" data-bs-dismiss="modal" style="width:19%;" Value="Close"/>
-                    </div>
-                </form>
+
+                <div class="form-group w-100">
+                    <input class="btn btn-success" style="width:80%;" id="editBtn" value="Edit" />
+                    <input role="button" class="btn btn-secondary" data-bs-dismiss="modal" style="width:19%;" Value="Close" />
+                </div>
 
 
             </div>
             @*<div class="modal-footer border-0 d-flex">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            </div>*@
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>*@
         </div>
     </div>
 </div>
@@ -277,8 +274,8 @@
 
             </div>
             @*<div class="modal-footer border-0 d-flex">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            </div>*@
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>*@
         </div>
     </div>
 </div>

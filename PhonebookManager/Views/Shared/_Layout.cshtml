@@ -62,7 +62,9 @@
         <p>&copy; @DateTime.Now.Year PhoneBook Manager - Designed & Developed by Production Systems</p>
     </div>
 
+    @await Component.InvokeAsync("Notyf")
     @await RenderSectionAsync("Scripts", required: false)
+
 
 
 </body>
