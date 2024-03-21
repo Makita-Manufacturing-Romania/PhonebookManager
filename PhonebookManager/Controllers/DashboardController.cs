@@ -1,9 +1,15 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AspNetCoreHero.ToastNotification.Abstractions;
+using CsvHelper;
+using CsvHelper.Configuration;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.JSInterop;
 using PhonebookManager.Data;
 using PhonebookManager.Models;
 using System.Diagnostics;
+using System.Globalization;
+using System.Runtime.Intrinsics.Arm;
 
 namespace PhonebookManager.Controllers
 {
@@ -11,10 +17,13 @@ namespace PhonebookManager.Controllers
     {
         private readonly DataContext _context;
         private readonly IJSRuntime _js;
-        public DashboardController(DataContext context, IJSRuntime js)
+        public INotyfService _notifyService { get; }
+
+        public DashboardController(DataContext context, IJSRuntime js, INotyfService notifyService)
         {
             _context = context;
             _js = js;
+            _notifyService = notifyService;
 
         }
 
@@ -43,7 +52,7 @@ namespace PhonebookManager.Controllers
                 {
                     dbPhoneLines = await _context.PhoneLines.Include(x => x.LineOwner).Include(y => y.Department).Include(z => z.LineUsers).Include(u => u.Changes).ToListAsync();
                 }
-                    
+
             }
             else
             {
@@ -259,7 +268,7 @@ namespace PhonebookManager.Controllers
                         return Json("");
                     }
                 }
-                else if(searchText.Length > 3)
+                else if (searchText.Length > 3)
                 {
                     string[] words = searchText.Split(' ');
                     string firstWord = words[0];
@@ -329,6 +338,120 @@ namespace PhonebookManager.Controllers
             return Json("");
 
         }
+
+        [HttpPost]
+        public async Task<IActionResult> UploadCsv(IFormFile file)
+        {
+            try
+            {
+                if (file != null && file.Length > 0)
+                {
+                    string fileExtension = Path.GetExtension(file.FileName);
+                    string[] allowedExtensions = { /*".pdf", ".doc", ".docx", */ ".csv" };
+
+                    if (allowedExtensions.Contains(fileExtension))
+                    {
+                        var maxFileSize = 5 * 1024 * 1024; // 5MB
+
+                        if (file.Length > maxFileSize)
+                        {
+                            _notifyService.Warning("File size exceeds the maximum limit of 5MB.");
+                            //return View();
+                        }
+
+                        // Save the file to the server here or perform any other operations
+                        string phonenumber = "";
+                        string ownerbadge = "";
+                        string depcode = "";
+                        PhoneLine phoneLine = new();
+
+                        using (var reader = new StreamReader(file.OpenReadStream()))
+                        using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+                        {
+                            var records = csv.GetRecords<CSVFile>();
+                            //phonenumber = records?.FirstOrDefault()?.PhoneNumber;
+                            //ownerbadge = records?.FirstOrDefault()?.LineOwnerBadge;
+                            //depcode = records?.FirstOrDefault()?.DepartmentCode;
+
+                            foreach (var record in records)
+                            {
+                                phonenumber = record.PhoneNumber;
+                                ownerbadge = record.LineOwnerBadge;
+                                depcode = record.DepartmentCode;
+                                //phonenumbers.Add(record.PhoneNumber);
+                                //ownerbadges.Add(record.LineOwnerBadge);
+                                //epcodes.Add(record.DepartmentCode);
+                            }
+
+                            var dbline = await _context.PhoneLines.FirstOrDefaultAsync(x => x.PhoneNumber.Contains(phonenumber));
+                            var dbPhoneUsers = await _context.PhoneUsers.ToListAsync();
+                            var dbDeps = await _context.Departments.ToListAsync();
+
+                            if (dbline is null)
+                            {
+                                phoneLine = new PhoneLine
+                                {
+                                    PhoneNumber = phonenumber,
+                                    LineOwner = !string.IsNullOrEmpty(ownerbadge) ? dbPhoneUsers.FirstOrDefault(x => x.Badge == ownerbadge) : null,
+                                    Department = !string.IsNullOrEmpty(depcode) ? dbDeps.FirstOrDefault(x => x.Code == depcode) : null,
+                                };
+
+                                _context.PhoneLines.Add(phoneLine);
+                                await _context.SaveChangesAsync();
+                                _notifyService.Success("Phone line allocated: " + phonenumber);
+                            }
+                            else
+                            {
+                                var dbUser = dbPhoneUsers.FirstOrDefault(x => x.Badge == ownerbadge);
+                                var dbDep = dbDeps.FirstOrDefault(x => x.Code == depcode);
+
+                                if (dbUser is null && !string.IsNullOrEmpty(ownerbadge))
+                                {
+                                    _notifyService.Error("User does not exist");
+                                }
+                                else if (dbDep is null && !string.IsNullOrEmpty(depcode))
+                                {
+                                    _notifyService.Error("Department does not exist");
+                                }
+                                else
+                                {
+                                    dbline.LineOwner = !string.IsNullOrEmpty(ownerbadge) ? dbPhoneUsers.FirstOrDefault(x => x.Badge == ownerbadge) : null;
+                                    dbline.Department = !string.IsNullOrEmpty(depcode) ? dbDeps.FirstOrDefault(x => x.Code == depcode) : null;
+
+                                    _context.Update(dbline);
+                                    await _context.SaveChangesAsync();
+                                    _notifyService.Success("Phone line updated");
+                                }
+
+                            }
+
+                        }
+
+
+                        //_notifyService.Success("File uploaded successfully!" + file.FileName);
+                        //_notifyService.Success(phonenumber + " " + ownerbadge + " " + depcode);
+                    }
+                    else
+                    {
+                        _notifyService.Warning("Only csv files are allowed.");
+                    }
+                }
+                else
+                {
+                    _notifyService.Warning("Please select a file to upload.");
+                }
+            }
+            catch (Exception ex)
+            {
+                _notifyService.Error(ex.Message);
+            }
+
+
+            //return new EmptyResult();
+            return Json("");
+
+        }
+
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

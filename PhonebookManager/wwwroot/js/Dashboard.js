@@ -393,9 +393,25 @@ $("body").on("click", "#deleteBtn", function () {
         }
     });
 });
+function UploadFiles(inputId) {
+    var formData = new FormData();
+    formData.append('file', $('#myfile')[0].files[0]); // myFile is the input type="file" control
 
+    $.ajax({
+        url: "Dashboard/UploadCsv",
+        type: 'POST',
+        data: formData,
+        processData: false,  // tell jQuery not to process the data
+        contentType: false,  // tell jQuery not to set contentType
+        success: function (result) {
+        },
+        error: function () {
+        },
+        complete: function (status) {
+        }
+    });
+}
 function ImportFunction(clicked_id) {
-
 
     $('#importModal').modal('show');
 }

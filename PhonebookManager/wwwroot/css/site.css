@@ -12,6 +12,14 @@ html, body {
     }
 }
 
+::-webkit-file-upload-button {
+    background-color: #008A99;
+    color:#fff;
+    border:none;
+    border-radius: 10px;
+    height: 30px;
+}
+
 .ui-helper-hidden-accessible {
     display: none;
 }
@@ -38,7 +46,7 @@ html, body {
     background-color: #008A99;
 }
 
-    .btn-success:hover, .btn-success:active {
+    .btn-success:hover, .btn-success:active, ::-webkit-file-upload-button:hover, ::-webkit-file-upload-button:active {
         background-color: #005C66 !important;
     }
 

@@ -80,7 +80,7 @@
                                        emp-name="=" emp-id="=" emp-department="="></i>
                                 </span>-->
                                 <span class="action-btn me-2" type="button">
-                                    <i class="bi bi-pencil-fill" 
+                                    <i class="bi bi-pencil-fill"
                                        line-id="@line?.Id"
                                        line-owner-name="@line?.LineOwner?.Name"
                                        line-owner-badge="@line?.LineOwner?.Badge"
@@ -111,7 +111,8 @@
 
 @*MODAL EDIT PHONE LINE *@
 <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" style="max-width: 40%;"> @*CHANGE WIDTH HERE*@
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 40%;">
+        @*CHANGE WIDTH HERE*@
         <div class="modal-content">
             <div class="modal-header border-0">
                 <h2 class="" id="editModalLabel" style="color: #008A99; text-decoration: underline 2px; text-underline-offset: 0.5em; ">Edit phone line</h2>
@@ -125,11 +126,11 @@
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <input id="editModalPhoneId" hidden />
 
-                    
-                        <div class="tall-input-box">
-                            <label class="control-label" style="cursor:pointer" for="editModalLineOwnerName">Line owner name</label>
-                            <input class="input-no-border" id="editModalLineOwnerName" />
-                        </div>
+
+                    <div class="tall-input-box">
+                        <label class="control-label" style="cursor:pointer" for="editModalLineOwnerName">Line owner name</label>
+                        <input class="input-no-border" id="editModalLineOwnerName" />
+                    </div>
                     <div class="tall-input-box">
                         <label class="control-label" style="cursor:pointer;" for="editModalLineOwnerBadge">Line owner badge</label>
                         <input class="input-no-border" id="editModalLineOwnerBadge" />
@@ -169,7 +170,8 @@
 
 @*MODAL DELETE PHONE LINE *@
 <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" style="max-width: 40%;"> @*CHANGE WIDTH HERE*@
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 40%;">
+        @*CHANGE WIDTH HERE*@
         <div class="modal-content">
             <div class="modal-header border-0">
                 <h2 class="" id="deleteModalLabel" style="color: #008A99; text-decoration: underline 2px; text-underline-offset: 0.5em; ">Confirm deletion</h2>
@@ -210,7 +212,8 @@
 
 <!-- Modal Import data -->
 <div class="modal fade" id="importModal" tabindex="-1" aria-labelledby="importModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" style="max-width: 60%;"> @*CHANGE WIDTH HERE*@
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 60%;">
+        @*CHANGE WIDTH HERE*@
         <div class="modal-content">
             <div class="modal-header border-0">
                 <h2 class="" id="importModalLabel" style="color: #008A99; text-decoration: underline 2px; text-underline-offset: 0.5em; ">Import data</h2>
@@ -227,7 +230,11 @@
                         </div>
                         <div class="d-flex gap-2 justify-content-end align-items-center">
                             <h5>Import data</h5>
-                            <button class="btn btn-secondary" style="width: 200px;" onclick="NotImplemented()">Select file</button>
+                         
+                            <form id="form" name="form" action="Dashboard/UploadCsv" enctype="multipart/form-data" method="post">
+                                <input id="myfile" name="file" type="file" accept=".csv" size="1" multiple onchange="UploadFiles('file');" style="width: 245px;" />
+                            </form>
+
                         </div>
                     </div>
 
@@ -235,15 +242,14 @@
 
             </div>
             <div class="modal-footer border-0 d-flex justify-content-center">
-                <button type="button" class="btn btn-success" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-success" data-bs-dismiss="modal" onclick="window.location.reload()">Close</button>
             </div>
         </div>
     </div>
 </div>
 
 
+<script>
+    
 
-
-
-
-
+</script>
