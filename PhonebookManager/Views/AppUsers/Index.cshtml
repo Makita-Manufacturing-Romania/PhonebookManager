@@ -13,8 +13,16 @@
 <div class="input-div">
     <input placeholder="All departments" style="width: 35%;" />
     <div style="position: relative; display: inline-block; width: 65%;">
-        <i class="bi bi-search" role="button" style="position: absolute;right: 10px; top: 50%;transform: translateY(-50%);"></i>
-        <input placeholder="Search by employee id, name or telephone number" />
+        @if (Model.AppUsersList.Count() >= 1 && !string.IsNullOrEmpty(ViewBag.SearchText))
+        {
+            <i class="bi bi-x-lg" id="searchButton" role="button" style="position: absolute;right: 10px; top: 50%;transform: translateY(-50%);"></i>
+        }
+        else
+        {
+            <span id="counter" style="position: absolute;left: 10px; top: 50%;transform: translateY(-50%);"></span>
+            <i class="bi bi-search" id="searchButton" role="button" style="position: absolute;right: 10px; top: 50%;transform: translateY(-50%);"></i>
+        }
+        <input type="text" id="searchInput" autocomplete="off" placeholder="Search by employee id or name" />
 
     </div>
     <a class="btn btn-success" style="width: 100px; height: 45px; line-height: 30px;" data-bs-toggle="modal" data-bs-target="#addModal">Add user</a>

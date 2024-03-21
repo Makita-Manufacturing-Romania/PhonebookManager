@@ -164,7 +164,7 @@ namespace PhonebookManager.Controllers
 
                 var dbDepartments = await _context.Departments.Include(x => x.Lines).Where(x => x.Code.Contains(searchText) || x.Name.Contains(searchText))
                         .ToListAsync();
-                if (dbDepartments == null)
+                if (dbDepartments == null || dbDepartments.Count() == 0)
                 {
                     return Json("Not found");
 

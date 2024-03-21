@@ -18,11 +18,21 @@ namespace PhonebookManager
 
 
         // GET: AppUsers
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchText)
         {
-            var dbUsers = await _context.AppUsers.Include(x => x.Role).ToListAsync();
-            var dbRoles = await _context.AppRoles.ToListAsync();
+            List<AppUser> dbUsers = new();
+            if (!string.IsNullOrEmpty(searchText))
+            {
+                ViewBag.SearchText = searchText;
+                dbUsers = await _context.AppUsers.Include(x => x.Role).Where(x => x.BadgeNo.Contains(searchText) || x.Name.Contains(searchText))
+                    .ToListAsync();
+            }
+            else
+            {
+                dbUsers = await _context.AppUsers.Include(x => x.Role).ToListAsync();
+            }
 
+            var dbRoles = await _context.AppRoles.ToListAsync();
             var viewModel = new AppUserVM()
             {
                 AppUsersList = dbUsers,
@@ -226,5 +236,26 @@ namespace PhonebookManager
 
             }
         }
+        [HttpPost]
+        public async Task<IActionResult> SearchAppUsers(string searchText)
+        {
+            if (!string.IsNullOrEmpty(searchText))
+            {
+                searchText = searchText.Replace(" ", "");
+                var dbUsers = await _context.AppUsers.Include(x => x.Role).Where(x => x.BadgeNo.Contains(searchText) || x.Name.Contains(searchText))
+                    .ToListAsync();
+                if (dbUsers == null || dbUsers.Count() == 0)
+                {
+                    return Json("Not found");
+                }
+                else
+                {
+                    return Json("");
+                }
+
+            }
+            return Json("");
+        }
     }
 }
+
