@@ -10,18 +10,18 @@
 // Search text length
 $(document).ready(function () {
     $("#searchInput").autocomplete({
-            source: function (request, response) { // response is the server response, request is the search term
-            var cont = document.getElementById("counter");
-            cont.innerHTML = request.term.length;
-            },
-        });
+        source: function (request, response) { // response is the server response, request is the search term
+            var count = document.getElementById("counter");
+            count.innerHTML = request.term.length;
+        },
+    });
 });
 // Create and allocate button
 $(document).ready(function () {
     $("#createAndAllocate").on("click", function () {
         var searchInputText = document.getElementById("searchInput");
         $.ajax({
-            url: '/Dashboard/SearchPhoneLine/',
+            url: '/Dashboard/CheckNumberToAllocate/',
             data: { "searchText": searchInputText.value },
             type: "POST",
             success: function (data) {
@@ -31,6 +31,22 @@ $(document).ready(function () {
 
                     //const createAndAllocateBtn = document.getElementById("createAndAllocate"); // get the create and allocate page button
                     //createAndAllocateBtn.setAttribute('phone-number', searchInputText.value); // add the search text number into ViewBag.PhoneNumber
+                }
+                else if (data === "NaN")
+                {
+                    Toastify({
+                        text: "Invalid number",
+                        duration: 10000,
+                        newWindow: true,
+                        close: true,
+                        gravity: "bottom", // `top` or `bottom`
+                        position: "left", // `left`, `center` or `right`
+                        stopOnFocus: true, // Prevents dismissing of toast on hover
+                        style: {
+                            background: "linear-gradient(to right, #008A99, #55B1BB)",
+
+                        },
+                    }).showToast();
                 }
                 else {
                     Toastify({
@@ -286,7 +302,7 @@ function DashboardEditFunction(clicked_id) {
     modalDepartmentName.value = lineDepartmentName;
     var modalDepartmentCode = document.getElementById("editModalDepartmentCode");
     modalDepartmentCode.value = lineDepartmentCode;
-   
+
 
     $('#editModal').modal('show');
 }

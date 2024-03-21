@@ -249,7 +249,7 @@ namespace PhonebookManager.Controllers
             }
         }
 
-        [HttpPost]
+      
         public async Task<IActionResult> SearchPhoneLine(string searchText)
         {
             if (!string.IsNullOrEmpty(searchText))
@@ -296,6 +296,25 @@ namespace PhonebookManager.Controllers
             return Json("");
 
         }
+        public async Task<IActionResult> CheckNumberToAllocate(string searchText)
+        {
+            if (!string.IsNullOrEmpty(searchText))
+            {
+                if (long.TryParse(searchText, out long longValue) && searchText.Length > 4) // && searchText.Length == 10
+                {
+                    searchText = searchText.Replace(" ", "");
+                    var dbPhoneNumber = await _context.PhoneLines.FirstOrDefaultAsync(x => x.PhoneNumber.Contains(searchText));
+                    if (dbPhoneNumber == null)
+                    {
+                        return Json("Not found");
+
+                    }
+                  
+                }
+            }
+            return Json("NaN");
+
+        }
 
         [HttpPost]
         public async Task<IActionResult> AddQuickPhoneLine(string phoneLine)
@@ -327,7 +346,7 @@ namespace PhonebookManager.Controllers
 
             return RedirectToAction("Index");
         }
-        [HttpPost]
+        
         public async Task<IActionResult> CheckPhoneNumber(string phoneNumber)
         {
             var dbPhoneNumber = await _context.PhoneLines.FirstOrDefaultAsync(x => x.PhoneNumber == phoneNumber);
