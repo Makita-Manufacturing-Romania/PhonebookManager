@@ -11,11 +11,20 @@
 <div class="input-div">
 
     <div style="position: relative; display: inline-block; width: 100%;">
-        <i class="bi bi-search" role="button" style="position: absolute;right: 10px; top: 50%;transform: translateY(-50%);"></i>
-        <input placeholder="Search for department group, code or name" />
+        @if (Model.Departments.Count() >= 1 && !string.IsNullOrEmpty(ViewBag.SearchText))
+        {
+            <i class="bi bi-x-lg" id="searchButton" role="button" style="position: absolute;right: 10px; top: 50%;transform: translateY(-50%);"></i>
+        }
+        else
+        {
+            <span id="counter" style="position: absolute;left: 10px; top: 50%;transform: translateY(-50%);"></span>
+            <i class="bi bi-search" id="searchButton" role="button" style="position: absolute;right: 10px; top: 50%;transform: translateY(-50%);"></i>
+        }
+        <input type="text" id="searchInput" autocomplete="off" placeholder="Search for department group, code or name" />
 
     </div>
     <a class="btn btn-success" style="width: 200px; height: 45px; line-height: 30px;" data-bs-toggle="modal" data-bs-target="#addModal">Add department</a>
+
 
 </div>
 

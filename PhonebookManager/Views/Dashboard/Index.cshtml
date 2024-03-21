@@ -10,7 +10,7 @@
 <div class="input-div">
     <input placeholder="All departments" style="width: 35%;" />
     <div style="position: relative; display: inline-block; width: 65%;">
-        @if (Model.Count() == 1 && !string.IsNullOrEmpty(ViewBag.SearchText))
+        @if (Model.Count() >= 1 && !string.IsNullOrEmpty(ViewBag.SearchText))
         {
             <i class="bi bi-x-lg" id="searchButton" role="button" style="position: absolute;right: 10px; top: 50%;transform: translateY(-50%);"></i>
         }

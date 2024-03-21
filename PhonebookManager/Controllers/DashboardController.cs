@@ -30,12 +30,12 @@ namespace PhonebookManager.Controllers
         // GET: DashboardController
         public async Task<IActionResult> Index(string searchText)
         {
-            ViewBag.SearchText = searchText;
             List<PhoneLine> dbPhoneLines = new List<PhoneLine>();
 
-            if (!string.IsNullOrEmpty(searchText)) // && searchText.Length == 10
+            if (!string.IsNullOrEmpty(searchText)) 
             {
-                if (long.TryParse(searchText, out long longValue))
+                ViewBag.SearchText = searchText;
+                if (long.TryParse(searchText, out long longValue) && searchText.Length > 4) // && searchText.Length == 10
                 {
                     dbPhoneLines = await _context.PhoneLines.Include(x => x.LineOwner).Include(y => y.Department).Include(z => z.LineUsers).Include(u => u.Changes)
                                         .Where(x => x.PhoneNumber.Contains(searchText)).ToListAsync();
@@ -254,13 +254,13 @@ namespace PhonebookManager.Controllers
         {
             if (!string.IsNullOrEmpty(searchText))
             {
-                if (long.TryParse(searchText, out long longValue)) // && searchText.Length == 10
+                if (long.TryParse(searchText, out long longValue) && searchText.Length > 4) // && searchText.Length == 10
                 {
                     searchText = searchText.Replace(" ", "");
                     var dbPhoneNumber = await _context.PhoneLines.FirstOrDefaultAsync(x => x.PhoneNumber.Contains(searchText));
                     if (dbPhoneNumber == null)
                     {
-                        return Json("No phone line found");
+                        return Json("Not found");
 
                     }
                     else

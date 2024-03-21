@@ -21,10 +21,21 @@ namespace PhonebookManager.Controllers
             _context = context;
             _notifyService = notifyService;
         }
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchText)
         {
+            List<Department> dbDepartments = new();
+            if (!string.IsNullOrEmpty(searchText))
+            {
+                ViewBag.SearchText = searchText;
+                //searchText = searchText.Replace(" ", "");
+                dbDepartments = await _context.Departments.Include(x => x.Lines).Where(x=>x.Code.Contains(searchText) || x.Name.Contains(searchText))
+                    .ToListAsync();
+            }
+            else
+            {
+                dbDepartments = await _context.Departments.Include(x => x.Lines).ToListAsync();
+            }
             var dbUsers = await _context.AppUsers.Include(x => x.Role).ToListAsync();
-            var dbDepartments = await _context.Departments.Include(x => x.Lines).ToListAsync();
             var dbPhoneLines = await _context.PhoneLines.ToListAsync();
 
             var viewModel = new DepartmentVM()
@@ -77,7 +88,7 @@ namespace PhonebookManager.Controllers
         {
             var dbDep = _context.Departments.Include(x => x.Lines).FirstOrDefault(x => x.Id == id);
             var dbUsers = await _context.AppUsers.Include(x => x.Role).ToListAsync();
-            var dbPhoneLines = await _context.PhoneLines.Include(x=>x.Department).ToListAsync();
+            var dbPhoneLines = await _context.PhoneLines.Include(x => x.Department).ToListAsync();
 
 
             if (dbDep == null) return NoContent();
@@ -130,10 +141,10 @@ namespace PhonebookManager.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var dbDep = await _context.Departments.Include(x=>x.Lines).FirstOrDefaultAsync(x=>x.Id == id);
+            var dbDep = await _context.Departments.Include(x => x.Lines).FirstOrDefaultAsync(x => x.Id == id);
             if (dbDep != null)
             {
-                if(dbDep.Lines is not null || dbDep.Lines.Count != 0)
+                if (dbDep.Lines is not null || dbDep.Lines.Count != 0)
                 {
                     dbDep.Lines.Clear();
                 }
@@ -144,5 +155,27 @@ namespace PhonebookManager.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [HttpPost]
+        public async Task<IActionResult> SearchDepartment(string searchText)
+        {
+            if (!string.IsNullOrEmpty(searchText))
+            {
+                searchText = searchText.Replace(" ", "");
+
+                var dbDepartments = await _context.Departments.Include(x => x.Lines).Where(x => x.Code.Contains(searchText) || x.Name.Contains(searchText))
+                        .ToListAsync();
+                if (dbDepartments == null)
+                {
+                    return Json("Not found");
+
+                }
+                else
+                {
+                    return Json("");
+                }
+
+            }
+            return Json("");
+        }
     }
 }

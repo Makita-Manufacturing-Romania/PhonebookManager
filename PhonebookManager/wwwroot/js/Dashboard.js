@@ -25,7 +25,7 @@ $(document).ready(function () {
             data: { "searchText": searchInputText.value },
             type: "POST",
             success: function (data) {
-                if (data === "No phone line found") {
+                if (data === "Not found") {
                     window.location.href = location.origin + "/PhoneUser?phoneNumber=" + searchInputText.value;
                     //console.log("success");
 
@@ -190,7 +190,7 @@ function PerformSearch() {
         data: { "searchText": searchInputText.value },
         type: "POST",
         success: function (data) {
-            if (data === "No phone line found") {
+            if (data === "Not found") {
                 //$("#searchInput").val("Not found"); // add a message in the input field
                 //$("#searchInput").blur(); // clear the focus
                 Toastify({

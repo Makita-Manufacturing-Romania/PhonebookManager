@@ -105,3 +105,55 @@ $("body").on("click", "#deleteBtn", function () {
         }
     });
 });
+
+
+// SEARCH
+
+$(document).ready(function () {
+
+    $("#searchInput").on("keydown", function (event) {
+        if (event.key === "Enter") {
+            PerformSearch();
+        }
+    });
+});
+
+$(document).ready(function () {
+    $("#searchButton").on("click", function () {
+        PerformSearch();
+    });
+});
+function PerformSearch() {
+    var searchInputText = document.getElementById("searchInput");
+    $.ajax({
+        url: '/Department/SearchDepartment/',
+        data: { "searchText": searchInputText.value },
+        type: "POST",
+        success: function (data) {
+            if (data === "Not found") {
+                Toastify({
+                    text: "Not found",
+                    duration: 10000,
+                    newWindow: true,
+                    close: true,
+                    gravity: "bottom", // `top` or `bottom`
+                    position: "left", // `left`, `center` or `right`
+                    stopOnFocus: true, // Prevents dismissing of toast on hover
+                    style: {
+                        background: "linear-gradient(to right, #008A99, #55B1BB)",
+
+                    },
+                }).showToast();
+               
+            }
+            else {
+                searchInputText.value = searchInputText.value.replace(/\s+/g, '');
+                window.location.href = location.origin + "/Department?searchText=" + searchInputText.value;
+            }
+        },
+        error: function (response) {
+            $("#searchInput").val("Error: " + response);
+        }
+
+    });
+}
