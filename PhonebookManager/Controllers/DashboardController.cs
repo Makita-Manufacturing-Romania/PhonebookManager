@@ -10,29 +10,30 @@ using PhonebookManager.Models;
 using System.Diagnostics;
 using System.Globalization;
 using System.Runtime.Intrinsics.Arm;
+using static PhonebookManager.ViewModels.DashboardViewModel;
+using static PhonebookManager.ViewModels.DepartmentViewModel;
 
 namespace PhonebookManager.Controllers
 {
     public class DashboardController : Controller
     {
         private readonly DataContext _context;
-        private readonly IJSRuntime _js;
         public INotyfService _notifyService { get; }
 
-        public DashboardController(DataContext context, IJSRuntime js, INotyfService notifyService)
+        public DashboardController(DataContext context, INotyfService notifyService)
         {
             _context = context;
-            _js = js;
             _notifyService = notifyService;
 
         }
 
         // GET: DashboardController
-        public async Task<IActionResult> Index(string searchText)
+        public async Task<IActionResult> Index(string searchText, int depId)
         {
-            List<PhoneLine> dbPhoneLines = new List<PhoneLine>();
+            var dbPhoneLines = await _context.PhoneLines.Include(x => x.LineOwner).Include(y => y.Department).Include(z => z.LineUsers).Include(u => u.Changes).ToListAsync();
+            var dbDepartments = await _context.Departments.Include(x => x.Lines).ToListAsync();
 
-            if (!string.IsNullOrEmpty(searchText)) 
+            if (!string.IsNullOrEmpty(searchText))
             {
                 ViewBag.SearchText = searchText;
                 if (long.TryParse(searchText, out long longValue) && searchText.Length > 4) // && searchText.Length == 10
@@ -54,12 +55,19 @@ namespace PhonebookManager.Controllers
                 }
 
             }
-            else
-            {
-                dbPhoneLines = await _context.PhoneLines.Include(x => x.LineOwner).Include(y => y.Department).Include(z => z.LineUsers).Include(u => u.Changes).ToListAsync();
 
+            if (depId != 0)
+            {
+                ViewBag.DepartmentId = depId;
+                dbPhoneLines = await _context.PhoneLines.Where(x => x.Department.Id == depId).ToListAsync();
             }
-            return View(dbPhoneLines);
+
+            var viewModel = new DashboardDepartmentVM()
+            {
+                Lines = dbPhoneLines,
+                DepartmentList = dbDepartments
+            };
+            return View(viewModel);
 
         }
 
@@ -244,12 +252,11 @@ namespace PhonebookManager.Controllers
             }
             catch (Exception ex)
             {
-                await _js.InvokeAsync<string>("console.log", ex.Message, " Search Function");
                 return Json("Error-" + ex.Message + " stackTrace-" + ex.StackTrace);
             }
         }
 
-      
+
         public async Task<IActionResult> SearchPhoneLine(string searchText)
         {
             if (!string.IsNullOrEmpty(searchText))
@@ -309,7 +316,7 @@ namespace PhonebookManager.Controllers
                         return Json("Not found");
 
                     }
-                  
+
                 }
             }
             return Json("NaN");
@@ -340,13 +347,13 @@ namespace PhonebookManager.Controllers
             catch (Exception ex)
             {
 
-                await _js.InvokeAsync<string>("console.log", ex.Message, " AddQuickPhoneLine");
             }
 
+            return RedirectToAction(nameof(Index));
 
-            return RedirectToAction("Index");
+            // return RedirectToAction("Index");
         }
-        
+
         public async Task<IActionResult> CheckPhoneNumber(string phoneNumber)
         {
             var dbPhoneNumber = await _context.PhoneLines.FirstOrDefaultAsync(x => x.PhoneNumber == phoneNumber);
@@ -440,6 +447,7 @@ namespace PhonebookManager.Controllers
                                     _context.Update(dbline);
                                     await _context.SaveChangesAsync();
                                     _notifyService.Success("Phone line updated");
+
                                 }
 
                             }
@@ -470,6 +478,14 @@ namespace PhonebookManager.Controllers
             return Json("");
 
         }
+
+        //public async Task<IActionResult> FilterDepartmentsById(int id)
+        //{
+
+
+        //    return RedirectToAction(nameof(Index));
+
+        //}
 
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

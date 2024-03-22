@@ -6,6 +6,37 @@
 //    $("#dummyBtn").attr("href", url);
 //    $("#dummyBtn")[0].click();
 //}
+$(document).ready(function () {
+    let viewBag = document.querySelector('[viewbag-id]');
+    let vbId = viewBag.getAttribute('viewbag-id');
+    var selectedDepartment = document.getElementById("selectDepartment");
+    for (let i = 0; i < selectedDepartment.options.length; i++) {
+        if (selectedDepartment.options[i].value === vbId) {
+            selectedDepartment.selectedIndex = i;
+            break;
+        }
+    }
+});
+$(document).ready(function () {
+    $("#selectDepartment").on("change", function () {
+        var selectedDepartment = document.getElementById("selectDepartment");
+        var id = selectedDepartment.value;
+        $.ajax({
+            url: '/Dashboard/Index/',
+            data: { "depId": id },
+            type: "POST",
+            success: function (data) {
+               // window.location.href = location.origin + "/Dashboard";
+                window.location.href = location.origin + "/Dashboard?depId=" + selectedDepartment.value;
+
+            },
+            error: function (response) {
+                console.log("error");
+            }
+
+        });
+    });
+});
 
 // Search text length
 $(document).ready(function () {
@@ -32,8 +63,7 @@ $(document).ready(function () {
                     //const createAndAllocateBtn = document.getElementById("createAndAllocate"); // get the create and allocate page button
                     //createAndAllocateBtn.setAttribute('phone-number', searchInputText.value); // add the search text number into ViewBag.PhoneNumber
                 }
-                else if (data === "NaN")
-                {
+                else if (data === "NaN") {
                     Toastify({
                         text: "Invalid number",
                         duration: 10000,

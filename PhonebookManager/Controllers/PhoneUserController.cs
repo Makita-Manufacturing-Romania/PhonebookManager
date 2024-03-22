@@ -11,11 +11,9 @@ namespace PhonebookManager.Controllers
     public class PhoneUserController : Controller
     {
         private readonly DataContext _context;
-        private readonly IJSRuntime _js;
-        public PhoneUserController(DataContext context, IJSRuntime js)
+        public PhoneUserController(DataContext context)
         {
             _context = context;
-            _js = js;
         }
     
         public async Task<IActionResult> Index(string phoneNumber)

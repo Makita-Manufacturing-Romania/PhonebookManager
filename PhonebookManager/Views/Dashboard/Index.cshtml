@@ -1,4 +1,4 @@
-﻿@model IEnumerable<PhonebookManager.Models.PhoneLine>
+﻿@model PhonebookManager.ViewModels.DashboardViewModel.DashboardDepartmentVM
 
 @{
     ViewData["Title"] = "Dashboard | Phonebook Manager";
@@ -8,9 +8,17 @@
 
 
 <div class="input-div">
-    <input placeholder="All departments" style="width: 35%;" />
+    @*<input placeholder="All departments" style="width: 35%;" />*@
+    <select class="normal-select-box" style="width: 35%;" id="selectDepartment" viewbag-id="@ViewBag.DepartmentId">
+        <option value="0">All departments</option>
+        @foreach (var dep in Model.DepartmentList)
+        {
+            <option value="@dep.Id">@dep.Name</option>
+        }
+    </select>
+
     <div style="position: relative; display: inline-block; width: 65%;">
-        @if (Model.Count() >= 1 && !string.IsNullOrEmpty(ViewBag.SearchText))
+        @if (Model.Lines.Count() >= 1 && !string.IsNullOrEmpty(ViewBag.SearchText))
         {
             <i class="bi bi-x-lg" id="searchButton" role="button" style="position: absolute;right: 10px; top: 50%;transform: translateY(-50%);"></i>
         }
@@ -55,7 +63,7 @@
             <tbody>
                 @if (Model is not null)
                 {
-                    foreach (var line in Model)
+                    foreach (var line in Model.Lines)
                     {
                         <tr class="border-0">
                             <td>@line?.LineOwner?.Name</td>
@@ -153,7 +161,7 @@
 
 
                     <div class="form-group w-100">
-                        <input class="btn btn-success" style="width:80%;" id="editBtn" value="Edit" />
+                        <input class="btn btn-success" style="width:80%;" @*id="editBtn"*@ value="Edit" onclick="NotImplemented()"/>
                         <input role="button" class="btn btn-secondary" data-bs-dismiss="modal" style="width:19%;" Value="Close" />
                     </div>
                 </form>

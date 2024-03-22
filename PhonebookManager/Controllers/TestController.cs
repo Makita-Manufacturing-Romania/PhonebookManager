@@ -14,13 +14,11 @@ namespace PhonebookManager.Controllers
     {
         private readonly ILogger<TestController> _logger;
         private readonly DataContext _context;
-        private readonly IJSRuntime _js;
 
-        public TestController(ILogger<TestController> logger, DataContext context, IJSRuntime js)
+        public TestController(ILogger<TestController> logger, DataContext context)
         {
             _logger = logger;
             _context = context;
-            _js = js;
 
         }
         // [Authorize]
