@@ -4,6 +4,39 @@
 //    // You can perform further actions based on the input value
 //});
 
+// On initialize
+$(document).ready(function () {
+    let viewBag = document.querySelector('[viewbag-name]');
+    let vbName = viewBag.getAttribute('viewbag-name');
+    var selectedDepartment = document.getElementById("selectDepartment");
+    for (let i = 0; i < selectedDepartment.options.length; i++) {
+        if (selectedDepartment.options[i].text === vbName) {
+            selectedDepartment.selectedIndex = i;
+            break;
+        }
+    }
+});
+$(document).ready(function () {
+    $("#selectDepartment").on("change", function () {
+        var selectedDepartment = document.getElementById("selectDepartment");
+        var name = selectedDepartment.value;
+        $.ajax({
+            url: '/AppUsers/Index/',
+            data: { "depName": name },
+            type: "POST",
+            success: function (data) {
+                // window.location.href = location.origin + "/Dashboard";
+                window.location.href = location.origin + "/AppUsers?depName=" + selectedDepartment.value;
+
+            },
+            error: function (response) {
+                console.log("error");
+            }
+
+        });
+    });
+});
+
 // Check if user exists
 $(document).ready(function () {
     const badgeInputElement = document.querySelector('[badge-input="badgeNoInput"]');

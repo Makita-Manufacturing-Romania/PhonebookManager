@@ -1,9 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using AspNetCoreHero.ToastNotification.Abstractions;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PhonebookManager.Data;
 using PhonebookManager.Models;
-using PhonebookManager.ViewModels;
 using static PhonebookManager.ViewModels.RoleAndUserViewModel;
 
 namespace PhonebookManager
@@ -11,32 +10,49 @@ namespace PhonebookManager
     public class AppUsersController : Controller
     {
         private readonly DataContext _context;
-        public AppUsersController(DataContext context)
+        public INotyfService _notifyService { get; }
+
+        public AppUsersController(DataContext context, INotyfService notifyService)
         {
             _context = context;
+            _notifyService = notifyService;
         }
 
 
         // GET: AppUsers
-        public async Task<IActionResult> Index(string searchText)
+        public async Task<IActionResult> Index(string searchText, string depName)
         {
-            List<AppUser> dbUsers = new();
+            var dbUsers = await _context.AppUsers.Include(x => x.Role).ToListAsync();
+            var dbDepartments = await _context.Departments.Include(x => x.Lines).ToListAsync();
+            ViewBag.DepartmentName = "All departments";
+
             if (!string.IsNullOrEmpty(searchText))
             {
                 ViewBag.SearchText = searchText;
                 dbUsers = await _context.AppUsers.Include(x => x.Role).Where(x => x.BadgeNo.Contains(searchText) || x.Name.Contains(searchText))
                     .ToListAsync();
             }
-            else
+
+            if (!string.IsNullOrEmpty(depName))
             {
-                dbUsers = await _context.AppUsers.Include(x => x.Role).ToListAsync();
+                if (depName != "0")
+                {
+                    ViewBag.DepartmentName = depName;
+                    dbUsers = await _context.AppUsers.Where(x => x.DepartmentName.Contains(depName)).ToListAsync();
+                    if (dbUsers.Count == 0)
+                    {
+                        dbUsers = await _context.AppUsers.Include(x => x.Role).ToListAsync();
+                        _notifyService.Information("No users found for " + depName);
+                    }
+                }
             }
 
             var dbRoles = await _context.AppRoles.ToListAsync();
             var viewModel = new AppUserVM()
             {
                 AppUsersList = dbUsers,
-                UserRolesList = dbRoles
+                UserRolesList = dbRoles,
+                DepartmentList = dbDepartments
             };
             return View(viewModel);
         }
@@ -134,7 +150,7 @@ namespace PhonebookManager
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int? id,string adIdentity, string email, string name, string badgeNo, string depName, string depCode, string role)
+        public async Task<IActionResult> Edit(int? id, string adIdentity, string email, string name, string badgeNo, string depName, string depCode, string role)
         {
             if (id == null)
             {
@@ -226,7 +242,7 @@ namespace PhonebookManager
         public async Task<IActionResult> CheckExistence(string badgeNo)
         {
             var dbUser = await _context.AppUsers.FirstOrDefaultAsync(x => x.BadgeNo == badgeNo);
-            if(dbUser != null)
+            if (dbUser != null)
             {
                 return Json("Exists");
             }

@@ -23,6 +23,8 @@ namespace PhonebookManager.ViewModels
             public SelectList? UserRoles { get; set; } 
             public List<AppRole>? UserRolesList { get; set; }
             public List<AppUser>? AppUsersList { get; set; }
+            public List<Department>? DepartmentList { get; set; }
+
         }
     }
 }

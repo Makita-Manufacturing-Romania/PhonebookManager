@@ -11,7 +11,16 @@
 
 
 <div class="input-div">
-    <input placeholder="All departments" style="width: 35%;" />
+    @*<input placeholder="All departments" style="width: 35%;" />*@
+    <select class="normal-select-box" style="width: 35%;" id="selectDepartment" viewbag-name="@ViewBag.DepartmentName">
+        <option value="0">All departments</option>
+        @foreach (var dep in Model.DepartmentList)
+        {
+            <option value="@dep.Name">@dep.Name</option>
+        }
+    </select>
+
+
     <div style="position: relative; display: inline-block; width: 65%;">
         @if (Model.AppUsersList.Count() >= 1 && !string.IsNullOrEmpty(ViewBag.SearchText))
         {

@@ -6,6 +6,8 @@
 //    $("#dummyBtn").attr("href", url);
 //    $("#dummyBtn")[0].click();
 //}
+
+// On initialize
 $(document).ready(function () {
     let viewBag = document.querySelector('[viewbag-id]');
     let vbId = viewBag.getAttribute('viewbag-id');

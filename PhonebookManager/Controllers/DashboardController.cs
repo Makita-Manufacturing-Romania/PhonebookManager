@@ -1,17 +1,12 @@
 ﻿using AspNetCoreHero.ToastNotification.Abstractions;
 using CsvHelper;
-using CsvHelper.Configuration;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.JSInterop;
 using PhonebookManager.Data;
 using PhonebookManager.Models;
 using System.Diagnostics;
 using System.Globalization;
-using System.Runtime.Intrinsics.Arm;
 using static PhonebookManager.ViewModels.DashboardViewModel;
-using static PhonebookManager.ViewModels.DepartmentViewModel;
 
 namespace PhonebookManager.Controllers
 {
@@ -32,6 +27,7 @@ namespace PhonebookManager.Controllers
         {
             var dbPhoneLines = await _context.PhoneLines.Include(x => x.LineOwner).Include(y => y.Department).Include(z => z.LineUsers).Include(u => u.Changes).ToListAsync();
             var dbDepartments = await _context.Departments.Include(x => x.Lines).ToListAsync();
+            ViewBag.DepartmentId = 0;
 
             if (!string.IsNullOrEmpty(searchText))
             {
