@@ -362,7 +362,7 @@ namespace PhonebookManager.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> UploadCsv(IFormFile file)
+        public async Task<JsonResult> UploadCsv(IFormFile file)
         {
             try
             {
@@ -382,69 +382,132 @@ namespace PhonebookManager.Controllers
                         }
 
                         // Save the file to the server here or perform any other operations
-                        string phonenumber = "";
-                        string ownerbadge = "";
-                        string depcode = "";
+                        //string phonenumber = "";
+                        //string ownerbadge = "";
+                        //string depcode = "";
+
                         PhoneLine phoneLine = new();
+                        List<CSVFile> csvFileLines = new List<CSVFile>();
+                        List<CSVFileError> csvFileLinesWithErrors = new();
+                        int errorCount = 0;
 
                         using (var reader = new StreamReader(file.OpenReadStream()))
                         using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
                         {
                             var records = csv.GetRecords<CSVFile>();
-                            //phonenumber = records?.FirstOrDefault()?.PhoneNumber;
-                            //ownerbadge = records?.FirstOrDefault()?.LineOwnerBadge;
-                            //depcode = records?.FirstOrDefault()?.DepartmentCode;
 
                             foreach (var record in records)
                             {
-                                phonenumber = record.PhoneNumber;
-                                ownerbadge = record.LineOwnerBadge;
-                                depcode = record.DepartmentCode;
-                                //phonenumbers.Add(record.PhoneNumber);
-                                //ownerbadges.Add(record.LineOwnerBadge);
-                                //epcodes.Add(record.DepartmentCode);
+                                //phonenumber = record.PhoneNumber;
+                                //ownerbadge = record.LineOwnerBadge;
+                                //depcode = record.DepartmentCode;
+                                csvFileLines.Add(new CSVFile { PhoneNumber = record.PhoneNumber, LineOwnerBadge = record.LineOwnerBadge, DepartmentCode = record.DepartmentCode });
                             }
 
-                            var dbline = await _context.PhoneLines.FirstOrDefaultAsync(x => x.PhoneNumber.Contains(phonenumber));
+                            var existingDbLines = await _context.PhoneLines.ToListAsync();
+                            var filteredDbLines = existingDbLines.Where(line => csvFileLines.Any(csvFile => csvFile.PhoneNumber.Contains(line.PhoneNumber))).ToList();
                             var dbPhoneUsers = await _context.PhoneUsers.ToListAsync();
                             var dbDeps = await _context.Departments.ToListAsync();
 
-                            if (dbline is null)
+                            foreach (var csvLine in csvFileLines)
                             {
-                                phoneLine = new PhoneLine
+                                if (!filteredDbLines.Any(x => x.PhoneNumber.Contains(csvLine.PhoneNumber))) // if there are no phone numbers matching the csv phone numbers
                                 {
-                                    PhoneNumber = phonenumber,
-                                    LineOwner = !string.IsNullOrEmpty(ownerbadge) ? dbPhoneUsers.FirstOrDefault(x => x.Badge == ownerbadge) : null,
-                                    Department = !string.IsNullOrEmpty(depcode) ? dbDeps.FirstOrDefault(x => x.Code == depcode) : null,
-                                };
-
-                                _context.PhoneLines.Add(phoneLine);
-                                await _context.SaveChangesAsync();
-                                _notifyService.Success("Phone line allocated: " + phonenumber);
-                            }
-                            else
-                            {
-                                var dbUser = dbPhoneUsers.FirstOrDefault(x => x.Badge == ownerbadge);
-                                var dbDep = dbDeps.FirstOrDefault(x => x.Code == depcode);
-
-                                if (dbUser is null && !string.IsNullOrEmpty(ownerbadge))
-                                {
-                                    _notifyService.Error("User does not exist");
-                                }
-                                else if (dbDep is null && !string.IsNullOrEmpty(depcode))
-                                {
-                                    _notifyService.Error("Department does not exist");
+                                    phoneLine = new PhoneLine
+                                    {
+                                        PhoneNumber = csvLine.PhoneNumber,
+                                        LineOwner = !string.IsNullOrEmpty(csvLine.LineOwnerBadge) ? dbPhoneUsers.FirstOrDefault(x => x.Badge == csvLine.LineOwnerBadge) : null,
+                                        Department = !string.IsNullOrEmpty(csvLine.DepartmentCode) ? dbDeps.FirstOrDefault(x => x.Code == csvLine.DepartmentCode) : null,
+                                    };
+                                    _context.PhoneLines.Add(phoneLine);
+                                    await _context.SaveChangesAsync();
                                 }
                                 else
                                 {
-                                    dbline.LineOwner = !string.IsNullOrEmpty(ownerbadge) ? dbPhoneUsers.FirstOrDefault(x => x.Badge == ownerbadge) : null;
-                                    dbline.Department = !string.IsNullOrEmpty(depcode) ? dbDeps.FirstOrDefault(x => x.Code == depcode) : null;
+                                    var dbline = await _context.PhoneLines.FirstOrDefaultAsync(x => x.PhoneNumber.Contains(csvLine.PhoneNumber));
 
-                                    _context.Update(dbline);
-                                    await _context.SaveChangesAsync();
-                                    _notifyService.Success("Phone line updated");
+                                    var dbUser = dbPhoneUsers.FirstOrDefault(x => x.Badge == csvLine.LineOwnerBadge);
+                                    var dbDep = dbDeps.FirstOrDefault(x => x.Code == csvLine.DepartmentCode);
 
+                                    if (dbUser is null && !string.IsNullOrEmpty(csvLine.LineOwnerBadge))
+                                    {
+                                        errorCount++;
+                                        csvFileLinesWithErrors.Add(new CSVFileError
+                                        {
+                                            PhoneNumber = csvLine.PhoneNumber,
+                                            DepartmentCode = csvLine.DepartmentCode,
+                                            LineOwnerBadge = csvLine.LineOwnerBadge,
+                                            LineOwnerBadgeIsNull = "User does not exist",
+                                            DepartmentCodeIsNull = dbDep is null && !string.IsNullOrEmpty(csvLine.DepartmentCode) ? "Department does not exist" : ""
+                                        });
+                                        // write to csv that the user does not exist
+                                        //_notifyService.Error("User does not exist");
+                                    }
+                                    else if (dbDep is null && !string.IsNullOrEmpty(csvLine.DepartmentCode))
+                                    {
+                                        errorCount++;
+                                        csvFileLinesWithErrors.Add(new CSVFileError
+                                        {
+                                            PhoneNumber = csvLine.PhoneNumber,
+                                            DepartmentCode = csvLine.DepartmentCode,
+                                            LineOwnerBadge = csvLine.LineOwnerBadge,
+                                            LineOwnerBadgeIsNull = dbUser is null && !string.IsNullOrEmpty(csvLine.LineOwnerBadge) ? "User does not exist" : "",
+                                            DepartmentCodeIsNull = "Department does not exist"
+                                        });
+                                        // write to csv that the department does not exist
+                                        //_notifyService.Error("Department does not exist");
+                                    }
+                                    else
+                                    {
+                                        dbline.LineOwner = !string.IsNullOrEmpty(csvLine.LineOwnerBadge) ? dbPhoneUsers.FirstOrDefault(x => x.Badge == csvLine.LineOwnerBadge) : null;
+                                        dbline.Department = !string.IsNullOrEmpty(csvLine.DepartmentCode) ? dbDeps.FirstOrDefault(x => x.Code == csvLine.DepartmentCode) : null;
+
+                                        _context.Update(dbline);
+                                        await _context.SaveChangesAsync();
+                                        //_notifyService.Success("Phone line updated");
+
+                                    }
                                 }
+
+                            }
+                            if (errorCount != 0)
+                            {
+                                // create and download the csv file with the errors
+
+                                MemoryStream memoryStream = new MemoryStream();
+                                StreamWriter writer = new StreamWriter(memoryStream);
+                                CsvWriter newCsv = new CsvWriter(writer, CultureInfo.InvariantCulture);
+
+                                newCsv.WriteHeader<CSVFileError>();
+                                newCsv.NextRecord();
+
+                                foreach (var line in csvFileLinesWithErrors)
+                                {
+                                    newCsv.WriteRecord(line);
+                                    newCsv.NextRecord();
+                                }
+
+                                writer.Flush();
+                                memoryStream.Position = 0;
+
+                                byte[] bytes = memoryStream.ToArray();
+
+                                // Dispose of the CsvWriter and StreamWriter
+                                newCsv.Dispose();
+                                writer.Dispose();
+
+                                _notifyService.Warning("Phone lines allocated with " + errorCount + " error(s)");
+
+                                // return File(bytes, "text/csv", "Errors.csv");
+
+                                FileObject fileObject = new FileObject { ByteContent = bytes, ContentType = "text/csv", FileName = "Errors.csv" };
+                                string json = Newtonsoft.Json.JsonConvert.SerializeObject(fileObject);
+                                return Json(json);
+
+                            }
+                            else
+                            {
+                                _notifyService.Success("Phone lines allocated with no errors");
 
                             }
 
@@ -475,14 +538,6 @@ namespace PhonebookManager.Controllers
 
         }
 
-        //public async Task<IActionResult> FilterDepartmentsById(int id)
-        //{
-
-
-        //    return RedirectToAction(nameof(Index));
-
-        //}
-
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
@@ -491,3 +546,11 @@ namespace PhonebookManager.Controllers
         }
     }
 }
+
+public class FileObject
+{
+    public byte[] ByteContent { get; set; }
+    public string ContentType { get; set; }
+    public string FileName { get; set; }
+}
+

@@ -443,21 +443,45 @@ $("body").on("click", "#deleteBtn", function () {
 });
 function UploadFiles(inputId) {
     var formData = new FormData();
-    formData.append('file', $('#myfile')[0].files[0]); // myFile is the input type="file" control
+    formData.append('file', $('#myfile')[0].files[0]); // myFile is the input type="file" contr
+
 
     $.ajax({
         url: "Dashboard/UploadCsv",
         type: 'POST',
         data: formData,
+        datatype: 'json',
         processData: false,  // tell jQuery not to process the data
         contentType: false,  // tell jQuery not to set contentType
         success: function (result) {
+            //download result
+            const fileObject = JSON.parse(result);
+            console.log(result);
+
+            const blob = base64toBlob(fileObject.ByteContent, fileObject.ContentType);
+            const link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = fileObject.FileName;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
         },
         error: function () {
         },
         complete: function (status) {
+          //  console.log(status);
+
         }
     });
+}
+function base64toBlob(base64, contentType) {
+    const byteCharacters = atob(base64);
+    const byteArray = new Uint8Array(byteCharacters.length);
+    for (let i = 0; i < byteCharacters.length; i++) {
+        byteArray[i] = byteCharacters.charCodeAt(i);
+    }
+    return new Blob([byteArray], { type: contentType });
 }
 function ImportFunction(clicked_id) {
 
