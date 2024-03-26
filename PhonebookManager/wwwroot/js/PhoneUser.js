@@ -70,6 +70,18 @@ function AllocateNumber() {
     var selectDepartments = document.getElementById("selectDepartments");
     var depValue = selectDepartments.options[selectDepartments.selectedIndex].value;
 
+    var table = document.getElementById("myTable");
+    var rows = table.getElementsByTagName("tr");
+    var rowIds = [];
+    for (var i = 0; i < rows.length; i++) {
+        // Get the ID of the row
+        var rowId = rows[i].id;
+
+        // Add the row ID to the array
+        rowIds.push(rowId);
+    }
+
+
     if (userValue === "" || depValue === "") {
         Toastify({
             text: "All fields are required",
@@ -91,9 +103,10 @@ function AllocateNumber() {
             type: "POST",
             url: "/PhoneUser/Allocate",
             data: {
-                'empId': userValue,
+                'lineOwnerId': userValue,
                 'depId': depValue,
-                'lineNo': phonenumber
+                'lineNo': phonenumber,
+                'userIds': rowIds
             },
             /*dataType: 'json',*/
             success: function (result) {
@@ -110,75 +123,8 @@ function AllocateNumber() {
 
 
 $(document).ready(function () {
+    // Autocomplete for employee responsible
     $(function () {
-        // Autocomplete for add users
-        $("#searchUserInput").autocomplete({
-            source: function (request, response) { // response is the server response, request is the search term
-                document.getElementById("spinner").style.display = "block"; // start the spinner here
-                $.ajax({
-                    url: '/PhoneUser/AutocompleteSearchUsers/',
-                    data: { "searchText": request.term },
-                    type: "POST",
-                    success: function (data) {
-                        document.getElementById("spinner").style.display = "none";
-                        response($.map(data, function (item) {
-                            return item;
-                        }));
-
-                        $(window).resize(function () {
-                            $(".ui-autocomplete").css('display', 'none');
-                        });
-
-                    },
-                    error: function (response) {
-                        $("#searchUserInput").val("Error: " + response);
-                    },
-                    //failure: function (response) { // use error or failure
-                    //    $("#searchInput").val("Failure: " + response);
-                    //}
-                });
-            },
-            select: function (e, i) {
-                $("#userId").val(i.item.val).trigger('change');
-                //$(this).autocomplete("close");
-            },
-
-        });
-    });
-    $('#userId').change(function () {
-        var userId = $("#userId");
-        document.getElementById("spinner").style.display = "block";
-
-        $.ajax({
-            url: '/PhoneUser/FindUser/',
-            data: { "searchText": userId.val() },
-            type: "GET",
-            success: function (data) {
-                document.getElementById("spinner").style.display = "none";
-                var result = $.parseJSON(data);
-                var name = document.getElementById('Name');
-                name.value = result.FullName;
-                var empId = document.getElementById('EmployeeID');
-                empId.value = result.EmployeeID;
-                var adUsername = document.getElementById('AdUsername');
-                adUsername.value = result.Username;
-                var depCode = document.getElementById('DepartmentCode');
-                depCode.value = result.Department;
-                var email = document.getElementById('Email');
-                email.value = result.Email;
-
-                var formDiv = document.getElementById('formDiv');
-                formDiv.style.display = 'inline';
-            },
-            error: function (response) {
-            },
-            failure: function (response) {
-            }
-        });
-    });
-
-    $(function () {
-        // Autocomplete for employee responsible
         $("#searchLineOwnerInput").autocomplete({
             source: function (request, response) { // response is the server response, request is the search term
                 document.getElementById("spinner").style.display = "block"; // start the spinner here
@@ -212,6 +158,13 @@ $(document).ready(function () {
 
         });
     });
+    // for employee responsible
+    $("#resetLineOwnerInput").on("click", function () {
+        document.getElementById("searchLineOwnerInput").value = "";
+        document.getElementById("resetLineOwnerInput").style.display = "none";
+
+    });
+
     $('#lineOwnerId').change(function () {
         var userId = $("#lineOwnerId");
         document.getElementById("spinner").style.display = "block";
@@ -222,6 +175,8 @@ $(document).ready(function () {
             type: "GET",
             success: function (data) {
                 document.getElementById("spinner").style.display = "none";
+                document.getElementById("resetLineOwnerInput").style.display = "block";
+
                 var result = $.parseJSON(data);
 
                 var ownerExists = document.getElementById('ownerExists');
@@ -232,13 +187,12 @@ $(document).ready(function () {
                     var row = table.rows[1];
 
                     // Create new row content
-                    var newRowContent = `<td>${result.EmployeeID}</td> <td>${result.FullName}</td> <td>${result.Email}</td> <td>Main user</td> <td> <span id="ownerExists" class="action-btn-disabled"> <i class="bi bi-trash-fill"></i> </span> </td>`;
+                    var newRowContent = `<td>${result.EmployeeID}</td> <td>${result.FullName}</td> <td>${result.Email}</td> <td>Main user</td> <td> <span id="ownerExists"  class="action-btn-disabled"> <i class="bi bi-trash-fill"></i> </span> </td>`;
 
                     // Replace the row
                     row.innerHTML = newRowContent;
                 }
-                else
-                {
+                else {
                     const tbody = document.querySelector('.table tbody');
                     // Create a new row and columns
                     let row = document.createElement('tr');
@@ -275,6 +229,126 @@ $(document).ready(function () {
                 //var email = document.getElementById('lineOwnerEmail');
                 //email.innerText = result.Email;
 
+                ReverseOpacity();
+            },
+            error: function (response) {
+            },
+            failure: function (response) {
+            }
+        });
+    });
+
+    // Autocomplete for add users
+    $(function () {
+        $("#searchUserInput").autocomplete({
+            source: function (request, response) { // response is the server response, request is the search term
+                document.getElementById("spinner").style.display = "block"; // start the spinner here
+                $.ajax({
+                    url: '/PhoneUser/AutocompleteSearchUsers/',
+                    data: { "searchText": request.term },
+                    type: "POST",
+                    success: function (data) {
+                        document.getElementById("spinner").style.display = "none";
+                        response($.map(data, function (item) {
+                            return item;
+                        }));
+
+                        $(window).resize(function () {
+                            $(".ui-autocomplete").css('display', 'none');
+                        });
+
+                    },
+                    error: function (response) {
+                        $("#searchUserInput").val("Error: " + response);
+                    },
+                    //failure: function (response) { // use error or failure
+                    //    $("#searchInput").val("Failure: " + response);
+                    //}
+                });
+            },
+            select: function (e, i) {
+                $("#userId").val(i.item.val).trigger('change');
+                //$(this).autocomplete("close");
+            },
+
+        });
+    });
+
+    $("#resetUserInput").on("click", function () {
+        document.getElementById("searchUserInput").value = "";
+        document.getElementById("resetUserInput").style.display = "none";
+
+    });
+    // for add users
+    $('#userId').change(function () {
+        var userId = $("#userId");
+        document.getElementById("spinner").style.display = "block";
+
+        $.ajax({
+            url: '/PhoneUser/FindUser/',
+            data: { "searchText": userId.val() },
+            type: "GET",
+            success: function (data) {
+                document.getElementById("spinner").style.display = "none";
+                document.getElementById("resetUserInput").style.display = "block";
+                var result = $.parseJSON(data);
+
+                var userExists = document.getElementById(result.EmployeeID);
+                if (userExists) {
+
+                    // Get the cell
+                    let cell = document.getElementById(result.EmployeeID);
+
+                    // Get the row
+                    let oldRow = cell.parentNode;
+
+                    // Create a new row
+                    //let newRow = document.createElement("tr");
+                    // Add new cells to the new row as needed
+                    //for (let i = 0; i < oldRow.cells.length; i++) {
+                    //    let newCell = document.createElement("td");
+                    //    newCell.textContent = "New text " + (i + 1);
+                    //    newRow.appendChild(newCell);
+                    //}
+                    // oldRow.parentNode.replaceChild(newRow, oldRow);
+
+                    // Create new row content
+                    var newRowContent = `<td>${result.EmployeeID}</td> <td>${result.FullName}</td> <td>${result.Email}</td> <td>Secondary user</td> <td> <span id="removeBtn" role="button" user-id="${result.EmployeeID}" class="action-btn-danger" onclick="RemoveUser()"> <i class="bi bi-trash-fill"></i> </span> </td>`;
+
+                    // Replace the old row with the new one
+                    oldRow.innerHTML = newRowContent;
+
+                }
+                else {
+                    const tbody = document.querySelector('.table tbody');
+                    // Create a new row and columns
+                    let row = document.createElement('tr');
+                    row.id = result.EmployeeID; // add id to row
+
+                    row.classList.add('border-0');
+
+                    let idCell = document.createElement('td');
+                    idCell.textContent = result.EmployeeID;
+                    let nameCell = document.createElement('td');
+                    nameCell.textContent = result.FullName;
+                    let emailCell = document.createElement('td');
+                    emailCell.textContent = result.Email;
+                    let typeCell = document.createElement('td');
+                    typeCell.textContent = "Secondary user";
+                    let actionCell = document.createElement('td');
+                    actionCell.innerHTML = `<span id="removeBtn" user-id="${result.EmployeeID}" role="button" class="action-btn-danger" onclick="RemoveUser()"> <i class="bi bi-trash-fill"></i> </span>`;
+
+
+                    // Append the columns to the row
+                    row.appendChild(idCell);
+                    row.appendChild(nameCell);
+                    row.appendChild(emailCell);
+                    row.appendChild(typeCell);
+                    row.appendChild(actionCell);
+
+                    // Append the row to the table body
+                    tbody.appendChild(row);
+                }
 
             },
             error: function (response) {
@@ -282,5 +356,31 @@ $(document).ready(function () {
             failure: function (response) {
             }
         });
+    });
+});
+
+function RemoveUser() {
+    let findId = document.querySelector('[user-id]');
+    let userId = findId.getAttribute('user-id');
+    var userTd = document.getElementById(userId);
+    let row = userTd.parentNode;
+    row.remove();
+}
+
+
+
+$(document).ready(function () {
+    $("#addUserBtn").on("click", function () {
+        var table = document.getElementById("myTable");
+        var rows = table.getElementsByTagName("tr");
+        var rowIds = [];
+        for (var i = 0; i < rows.length; i++) {
+            // Get the ID of the row
+            var rowId = rows[i].id;
+
+            // Add the row ID to the array
+            rowIds.push(rowId);
+        }
+        console.log(rowIds);
     });
 });

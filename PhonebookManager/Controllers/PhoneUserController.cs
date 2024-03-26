@@ -37,15 +37,29 @@ namespace PhonebookManager.Controllers
             return View(viewModel);
         }
         [HttpPost]
-        public async Task<IActionResult> Allocate(string empId, uint depId, string lineNo)
+        public async Task<IActionResult> Allocate(string lineOwnerId, uint depId, string lineNo, string[] userIds)
         {
-            var dbUser = await _context.Employees.FromSqlRaw("SELECT * FROM All_employees").FirstOrDefaultAsync(x=>x.EmployeeID == empId);
+            var viewEmployees = await _context.Employees.FromSqlRaw("SELECT * FROM All_employees").ToListAsync();
+            var lineOwner = viewEmployees.FirstOrDefault(x=>x.EmployeeID == lineOwnerId);
+            var filteredUsers = viewEmployees.Where(emp => userIds.Contains(emp.EmployeeID)).ToList();
             var dbDep = await _context.Departments.FirstOrDefaultAsync(x=>x.Id == depId);
+
+            List<PhoneUser> lineUsers = new();
+
+            foreach (var user in filteredUsers)
+            {
+                if (user != null)
+                {
+                    lineUsers.Add(new PhoneUser {Badge = user.EmployeeID, Email = user.Email, Name = user.FullName });
+                }
+            }
+
             PhoneLine line = new PhoneLine
             {
                 PhoneNumber = lineNo,
                 Department = dbDep,
-                LineOwner = new PhoneUser { Name = dbUser.FullName, Badge = dbUser.EmployeeID, Email = dbUser.Email }
+                LineOwner = new PhoneUser { Name = lineOwner.FullName, Badge = lineOwner.EmployeeID, Email = lineOwner.Email },
+                LineUsers = lineUsers
             };
             _context.PhoneLines.Add(line);
             await _context.SaveChangesAsync();
@@ -105,6 +119,7 @@ namespace PhonebookManager.Controllers
             {
                 return Json("");
             }
+
             string json = Newtonsoft.Json.JsonConvert.SerializeObject(dbUser);
             return Json(json);
         }

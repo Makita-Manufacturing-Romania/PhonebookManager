@@ -25,8 +25,11 @@
 
         <p style="width: 15%; padding-top:5px;">Employee responsible:</p>
         <div style="position: relative; display: inline-block; width: 35%;">
+
             <span class="small-spinner" id="spinner" style="display:none;position: absolute;left: 10px; top: 15%;transform: translateY(-50%);"></span>
             <input type="text" id="searchLineOwnerInput" autocomplete="off" placeholder="Search for employee" />
+            <i class="bi bi-x-lg" id="resetLineOwnerInput" role="button" style="display:none;position: absolute;right: 10px; top: 35%;transform: translateY(-50%);"></i>
+
         </div>
         <input type="hidden" id="lineOwnerId" value="">
 
@@ -39,7 +42,7 @@
             </select>*@
 
         <p style="width: 15%; padding-top: 5px;">Assigned department:</p>
-        <select class="normal-select-box" asp-for="DepartmentId" style="width: 35%;" id="selectDepartments" onchange="ReverseOpacity()">
+        <select class="normal-select-box" asp-for="DepartmentId" style="width: 35%;" id="selectDepartments">
             <option value=""></option>
             @foreach (var dep in Model.Departments ?? Enumerable.Empty<Department>())
             {
@@ -58,13 +61,17 @@
 
         <div class="d-flex justify-content-between w-100">
             <h4>Users</h4>
-            <div class="d-flex w-50 gap-2">
+            <div class="d-flex w-50 gap-2 align-items-center">
+
+                <input type="hidden" id="userId" name="IdExternalView" value="">
+                <span style="width:20%;" id="addUserBtn">Add user:</span>
+
                 <div style="position: relative; display: inline-block; width: 100%; margin-bottom: 10px;">
                     <span class="small-spinner" id="spinner" style="display:none;position: absolute;left: 10px; top: 30%;transform: translateY(-50%);"></span>
                     <input type="text" id="searchUserInput" autocomplete="off" placeholder="Search for user" />
+                    <i class="bi bi-x-lg" id="resetUserInput" role="button" style="display:none; position: absolute;right: 10px; top: 53%;transform: translateY(-50%);"></i>
+
                 </div>
-                <input type="hidden" id="userId" name="IdExternalView" value="">
-                <button class="btn btn-success" style="width:25%; height:45px;" onclick="NotImplemented()" id="addUserBtn">Add user</button>
             </div>
         </div>
 
@@ -83,16 +90,14 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @*<tr class="border-0">
 
+                    @*<tr class="border-0">
                         <td id="lineOwnerBadge">@Model?.LineOwner?.Badge</td>
                         <td id="lineOwnerName">@Model?.LineOwner?.Name</td>
                         <td id="lineOwnerEmail">@Model?.LineOwner?.Email</td>
                         <td>Main user</td>
                         <td><span class="action-btn-disabled"> <i class="bi bi-trash-fill"></i> </span></td>
-
                     </tr>
-
 
                     @foreach (var line in Model?.LineUsers ?? Enumerable.Empty<PhoneUser>())
                     {
@@ -101,7 +106,6 @@
                             <td>@line.Name</td>
                             <td>@line.Email</td>
                             <td>Secondary user</td>
-
                             <td>
                                 <span class="action-btn-danger me-2" role="button" onclick="NotImplemented()"> <i class="bi bi-trash-fill"></i> </span>
                             </td>
