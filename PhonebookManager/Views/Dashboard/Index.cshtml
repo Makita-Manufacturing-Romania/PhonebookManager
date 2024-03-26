@@ -95,7 +95,8 @@
                                        line-number="@line?.PhoneNumber"
                                        line-department-name="@line?.Department?.Name"
                                        line-department-code="@line?.Department?.Code"
-                                       onclick="DashboardEditFunction(this)"></i>
+                                       @*onclick="DashboardEditFunction(this)"*@
+                                       onclick="NotImplemented()"></i>
                                 </span>
 
                                 <span class="action-btn-danger me-2" type="button">
@@ -194,7 +195,7 @@
                     <input id="delModalPhoneId" hidden />
 
 
-                    <div class="tall-input-box-delete">
+                    <div class="tall-input-box-disabled">
                         <label for="delPhoneNumber" class="control-label" disabled>Phone line</label>
                         <input class="input-no-border" id="delPhoneNumber" disabled />
                     </div>

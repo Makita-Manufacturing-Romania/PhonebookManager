@@ -11,9 +11,9 @@ namespace PhonebookManager.ViewModels
         public class AppUserVM
         {
             public int Id { get; set; }
-            public string? AdIdentity { get; set; }
-            public string? DepartmentCode { get; set; }
-            public string? DepartmentName { get; set; }
+            public string? AdIdentity { get; set; } // Username
+            public Department? Department { get; set; }
+            public string? DepartmentId { get; set; }
             public string? Email { get; set; }
             public string? BadgeNo { get; set; }
             public string? Name { get; set; }
@@ -24,6 +24,19 @@ namespace PhonebookManager.ViewModels
             public List<AppRole>? UserRolesList { get; set; }
             public List<AppUser>? AppUsersList { get; set; }
             public List<Department>? DepartmentList { get; set; }
+
+
+            public string? EmployeeID { get; set; }
+            public string? LastName { get; set; }
+            public string? FirstName { get; set; }
+            public string? FullName { get; set; }
+            public DateTime StartDate { get; set; }
+            public DateTime EndDate { get; set; }
+            public string? DepartmentCode { get; set; }
+            public string? Title { get; set; }
+            public string? Activity { get; set; }
+            public string? Username { get; set; }
+            public string? Manager { get; set; }
 
         }
     }

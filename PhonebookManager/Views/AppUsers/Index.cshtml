@@ -11,24 +11,22 @@
 
 
 <div class="input-div">
-    @*<input placeholder="All departments" style="width: 35%;" />*@
-    <select class="normal-select-box" style="width: 35%;" id="selectDepartment" viewbag-name="@ViewBag.DepartmentName">
-        <option value="0">All departments</option>
-        @foreach (var dep in Model.DepartmentList)
-        {
-            <option value="@dep.Name">@dep.Name</option>
-        }
-    </select>
+    @*<select class="normal-select-box" style="width: 35%;" id="selectDepartment" viewbag-name="@ViewBag.DepartmentName">
+            <option value="0">All departments</option>
+            @foreach (var dep in Model.DepartmentList)
+            {
+                <option value="@dep.Name">@dep.Name</option>
+            }
+        </select>*@
 
-
-    <div style="position: relative; display: inline-block; width: 65%;">
+    @*width: 65%;*@
+    <div style="position: relative; display: inline-block; width: 100%;">
         @if (Model.AppUsersList.Count() >= 1 && !string.IsNullOrEmpty(ViewBag.SearchText))
         {
             <i class="bi bi-x-lg" id="searchButton" role="button" style="position: absolute;right: 10px; top: 50%;transform: translateY(-50%);"></i>
         }
         else
         {
-            <span id="counter" style="position: absolute;left: 10px; top: 50%;transform: translateY(-50%);"></span>
             <i class="bi bi-search" id="searchButton" role="button" style="position: absolute;right: 10px; top: 50%;transform: translateY(-50%);"></i>
         }
         <input type="text" id="searchInput" autocomplete="off" placeholder="Search by employee id or name" />
@@ -46,8 +44,8 @@
                 <tr>
                     <th scope="col">Employee name</th>
                     <th scope="col">Employee ID</th>
-                    <th scope="col">Department name</th>
-                    <th scope="col">Department code</th>
+                    @*<th scope="col">Department name</th>
+                        <th scope="col">Department code</th>*@
                     <th scope="col">Role</th>
                     <th scope="col">Actions</th>
 
@@ -59,8 +57,6 @@
                     <tr class="border-0">
                         <td>@user.Name</td>
                         <td>@user.BadgeNo</td>
-                        <td>@user.DepartmentName</td>
-                        <td>@user.DepartmentCode</td>
                         <td>@user.Role.Role</td>
                         <td>
                             <span class="action-btn me-2" type="button">
@@ -68,8 +64,8 @@
                                    user-Id="@user.Id"
                                    user-Name="@user.Name"
                                    user-BadgeNo="@user.BadgeNo"
-                                   user-DepartmentName="@user.DepartmentName"
-                                   user-DepartmentCode="@user.DepartmentCode"
+                                   user-DepartmentName=""
+                                   user-DepartmentCode=""
                                    user-Role-Role="@user.Role.Role"
                                    onclick="AppUserEditFunction(this)"></i>
                             </span>
@@ -79,8 +75,8 @@
                                    user-Id="@user.Id"
                                    user-Name="@user.Name"
                                    user-BadgeNo="@user.BadgeNo"
-                                   user-DepartmentName="@user.DepartmentName"
-                                   user-DepartmentCode="@user.DepartmentCode"
+                                   user-DepartmentName=""
+                                   user-DepartmentCode=""
                                    onclick="AppUserDeleteFunction(this)"></i>
                             </span>
                         </td>
@@ -103,61 +99,56 @@
                 <h2 class="" id="addModalLabel" style="color: #008A99; text-decoration: underline 2px; text-underline-offset: 0.5em;">Add user</h2>
 
             </div>
-            <div class="modal-body">
+            <div class="modal-body" style="min-height: 160px;">
                 @*<div style=" width: 100%; display: flex; justify-content: center;">*@
+                <div style="position: relative; display: inline-block; width: 100%; margin-bottom: 10px;">
 
+                    <span class="small-spinner" id="spinner" style="display:none;position: absolute;left: 10px; top: 30%;transform: translateY(-50%);"></span>
+                    @*<i class="bi bi-search" id="searchUserButton" role="button" style="position: absolute;right: 10px; top: 50%;transform: translateY(-50%);"></i>*@
+                    <input type="text" id="searchUserInput" autocomplete="off" placeholder="Search by employee id or name" style="height:70px;" />
+                </div>
+                <input type="hidden" id="userId" name="IdExternalView" value="">
 
-                <form asp-action="Create">
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                    <div class="tall-input-box">
-                        <label asp-for="AdIdentity" class="control-label" style="cursor:pointer" for="AdIdentity">Ad Identity</label>
-                        <input class="input-no-border" asp-for="AdIdentity" id="AdIdentity" />
-                        <span asp-validation-for="AdIdentity" class="text-danger"></span>
-                    </div>
-                    <div class="tall-input-box">
-                        <label asp-for="Email" class="control-label" style="cursor:pointer" for="Email"></label>
-                        <input class="input-no-border" asp-for="Email" id="Email" />
-                        <span asp-validation-for="Email" class="text-danger"></span>
-                    </div>
-                    <div class="tall-input-box">
-                        <label asp-for="BadgeNo" class="control-label" style="cursor:pointer" for="BadgeNo">Badge number</label>
-                        <input class="input-no-border" asp-for="BadgeNo" id="BadgeNo" badge-input="badgeNoInput" />
-                        <span asp-validation-for="BadgeNo" class="text-danger"></span>
-                    </div>
-                    <div class="tall-input-box">
-                        <label asp-for="DepartmentName" class="control-label" style="cursor:pointer" for="DepartmentName">Department Name</label>
-                        <input class="input-no-border" asp-for="DepartmentName" id="DepartmentName" />
-                        <span asp-validation-for="DepartmentName" class="text-danger"></span>
-                    </div>
-                    <div class="tall-input-box">
-                        <label asp-for="DepartmentCode" class="control-label" style="cursor:pointer" for="DepartmentCode">Department Code</label>
-                        <input class="input-no-border" asp-for="DepartmentCode" id="DepartmentCode" />
-                        <span asp-validation-for="DepartmentCode" class="text-danger"></span>
-                    </div>
-                    <div class="tall-input-box">
-                        <label asp-for="Name" class="control-label" style="cursor:pointer;" for="Name"></label>
-                        <input class="input-no-border" asp-for="Name" id="Name" />
-                        <span asp-validation-for="Name" class="text-danger"></span>
-                    </div>
-                    <div class="tall-input-box">
-                        <div>
-                            <label asp-for="RoleName" style="position: absolute;">Role</label>
-                            <select class="large-select-box" asp-for="RoleName">
-                                @foreach (var role in Model.UserRolesList)
-                                {
-                                    @*<option value="@role.Value">@role.Value</option>*@
-                                    <option value="@role.Role">@role.Role</option>
-                                }
-                            </select>
+                <div id="formDiv" style="display:none;">
+                    <form asp-action="Create">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div class="tall-input-box-disabled">
+                            <label asp-for="Name" class="control-label"></label>
+                            <input class="input-no-border-disabled" asp-for="Name" id="Name" readonly />
                         </div>
-                    </div>
+                        <div class="tall-input-box-disabled">
+                            <label asp-for="EmployeeID" class="control-label">Badge number</label>
+                            <input class="input-no-border-disabled" asp-for="EmployeeID" id="EmployeeID" readonly />
+                        </div>
+                        <div class="tall-input-box-disabled">
+                            <label asp-for="AdIdentity" class="control-label">Username</label>
+                            <input class="input-no-border-disabled" asp-for="AdIdentity" id="AdUsername" readonly />
+                        </div>
+                        <div class="tall-input-box-disabled">
+                            <label asp-for="DepartmentCode" class="control-label">Department Code</label>
+                            <input class="input-no-border-disabled" asp-for="DepartmentCode" id="DepartmentCode" readonly />
+                        </div>
+                        <input hidden asp-for="Email" id="Email" />
 
-                    <br />
-                    <div class="form-group w-100">
-                        <input type="submit" value="Create" class="btn btn-success" style="width:80%;" />
-                        <input role="button" class="btn btn-secondary" data-bs-dismiss="modal" style="width:19%;" Value="Close" />
-                    </div>
-                </form>
+                        <div class="tall-input-box">
+                            <div>
+                                <label asp-for="RoleName" style="position: absolute;">Role</label>
+                                <select class="large-select-box" asp-for="RoleName">
+                                    @foreach (var role in Model.UserRolesList)
+                                    {
+                                        <option value="@role.Role">@role.Role</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+
+                        <br />
+                        <div class="form-group w-100">
+                            <input type="submit" value="Create" class="btn btn-success" style="width:80%;" />
+                            <input role="button" class="btn btn-secondary" data-bs-dismiss="modal" style="width:19%;" Value="Close" />
+                        </div>
+                    </form>
+                </div>
 
 
             </div>
@@ -180,38 +171,15 @@
             <div class="modal-body">
                 @*<div style=" width: 100%; display: flex; justify-content: center;">*@
 
-
                 <input id="editModalUserId" hidden />
 
-                @*<div class="tall-input-box">
-                        <label asp-for="AdIdentity" class="control-label" style="cursor:pointer" onclick="FocusInput(modalAdIdentity)">Ad Identity</label>
-                        <input class="input-no-border" asp-for="AdIdentity" id="modalAdIdentity" />
-                        <span asp-validation-for="AdIdentity" class="text-danger"></span>
-                    </div>
-                    <div class="tall-input-box">
-                        <label asp-for="Email" class="control-label" style="cursor:pointer" onclick="FocusInput(modalEmail)"></label>
-                        <input class="input-no-border" asp-for="Email" id="modalEmail" />
-                        <span asp-validation-for="Email" class="text-danger"></span>
-                    </div>*@
-                <div class="tall-input-box">
-                    <label asp-for="Name" class="control-label" style="cursor:pointer;" for="editModalName"></label>
-                    <input class="input-no-border" asp-for="Name" id="editModalName" />
-                    <span asp-validation-for="Name" class="text-danger"></span>
+                <div class="tall-input-box-disabled">
+                    <label asp-for="Name" class="control-label"></label>
+                    <input class="input-no-border-disabled" asp-for="Name" id="editModalName" readonly/>
                 </div>
-                <div class="tall-input-box">
-                    <label asp-for="BadgeNo" class="control-label" style="cursor:pointer" for="editModalBadgeNo">Badge number</label>
-                    <input class="input-no-border" asp-for="BadgeNo" id="editModalBadgeNo" />
-                    <span asp-validation-for="BadgeNo" class="text-danger"></span>
-                </div>
-                <div class="tall-input-box">
-                    <label asp-for="DepartmentName" class="control-label" style="cursor:pointer" for="editModalDepartmentName">Department Name</label>
-                    <input class="input-no-border" asp-for="DepartmentName" id="editModalDepartmentName" />
-                    <span asp-validation-for="DepartmentName" class="text-danger"></span>
-                </div>
-                <div class="tall-input-box">
-                    <label asp-for="DepartmentCode" class="control-label" style="cursor:pointer" for="editModalDepartmentCode">Department Code</label>
-                    <input class="input-no-border" asp-for="DepartmentCode" id="editModalDepartmentCode" />
-                    <span asp-validation-for="DepartmentCode" class="text-danger"></span>
+                <div class="tall-input-box-disabled">
+                    <label asp-for="BadgeNo" class="control-label">Badge number</label>
+                    <input class="input-no-border-disabled" asp-for="BadgeNo" id="editModalBadgeNo" readonly/>
                 </div>
 
                 <div class="tall-input-box">
@@ -262,24 +230,15 @@
                     <input id="delModalUserId" hidden />
 
 
-                    <div class="tall-input-box-delete">
-                        <label asp-for="Name" class="control-label" disabled></label>
-                        <input class="input-no-border" asp-for="Name" id="delModalName" disabled />
+                    <div class="tall-input-box-disabled">
+                        <label asp-for="Name" class="control-label"></label>
+                        <input class="input-no-border-disabled" asp-for="Name" id="delModalName" readonly />
                     </div>
-                    <div class="tall-input-box-delete">
-                        <label asp-for="BadgeNo" class="control-label" disabled>Badge number</label>
-                        <input class="input-no-border" asp-for="BadgeNo" id="delModalBadgeNo" disabled />
+                    <div class="tall-input-box-disabled">
+                        <label asp-for="BadgeNo" class="control-label">Badge number</label>
+                        <input class="input-no-border-disabled" asp-for="BadgeNo" id="delModalBadgeNo" readonly />
                     </div>
-                    <div class="tall-input-box-delete">
-                        <label asp-for="DepartmentName" class="control-label" disabled>Department Name</label>
-                        <input class="input-no-border" asp-for="DepartmentName" id="delModalDepartmentName" disabled />
-                    </div>
-                    <div class="tall-input-box-delete">
-                        <label asp-for="DepartmentCode" class="control-label" disabled>Department Code</label>
-                        <input class="input-no-border" asp-for="DepartmentCode" id="delModalDepartmentCode" disabled />
-                    </div>
-
-
+                    
                     <br />
 
                     <div class="form-group w-100">

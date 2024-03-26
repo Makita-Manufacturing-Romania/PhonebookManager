@@ -1,5 +1,27 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400&display=swap');
 
+.small-spinner {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: inline-block;
+    border-top: 3px solid #008A99;
+    border-right: 3px solid transparent;
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
+}
+
+@keyframes rotation {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+} 
+  
+
 html, body {
     font-size: 14px;
     font-family: 'Roboto', sans-serif;
@@ -31,8 +53,25 @@ html, body {
     display: inline-block;
     border: 1px solid black;
     border-radius: 10px;
+    max-height: 350px;
+    overflow-y: scroll;
     /*list-style-type: none!important;*/
 }
+    /* This will change the scrollbar track */
+    .ui-autocomplete::-webkit-scrollbar {
+        width: 10px;
+    }
+
+    /* This will change the scrollbar thumb (the moving part) */
+    .ui-autocomplete::-webkit-scrollbar-thumb {
+        background: #008A99;
+        border-radius: 10px;
+    }
+
+    /* This will remove the scrollbar buttons (up and down arrows) */
+    .ui-autocomplete::-webkit-scrollbar-button {
+        display: none;
+    }
 
 .ui-menu-item {
     cursor: pointer !important;
@@ -139,12 +178,17 @@ table {
     font-size: 20px;
     color: #424242;
 }
+.action-btn-disabled {
+    font-size: 20px;
+    color: #E8E8E8;
+}
+
 
     .action-btn-danger:hover {
         text-shadow: 0px 0px 20px red;
     }
 
-.tall-input-box-delete {
+.tall-input-box-disabled {
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
@@ -211,11 +255,18 @@ input {
     text-align: center;
 }
 
-    input:focus, .input-no-border:focus {
+    input:focus, .input-no-border:focus, .input-no-border-disabled:focus {
         outline: none;
     }
 
 .input-no-border {
+    width: 100%;
+    border: none;
+    height: 30px;
+    text-align: left;
+}
+.input-no-border-disabled {
+    background-color: #F7F7F7;
     width: 100%;
     border: none;
     height: 30px;

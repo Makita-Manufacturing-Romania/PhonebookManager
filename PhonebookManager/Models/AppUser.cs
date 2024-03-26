@@ -4,8 +4,6 @@
     {
         public int Id { get; set; }
         public string? AdIdentity { get; set; } // Username
-        public string? DepartmentCode { get; set; }
-        public string? DepartmentName { get; set; }
         public string? Email { get; set; }
         public string? BadgeNo { get; set; }
         public string? Name { get; set; }

@@ -24,15 +24,23 @@
     <div class="d-flex gap-3">
 
         <p style="width: 15%; padding-top:5px;">Employee responsible:</p>
-        <select class="normal-select-box" asp-for="LineOwnerId" style="width: 35%;" id="selectAppUser" onchange="ReverseOpacity()">
-            @foreach (var user in Model.AppUsers ?? Enumerable.Empty<AppUser>())
-            {
-                <option value="@user.Id">@user.Name</option>
-            }
-        </select>
+        <div style="position: relative; display: inline-block; width: 35%;">
+            <span class="small-spinner" id="spinner" style="display:none;position: absolute;left: 10px; top: 15%;transform: translateY(-50%);"></span>
+            <input type="text" id="searchLineOwnerInput" autocomplete="off" placeholder="Search for employee" />
+        </div>
+        <input type="hidden" id="lineOwnerId" value="">
+
+        @*<select class="normal-select-box" asp-for="LineOwnerId" style="width: 35%;" id="selectOwner" onchange="ReverseOpacity()">
+                <option value=""></option>
+                @foreach (var user in Model.AppUsers ?? Enumerable.Empty<AppUser>())
+                {
+                    <option value="@user.Id">@user.Name</option>
+                }
+            </select>*@
 
         <p style="width: 15%; padding-top: 5px;">Assigned department:</p>
         <select class="normal-select-box" asp-for="DepartmentId" style="width: 35%;" id="selectDepartments" onchange="ReverseOpacity()">
+            <option value=""></option>
             @foreach (var dep in Model.Departments ?? Enumerable.Empty<Department>())
             {
                 <option value="@dep.Id">@dep.Name</option>
@@ -51,13 +59,18 @@
         <div class="d-flex justify-content-between w-100">
             <h4>Users</h4>
             <div class="d-flex w-50 gap-2">
-                <input placeholder="Search for user" id="searchInput" /> <button class="btn btn-success" style="width:25%; line-height: 30px;" onclick="NotImplemented()" id="addUserBtn">Add user</button>
+                <div style="position: relative; display: inline-block; width: 100%; margin-bottom: 10px;">
+                    <span class="small-spinner" id="spinner" style="display:none;position: absolute;left: 10px; top: 30%;transform: translateY(-50%);"></span>
+                    <input type="text" id="searchUserInput" autocomplete="off" placeholder="Search for user" />
+                </div>
+                <input type="hidden" id="userId" name="IdExternalView" value="">
+                <button class="btn btn-success" style="width:25%; height:45px;" onclick="NotImplemented()" id="addUserBtn">Add user</button>
             </div>
         </div>
 
         <br />
 
-        <div>
+        <div style="max-height: 600px; overflow:auto">
             <table class="table" id="myTable">
                 <thead class="sticky-top bg-white">
                     <tr>
@@ -69,30 +82,32 @@
 
                     </tr>
                 </thead>
-                <tbody id="tBody">
+                <tbody>
+                    @*<tr class="border-0">
 
-                    @foreach (var line in Model.LineUsers ?? Enumerable.Empty<PhoneUser>())
+                        <td id="lineOwnerBadge">@Model?.LineOwner?.Badge</td>
+                        <td id="lineOwnerName">@Model?.LineOwner?.Name</td>
+                        <td id="lineOwnerEmail">@Model?.LineOwner?.Email</td>
+                        <td>Main user</td>
+                        <td><span class="action-btn-disabled"> <i class="bi bi-trash-fill"></i> </span></td>
+
+                    </tr>
+
+
+                    @foreach (var line in Model?.LineUsers ?? Enumerable.Empty<PhoneUser>())
                     {
-
                         <tr class="border-0">
                             <td>@line.Badge</td>
                             <td>@line.Name</td>
                             <td>@line.Email</td>
-                            @if (Model.LineUsers.Count > 1)
-                            {
-                                <td>Multi use</td>
-                            }
-                            else
-                            {
-                                <td>Main user</td>
-                            }
+                            <td>Secondary user</td>
+
                             <td>
                                 <span class="action-btn-danger me-2" role="button" onclick="NotImplemented()"> <i class="bi bi-trash-fill"></i> </span>
                             </td>
-
                         </tr>
 
-                    }
+                    }*@
 
                 </tbody>
             </table>

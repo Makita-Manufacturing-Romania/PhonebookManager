@@ -381,11 +381,7 @@ namespace PhonebookManager.Controllers
                             //return View();
                         }
 
-                        // Save the file to the server here or perform any other operations
-                        //string phonenumber = "";
-                        //string ownerbadge = "";
-                        //string depcode = "";
-
+                        // save the file to the server here or perform other operations
                         PhoneLine phoneLine = new();
                         List<CSVFile> csvFileLines = new List<CSVFile>();
                         List<CSVFileError> csvFileLinesWithErrors = new();
@@ -398,9 +394,6 @@ namespace PhonebookManager.Controllers
 
                             foreach (var record in records)
                             {
-                                //phonenumber = record.PhoneNumber;
-                                //ownerbadge = record.LineOwnerBadge;
-                                //depcode = record.DepartmentCode;
                                 csvFileLines.Add(new CSVFile { PhoneNumber = record.PhoneNumber, LineOwnerBadge = record.LineOwnerBadge, DepartmentCode = record.DepartmentCode });
                             }
 
@@ -431,6 +424,7 @@ namespace PhonebookManager.Controllers
 
                                     if (dbUser is null && !string.IsNullOrEmpty(csvLine.LineOwnerBadge))
                                     {
+                                        // write to csv that the user does not exist
                                         errorCount++;
                                         csvFileLinesWithErrors.Add(new CSVFileError
                                         {
@@ -440,11 +434,10 @@ namespace PhonebookManager.Controllers
                                             LineOwnerBadgeIsNull = "User does not exist",
                                             DepartmentCodeIsNull = dbDep is null && !string.IsNullOrEmpty(csvLine.DepartmentCode) ? "Department does not exist" : ""
                                         });
-                                        // write to csv that the user does not exist
-                                        //_notifyService.Error("User does not exist");
                                     }
                                     else if (dbDep is null && !string.IsNullOrEmpty(csvLine.DepartmentCode))
                                     {
+                                        // write to csv that the department does not exist
                                         errorCount++;
                                         csvFileLinesWithErrors.Add(new CSVFileError
                                         {
@@ -454,8 +447,6 @@ namespace PhonebookManager.Controllers
                                             LineOwnerBadgeIsNull = dbUser is null && !string.IsNullOrEmpty(csvLine.LineOwnerBadge) ? "User does not exist" : "",
                                             DepartmentCodeIsNull = "Department does not exist"
                                         });
-                                        // write to csv that the department does not exist
-                                        //_notifyService.Error("Department does not exist");
                                     }
                                     else
                                     {
@@ -465,7 +456,6 @@ namespace PhonebookManager.Controllers
                                         _context.Update(dbline);
                                         await _context.SaveChangesAsync();
                                         //_notifyService.Success("Phone line updated");
-
                                     }
                                 }
 
@@ -498,8 +488,6 @@ namespace PhonebookManager.Controllers
 
                                 _notifyService.Warning("Phone lines allocated with " + errorCount + " error(s)");
 
-                                // return File(bytes, "text/csv", "Errors.csv");
-
                                 FileObject fileObject = new FileObject { ByteContent = bytes, ContentType = "text/csv", FileName = "Errors.csv" };
                                 string json = Newtonsoft.Json.JsonConvert.SerializeObject(fileObject);
                                 return Json(json);
@@ -513,9 +501,7 @@ namespace PhonebookManager.Controllers
 
                         }
 
-
-                        //_notifyService.Success("File uploaded successfully!" + file.FileName);
-                        //_notifyService.Success(phonenumber + " " + ownerbadge + " " + depcode);
+                        //_notifyService.Success("File uploaded successfully!");
                     }
                     else
                     {
@@ -549,8 +535,8 @@ namespace PhonebookManager.Controllers
 
 public class FileObject
 {
-    public byte[] ByteContent { get; set; }
-    public string ContentType { get; set; }
-    public string FileName { get; set; }
+    public byte[]? ByteContent { get; set; }
+    public string? ContentType { get; set; }
+    public string? FileName { get; set; }
 }
 

@@ -33,19 +33,19 @@ namespace PhonebookManager
                     .ToListAsync();
             }
 
-            if (!string.IsNullOrEmpty(depName))
-            {
-                if (depName != "0")
-                {
-                    ViewBag.DepartmentName = depName;
-                    dbUsers = await _context.AppUsers.Where(x => x.DepartmentName.Contains(depName)).ToListAsync();
-                    if (dbUsers.Count == 0)
-                    {
-                        dbUsers = await _context.AppUsers.Include(x => x.Role).ToListAsync();
-                        _notifyService.Information("No users found for " + depName);
-                    }
-                }
-            }
+            //if (!string.IsNullOrEmpty(depName))
+            //{
+            //    if (depName != "0")
+            //    {
+            //        ViewBag.DepartmentName = depName;
+            //        dbUsers = await _context.AppUsers.Where(x => x.Department.Name.Contains(depName)).ToListAsync();
+            //        if (dbUsers.Count == 0)
+            //        {
+            //            dbUsers = await _context.AppUsers.Include(x => x.Role).ToListAsync();
+            //            _notifyService.Information("No users found for " + depName);
+            //        }
+            //    }
+            //}
 
             var dbRoles = await _context.AppRoles.ToListAsync();
             var viewModel = new AppUserVM()
@@ -99,7 +99,7 @@ namespace PhonebookManager
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        //[ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(AppUserVM appUser) // [Bind("Id,AdIdentity,Email,BadgeNo,Name,RoleName")]
         {
             var dbUser = await _context.AppUsers.FirstOrDefaultAsync(x => x.BadgeNo == appUser.BadgeNo);
@@ -111,11 +111,9 @@ namespace PhonebookManager
                 var user = new AppUser()
                 {
                     Name = appUser.Name,
-                    Email = appUser.Email,
                     AdIdentity = appUser.AdIdentity,
-                    BadgeNo = appUser.BadgeNo,
-                    DepartmentCode = appUser.DepartmentCode,
-                    DepartmentName = appUser.DepartmentName,
+                    BadgeNo = appUser.EmployeeID,
+                    Email = string.IsNullOrEmpty(appUser.Email) && !string.IsNullOrEmpty(appUser.AdIdentity) ? $"{appUser.AdIdentity}@mmrmakita.eu" : !string.IsNullOrEmpty(appUser.Email) ? appUser.Email : "N/A",
                     RoleId = dbRole.Id
                 };
 
@@ -150,7 +148,7 @@ namespace PhonebookManager
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int? id, string adIdentity, string email, string name, string badgeNo, string depName, string depCode, string role)
+        public async Task<IActionResult> Edit(int? id, string name, string badgeNo, string role)
         {
             if (id == null)
             {
@@ -169,12 +167,6 @@ namespace PhonebookManager
                 try
                 {
                     var roleId = int.Parse(role);
-                    appUser.AdIdentity = adIdentity;
-                    appUser.Email = email;
-                    appUser.Name = name;
-                    appUser.BadgeNo = badgeNo;
-                    appUser.DepartmentCode = depCode;
-                    appUser.DepartmentName = depName;
                     appUser.RoleId = roleId;
                     _context.Update(appUser);
                     await _context.SaveChangesAsync();
@@ -272,6 +264,64 @@ namespace PhonebookManager
             }
             return Json("");
         }
+
+
+        public async Task<JsonResult> AutocompleteSearchUsers(string searchText)
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(searchText))
+                {
+                    string[] words = searchText.Split(' ');
+                    string firstWord = words[0];
+                    List<Employee> Employees = new();
+                    try
+                    {
+                        Employees = await _context.Employees.FromSqlRaw("SELECT * FROM All_employees").ToListAsync();
+                    }
+                    catch { }
+
+                    if (Employees is not null || Employees.Count() != 0)
+                    {
+                        Employees = Employees.Where(x => x.EmployeeID.Contains(searchText.Replace(" ", "")) || x.FullName.Contains(searchText.Replace(" ", ""))).ToList();
+                        var employeesFiltered = (from user in Employees
+                                                 select new
+                                                 {
+                                                     label = user.EmployeeID + " - " + user.FullName,
+                                                     val = user.EmployeeID
+                                                 }).ToList();
+                        if (employeesFiltered.Count != 0)
+                        {
+                            return Json(employeesFiltered);
+
+                        }
+                        else
+                        {
+                            return Json("");
+                        }
+                    }
+                }
+
+                return Json("");
+
+            }
+            catch (Exception ex)
+            {
+                return Json("Error-" + ex.Message + " stackTrace-" + ex.StackTrace);
+            }
+        }
+
+        public async Task<JsonResult> FindUser(string searchText)
+        {
+            var dbUser = await _context.Employees.FromSqlRaw("SELECT * FROM All_employees").FirstOrDefaultAsync(x=>x.EmployeeID == searchText.Replace(" ", ""));
+            if(dbUser == null)
+            {
+                return Json("");
+            }
+            string json = Newtonsoft.Json.JsonConvert.SerializeObject(dbUser);
+            return Json(json);
+        }
+
     }
 }
 

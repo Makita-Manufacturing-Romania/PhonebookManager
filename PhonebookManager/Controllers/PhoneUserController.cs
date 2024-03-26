@@ -37,21 +37,76 @@ namespace PhonebookManager.Controllers
             return View(viewModel);
         }
         [HttpPost]
-        public async Task<IActionResult> Allocate(uint userId, uint depId, string lineNo)
+        public async Task<IActionResult> Allocate(string empId, uint depId, string lineNo)
         {
-            var dbUser = await _context.AppUsers.FirstOrDefaultAsync(x=>x.Id == userId);
+            var dbUser = await _context.Employees.FromSqlRaw("SELECT * FROM All_employees").FirstOrDefaultAsync(x=>x.EmployeeID == empId);
             var dbDep = await _context.Departments.FirstOrDefaultAsync(x=>x.Id == depId);
             PhoneLine line = new PhoneLine
             {
                 PhoneNumber = lineNo,
                 Department = dbDep,
-                LineOwner = new PhoneUser { Name = dbUser.Name, Badge = dbUser.BadgeNo, Email = dbUser.Email }
+                LineOwner = new PhoneUser { Name = dbUser.FullName, Badge = dbUser.EmployeeID, Email = dbUser.Email }
             };
             _context.PhoneLines.Add(line);
             await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
+        }
 
+        public async Task<JsonResult> AutocompleteSearchUsers(string searchText)
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(searchText))
+                {
+                    string[] words = searchText.Split(' ');
+                    string firstWord = words[0];
+                    List<Employee> Employees = new();
+                    try
+                    {
+                        Employees = await _context.Employees.FromSqlRaw("SELECT * FROM All_employees").ToListAsync();
+                    }
+                    catch { }
+
+                    if (Employees is not null || Employees.Count() != 0)
+                    {
+                        Employees = Employees.Where(x => x.EmployeeID.Contains(searchText.Replace(" ", "")) || x.FullName.Contains(searchText.Replace(" ", ""))).ToList();
+                        var employeesFiltered = (from user in Employees
+                                                 select new
+                                                 {
+                                                     label = user.EmployeeID + " - " + user.FullName,
+                                                     val = user.EmployeeID
+                                                 }).ToList();
+                        if (employeesFiltered.Count != 0)
+                        {
+                            return Json(employeesFiltered);
+
+                        }
+                        else
+                        {
+                            return Json("");
+                        }
+                    }
+                }
+
+                return Json("");
+
+            }
+            catch (Exception ex)
+            {
+                return Json("Error-" + ex.Message + " stackTrace-" + ex.StackTrace);
+            }
+        }
+
+        public async Task<JsonResult> FindUser(string searchText)
+        {
+            var dbUser = await _context.Employees.FromSqlRaw("SELECT * FROM All_employees").FirstOrDefaultAsync(x => x.EmployeeID == searchText.Replace(" ", ""));
+            if (dbUser == null)
+            {
+                return Json("");
+            }
+            string json = Newtonsoft.Json.JsonConvert.SerializeObject(dbUser);
+            return Json(json);
         }
     }
 }

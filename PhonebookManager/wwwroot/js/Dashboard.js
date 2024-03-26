@@ -443,8 +443,7 @@ $("body").on("click", "#deleteBtn", function () {
 });
 function UploadFiles(inputId) {
     var formData = new FormData();
-    formData.append('file', $('#myfile')[0].files[0]); // myFile is the input type="file" contr
-
+    formData.append('file', $('#myfile')[0].files[0]); // myFile is the input type="file"
 
     $.ajax({
         url: "Dashboard/UploadCsv",
@@ -456,16 +455,14 @@ function UploadFiles(inputId) {
         success: function (result) {
             //download result
             const fileObject = JSON.parse(result);
-            console.log(result);
-
-            const blob = base64toBlob(fileObject.ByteContent, fileObject.ContentType);
+            //console.log(result);
+            const blob = base64toBlob(fileObject.ByteContent, fileObject.ContentType); // external function, see below
             const link = document.createElement('a');
             link.href = window.URL.createObjectURL(blob);
             link.download = fileObject.FileName;
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
-
         },
         error: function () {
         },

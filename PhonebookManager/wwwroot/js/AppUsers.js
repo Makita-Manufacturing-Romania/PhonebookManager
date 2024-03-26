@@ -5,37 +5,108 @@
 //});
 
 // On initialize
-$(document).ready(function () {
-    let viewBag = document.querySelector('[viewbag-name]');
-    let vbName = viewBag.getAttribute('viewbag-name');
-    var selectedDepartment = document.getElementById("selectDepartment");
-    for (let i = 0; i < selectedDepartment.options.length; i++) {
-        if (selectedDepartment.options[i].text === vbName) {
-            selectedDepartment.selectedIndex = i;
-            break;
-        }
-    }
-});
-$(document).ready(function () {
-    $("#selectDepartment").on("change", function () {
-        var selectedDepartment = document.getElementById("selectDepartment");
-        var name = selectedDepartment.value;
-        $.ajax({
-            url: '/AppUsers/Index/',
-            data: { "depName": name },
-            type: "POST",
-            success: function (data) {
-                // window.location.href = location.origin + "/Dashboard";
-                window.location.href = location.origin + "/AppUsers?depName=" + selectedDepartment.value;
+//$(document).ready(function () {
+//    let viewBag = document.querySelector('[viewbag-name]');
+//    let vbName = viewBag.getAttribute('viewbag-name');
+//    var selectedDepartment = document.getElementById("selectDepartment");
+//    for (let i = 0; i < selectedDepartment.options.length; i++) {
+//        if (selectedDepartment.options[i].text === vbName) {
+//            selectedDepartment.selectedIndex = i;
+//            break;
+//        }
+//    }
+//});
+//$(document).ready(function () {
+//    $("#selectDepartment").on("change", function () {
+//        var selectedDepartment = document.getElementById("selectDepartment");
+//        var name = selectedDepartment.value;
+//        $.ajax({
+//            url: '/AppUsers/Index/',
+//            data: { "depName": name },
+//            type: "POST",
+//            success: function (data) {
+//                // window.location.href = location.origin + "/Dashboard";
+//                window.location.href = location.origin + "/AppUsers?depName=" + selectedDepartment.value;
 
+//            },
+//            error: function (response) {
+//                console.log("error");
+//            }
+
+//        });
+//    });
+//});
+
+// Autocomplete
+$(document).ready(function () {
+    $(function () {
+
+        $("#searchUserInput").autocomplete({
+            source: function (request, response) { // response is the server response, request is the search term
+                document.getElementById("spinner").style.display = "block"; // start the spinner here
+                $.ajax({
+                    url: '/AppUsers/AutocompleteSearchUsers/',
+                    data: { "searchText": request.term },
+                    type: "POST",
+                    success: function (data) {
+                        document.getElementById("spinner").style.display = "none";
+                        response($.map(data, function (item) {
+                            return item;
+                        }));
+
+                        $(window).resize(function () {
+                            $(".ui-autocomplete").css('display', 'none');
+                        });
+
+                    },
+                    error: function (response) {
+                        $("#searchUserInput").val("Error: " + response);
+                    },
+                    //failure: function (response) { // use error or failure
+                    //    $("#searchInput").val("Failure: " + response);
+                    //}
+                });
             },
-            error: function (response) {
-                console.log("error");
-            }
+            select: function (e, i) {
+                $("#userId").val(i.item.val).trigger('change');
+                //$(this).autocomplete("close");
+            },
 
         });
     });
+    $('#userId').change(function () {
+        var userId = $("#userId");
+        document.getElementById("spinner").style.display = "block";
+
+        $.ajax({
+            url: '/AppUsers/FindUser/',
+            data: { "searchText": userId.val() },
+            type: "GET",
+            success: function (data) {
+                document.getElementById("spinner").style.display = "none";
+                var result = $.parseJSON(data);
+                var name = document.getElementById('Name');
+                name.value = result.FullName;
+                var empId = document.getElementById('EmployeeID');
+                empId.value = result.EmployeeID;
+                var adUsername = document.getElementById('AdUsername');
+                adUsername.value = result.Username;
+                var depCode = document.getElementById('DepartmentCode');
+                depCode.value = result.Department;
+                var email = document.getElementById('Email');
+                email.value = result.Email;
+
+                var formDiv = document.getElementById('formDiv');
+                formDiv.style.display = 'inline';
+            },
+            error: function (response) {
+            },
+            failure: function (response) {
+            }
+        });
+    });
 });
+
 
 // Check if user exists
 $(document).ready(function () {
@@ -58,7 +129,6 @@ $(document).ready(function () {
                         stopOnFocus: true, // Prevents dismissing of toast on hover
                         style: {
                             background: "linear-gradient(to right, #008A99, #55B1BB)",
-
                         },
                     }).showToast();
                 } else {
@@ -80,8 +150,6 @@ function AppUserEditFunction(clicked_id) {
     var userId = button.getAttribute("user-Id");
     var userName = button.getAttribute("user-Name");
     var userBadge = button.getAttribute("user-BadgeNo");
-    var userDepartmentName = button.getAttribute("user-DepartmentName");
-    var userDepartmentCode = button.getAttribute("user-DepartmentCode");
     var userRoleRole = button.getAttribute("user-Role-Role");
 
     var modalUserId = document.getElementById("editModalUserId");
@@ -90,10 +158,6 @@ function AppUserEditFunction(clicked_id) {
     modalUserName.value = userName;
     var modalBadgeNo = document.getElementById("editModalBadgeNo");
     modalBadgeNo.value = userBadge;
-    var modalDepartmentName = document.getElementById("editModalDepartmentName");
-    modalDepartmentName.value = userDepartmentName;
-    var modalDepartmentCode = document.getElementById("editModalDepartmentCode");
-    modalDepartmentCode.value = userDepartmentCode;
     var modalSelectBoxRole = document.getElementById("editModalSelectBoxRole");
 
     for (let i = 0; i < modalSelectBoxRole.options.length; i++) {
@@ -108,27 +172,20 @@ function AppUserEditFunction(clicked_id) {
 
 $("body").on("click", "#editBtn", function () {
     var modalUserId = $("#editModalUserId");
-    //var modalUserAdIdentity = $("#modalAdIdentity");
-    //var modalUserEmail = $("#modalEmail");
     var modalUserName = $("#editModalName");
     var modalUserBadge = $("#editModalBadgeNo");
-    var modalUserDepName = $("#editModalDepartmentName");
-    var modalUserDepCode = $("#editModalDepartmentCode");
+
     var modalUserRole = $("#editModalSelectBoxRole");
-    
+
     $.ajax({
         type: "POST",
         url: "/AppUsers/Edit",
         data: {
             'id': modalUserId.val(),
-            //'adIdentity': modalUserAdIdentity.val(),
-            //'email': modalUserEmail.val(),
             'name': modalUserName.val(),
             'badgeNo': modalUserBadge.val(),
-            'depName': modalUserDepName.val(),
-            'depCode': modalUserDepCode.val(),
             'role': modalUserRole.val(),
-        }, 
+        },
         /*dataType: 'json',*/
         success: function (result) {
             if (result == "Not found") {
@@ -148,7 +205,7 @@ $("body").on("click", "#editBtn", function () {
                 $('#editModal').modal('hide');
             }
             else {
-               //$('#editModal').modal('hide');
+                //$('#editModal').modal('hide');
                 window.location.href = location.origin + "/AppUsers";
             }
         },
@@ -165,8 +222,6 @@ function AppUserDeleteFunction(clicked_id) {
     var userId = button.getAttribute("user-Id");
     var userName = button.getAttribute("user-Name");
     var userBadge = button.getAttribute("user-BadgeNo");
-    var userDepartmentName = button.getAttribute("user-DepartmentName");
-    var userDepartmentCode = button.getAttribute("user-DepartmentCode");
 
     var modalUserId = document.getElementById("delModalUserId");
     modalUserId.value = userId;
@@ -174,11 +229,6 @@ function AppUserDeleteFunction(clicked_id) {
     modalUserName.value = userName;
     var modalBadgeNo = document.getElementById("delModalBadgeNo");
     modalBadgeNo.value = userBadge;
-    var modalDepartmentName = document.getElementById("delModalDepartmentName");
-    modalDepartmentName.value = userDepartmentName;
-    var modalDepartmentCode = document.getElementById("delModalDepartmentCode");
-    modalDepartmentCode.value = userDepartmentCode;
-
 
     $('#deleteModal').modal('show');
 }
