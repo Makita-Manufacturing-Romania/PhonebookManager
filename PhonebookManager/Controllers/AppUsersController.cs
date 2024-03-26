@@ -1,4 +1,5 @@
 ﻿using AspNetCoreHero.ToastNotification.Abstractions;
+using AspNetCoreHero.ToastNotification.Notyf;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PhonebookManager.Data;
@@ -102,7 +103,7 @@ namespace PhonebookManager
         //[ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(AppUserVM appUser) // [Bind("Id,AdIdentity,Email,BadgeNo,Name,RoleName")]
         {
-            var dbUser = await _context.AppUsers.FirstOrDefaultAsync(x => x.BadgeNo == appUser.BadgeNo);
+            var dbUser = await _context.AppUsers.FirstOrDefaultAsync(x => x.BadgeNo == appUser.EmployeeID);
             var dbRole = _context.AppRoles.FirstOrDefault(x => x.Role == appUser.RoleName);
             //ModelState.Remove("UserRoles");
 
@@ -120,6 +121,10 @@ namespace PhonebookManager
                 _context.AppUsers.Add(user);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
+            }
+            else
+            {
+                _notifyService.Information("User exists");
             }
 
             return RedirectToAction(nameof(Index));
@@ -273,7 +278,7 @@ namespace PhonebookManager
                 if (!string.IsNullOrEmpty(searchText))
                 {
                     string[] words = searchText.Split(' ');
-                    string firstWord = words[0];
+                    string firstWord = words[0].ToLower();
                     List<Employee> Employees = new();
                     try
                     {
@@ -283,13 +288,26 @@ namespace PhonebookManager
 
                     if (Employees is not null || Employees.Count() != 0)
                     {
-                        Employees = Employees.Where(x => x.EmployeeID.Contains(searchText.Replace(" ", "")) || x.FullName.Contains(searchText.Replace(" ", ""))).ToList();
+                        // var findExact = Employees.FirstOrDefault(x => x.EmployeeID == firstWord);
+                        List<string> result = new();
+                        Employees = Employees.Where(x => x.EmployeeID == firstWord || x.FullName.ToLower().Contains(searchText.ToLower())).ToList();
+
+                        //foreach (var e in Employees.Where(x => x != findExact).OrderBy(x => x.EmployeeID))
+                        //{
+                        //    result.Add(e.EmployeeID + " - " + e.FullName + " - Dept: " + e.Department);
+                        //}
+                        //if (findExact is not null)
+                        //{
+                        //    result.Insert(0, findExact.EmployeeID + " - " + findExact.FullName + " - Dept: " + findExact.Department);
+                        //}
+
                         var employeesFiltered = (from user in Employees
                                                  select new
                                                  {
                                                      label = user.EmployeeID + " - " + user.FullName,
                                                      val = user.EmployeeID
                                                  }).ToList();
+
                         if (employeesFiltered.Count != 0)
                         {
                             return Json(employeesFiltered);

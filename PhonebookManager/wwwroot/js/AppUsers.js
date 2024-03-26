@@ -81,10 +81,11 @@ $(document).ready(function () {
         $.ajax({
             url: '/AppUsers/FindUser/',
             data: { "searchText": userId.val() },
-            type: "GET",
+            type: "POST",
             success: function (data) {
                 document.getElementById("spinner").style.display = "none";
-                var result = $.parseJSON(data);
+                var result = JSON.parse(data);
+
                 var name = document.getElementById('Name');
                 name.value = result.FullName;
                 var empId = document.getElementById('EmployeeID');
@@ -108,7 +109,7 @@ $(document).ready(function () {
 });
 
 
-// Check if user exists
+// Check if user exists [not used]
 $(document).ready(function () {
     const badgeInputElement = document.querySelector('[badge-input="badgeNoInput"]');
     $(badgeInputElement).on('input', function () {

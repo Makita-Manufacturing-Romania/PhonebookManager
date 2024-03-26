@@ -177,7 +177,7 @@ $(document).ready(function () {
                 document.getElementById("spinner").style.display = "none";
                 document.getElementById("resetLineOwnerInput").style.display = "block";
 
-                var result = $.parseJSON(data);
+                var result = Json.parse(data);
 
                 var ownerExists = document.getElementById('ownerExists');
                 if (ownerExists) {
