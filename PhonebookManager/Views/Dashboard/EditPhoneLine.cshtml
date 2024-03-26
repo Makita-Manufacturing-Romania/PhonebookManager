@@ -1,11 +1,9 @@
-﻿@model PhonebookManager.ViewModels.PhoneLineViewModel.PhoneLineVM
+﻿@model PhonebookManager.ViewModels.DashboardViewModel.DashboardDepartmentVM
+
 @{
+    ViewData["Title"] = "Edit Phone Line | Phonebook Manager";
 
-    ViewData["Title"] = "Create and Allocate | Phonebook Manager";
 }
-
-<script src="~/js/PhoneUser.js"></script>
-
 
 <div class="list-container">
 
@@ -44,7 +42,7 @@
         <p style="width: 15%; padding-top: 5px;">Assigned department:</p>
         <select class="normal-select-box" asp-for="DepartmentId" style="width: 35%;" id="selectDepartments">
             <option value=""></option>
-            @foreach (var dep in Model.Departments ?? Enumerable.Empty<Department>())
+            @foreach (var dep in Model.DepartmentList ?? Enumerable.Empty<Department>())
             {
                 <option value="@dep.Id">@dep.Name</option>
             }
@@ -92,26 +90,26 @@
                 <tbody>
 
                     @*<tr class="border-0">
-                        <td id="lineOwnerBadge">@Model?.LineOwner?.Badge</td>
-                        <td id="lineOwnerName">@Model?.LineOwner?.Name</td>
-                        <td id="lineOwnerEmail">@Model?.LineOwner?.Email</td>
-                        <td>Main user</td>
-                        <td><span class="action-btn-disabled"> <i class="bi bi-trash-fill"></i> </span></td>
-                    </tr>
-
-                    @foreach (var line in Model?.LineUsers ?? Enumerable.Empty<PhoneUser>())
-                    {
-                        <tr class="border-0">
-                            <td>@line.Badge</td>
-                            <td>@line.Name</td>
-                            <td>@line.Email</td>
-                            <td>Secondary user</td>
-                            <td>
-                                <span class="action-btn-danger me-2" role="button" onclick="NotImplemented()"> <i class="bi bi-trash-fill"></i> </span>
-                            </td>
+                            <td id="lineOwnerBadge">@Model?.LineOwner?.Badge</td>
+                            <td id="lineOwnerName">@Model?.LineOwner?.Name</td>
+                            <td id="lineOwnerEmail">@Model?.LineOwner?.Email</td>
+                            <td>Main user</td>
+                            <td><span class="action-btn-disabled"> <i class="bi bi-trash-fill"></i> </span></td>
                         </tr>
 
-                    }*@
+                        @foreach (var line in Model?.LineUsers ?? Enumerable.Empty<PhoneUser>())
+                        {
+                            <tr class="border-0">
+                                <td>@line.Badge</td>
+                                <td>@line.Name</td>
+                                <td>@line.Email</td>
+                                <td>Secondary user</td>
+                                <td>
+                                    <span class="action-btn-danger me-2" role="button" onclick="NotImplemented()"> <i class="bi bi-trash-fill"></i> </span>
+                                </td>
+                            </tr>
+
+                        }*@
 
                 </tbody>
             </table>
@@ -123,9 +121,9 @@
 
     <div class="d-flex justify-content-between">
         <a class="btn btn-danger" asp-area="" asp-controller="Dashboard" asp-action="Index">Cancel</a>
-        @*<div>
+        <div>
             <button class="btn btn-secondary" id="ownershipBtn" onclick="OpenModalChange(this)">Create request of ownership</button>
-        </div>*@
+        </div>
 
         <a class="btn btn-success" onclick="AllocateNumber()">Save</a>
     </div>
@@ -179,6 +177,30 @@
 </div>
 
 
+<script>
 
+    function OpenModalChange(clicked_id) {
+
+
+        $('#changeModal').modal('show');
+    }
+
+    function ChangeConfirm() {
+        var modalTitleOne = document.getElementById("changeModalLabelOne");
+        var modalTitleTwo = document.getElementById("changeModalLabelTwo");
+
+        var modalRequestText = document.getElementById("modalRequestBox");
+        var modalConfirmationBox = document.getElementById("modalConfirmationBox");
+
+        modalTitleOne.className = "d-none";
+        modalTitleTwo.className = "d-block";
+
+        modalRequestText.className = "d-none";
+
+        modalConfirmationBox.className = "d-flex";
+    }
+
+
+</script>
 
 

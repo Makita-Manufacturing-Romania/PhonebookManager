@@ -8,8 +8,8 @@
     const btnAddUser = document.querySelector("#addUserBtn");
     btnAddUser.disabled = true;
 
-    const btnOwnership = document.querySelector("#ownershipBtn");
-    btnOwnership.disabled = true;
+    //const btnOwnership = document.querySelector("#ownershipBtn");
+    //btnOwnership.disabled = true;
 
 
     //btnOwnership.disabled = false;
@@ -26,8 +26,8 @@ function ReverseOpacity() {
     const btnAddUser = document.querySelector("#addUserBtn");
     btnAddUser.disabled = false;
 
-    const btnOwnership = document.querySelector("#ownershipBtn");
-    btnOwnership.disabled = false;
+    //const btnOwnership = document.querySelector("#ownershipBtn");
+    //btnOwnership.disabled = false;
 }
 
 //OR

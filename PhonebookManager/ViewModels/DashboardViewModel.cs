@@ -18,6 +18,9 @@ namespace PhonebookManager.ViewModels
 
             public List<Department>? DepartmentList { get; set; }
 
+            public Department? Department { get; set; }
+            public int DepartmentId { get; set; }
+
         }
     }
 }
