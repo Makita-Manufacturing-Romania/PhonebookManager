@@ -291,17 +291,39 @@ $(document).ready(function () {
             success: function (data) {
                 document.getElementById("spinner").style.display = "none";
                 document.getElementById("resetUserInput").style.display = "block";
-                var result = $.parseJSON(data);
+                var result = JSON.parse(data);
 
                 var userExists = document.getElementById(result.EmployeeID);
                 if (userExists) {
 
+                    Toastify({
+                        text: "Already in the list",
+                        duration: 3000,
+                        newWindow: true,
+                        close: true,
+                        gravity: "bottom", // `top` or `bottom`
+                        position: "left", // `left`, `center` or `right`
+                        stopOnFocus: true, // Prevents dismissing of toast on hover
+                        style: {
+                            background: "linear-gradient(to right, #008A99, #55B1BB)",
+
+                        },
+                    }).showToast();
+
+                    // or replace
                     // Get the cell
-                    let cell = document.getElementById(result.EmployeeID);
+                    //let cell = document.getElementById(result.EmployeeID);
 
                     // Get the row
-                    let oldRow = cell.parentNode;
+                    //let oldRow = cell.parentNode;
 
+                    // Create new row content
+                    //var newRowContent = `<td>${result.EmployeeID}</td> <td>${result.FullName}</td> <td>${result.Email}</td> <td>Secondary user</td> <td> <span id="removeBtn" role="button" user-id="${result.EmployeeID}" class="action-btn-danger" onclick="RemoveUser()"> <i class="bi bi-trash-fill"></i> </span> </td>`;
+
+                    // Replace the old row with the new one
+                    //oldRow.innerHTML = newRowContent;
+
+                    //OR
                     // Create a new row
                     //let newRow = document.createElement("tr");
                     // Add new cells to the new row as needed
@@ -311,12 +333,6 @@ $(document).ready(function () {
                     //    newRow.appendChild(newCell);
                     //}
                     // oldRow.parentNode.replaceChild(newRow, oldRow);
-
-                    // Create new row content
-                    var newRowContent = `<td>${result.EmployeeID}</td> <td>${result.FullName}</td> <td>${result.Email}</td> <td>Secondary user</td> <td> <span id="removeBtn" role="button" user-id="${result.EmployeeID}" class="action-btn-danger" onclick="RemoveUser()"> <i class="bi bi-trash-fill"></i> </span> </td>`;
-
-                    // Replace the old row with the new one
-                    oldRow.innerHTML = newRowContent;
 
                 }
                 else {
@@ -336,7 +352,7 @@ $(document).ready(function () {
                     let typeCell = document.createElement('td');
                     typeCell.textContent = "Secondary user";
                     let actionCell = document.createElement('td');
-                    actionCell.innerHTML = `<span id="removeBtn" user-id="${result.EmployeeID}" role="button" class="action-btn-danger" onclick="RemoveUser()"> <i class="bi bi-trash-fill"></i> </span>`;
+                    actionCell.innerHTML = `<span id="removeBtn" user-id="${result.EmployeeID}" role="button" class="action-btn-danger" onclick="RemoveUser(this)"> <i class="bi bi-trash-fill"></i> </span>`;
 
 
                     // Append the columns to the row
@@ -359,12 +375,13 @@ $(document).ready(function () {
     });
 });
 
-function RemoveUser() {
-    let findId = document.querySelector('[user-id]');
-    let userId = findId.getAttribute('user-id');
-    var userTd = document.getElementById(userId);
-    let row = userTd.parentNode;
-    row.remove();
+function RemoveUser(clicked_id) {
+    const button = clicked_id;
+    //let findId = document.querySelector('[user-id]');
+    let getId = button.getAttribute('user-id');
+    var userRow = document.getElementById(getId);
+    //let row = userRow.parentNode;
+    userRow.remove();
 }
 
 
