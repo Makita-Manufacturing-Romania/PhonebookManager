@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AspNetCoreHero.ToastNotification.Abstractions;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.JSInterop;
 using PhonebookManager.Data;
@@ -11,11 +12,15 @@ namespace PhonebookManager.Controllers
     public class PhoneUserController : Controller
     {
         private readonly DataContext _context;
-        public PhoneUserController(DataContext context)
+        public INotyfService _notifyService { get; }
+
+        public PhoneUserController(DataContext context, INotyfService notifyService)
         {
             _context = context;
+            _notifyService = notifyService;
+
         }
-    
+
         public async Task<IActionResult> Index(string phoneNumber)
         {
 
@@ -84,7 +89,8 @@ namespace PhonebookManager.Controllers
 
                     if (Employees is not null || Employees.Count() != 0)
                     {
-                        Employees = Employees.Where(x => x.EmployeeID.Contains(searchText.Replace(" ", "")) || x.FullName.Contains(searchText.Replace(" ", ""))).ToList();
+                        //Employees = Employees.Where(x => x.EmployeeID.Contains(searchText.Replace(" ", "")) || x.FullName.Contains(searchText.Replace(" ", ""))).ToList();
+                        Employees = Employees.Where(x => x.EmployeeID == firstWord || x.FullName.ToLower().Contains(searchText.ToLower())).ToList();
                         var employeesFiltered = (from user in Employees
                                                  select new
                                                  {
@@ -98,9 +104,11 @@ namespace PhonebookManager.Controllers
                         }
                         else
                         {
+                            _notifyService.Information("Employee not found");
                             return Json("");
                         }
                     }
+                    
                 }
 
                 return Json("");

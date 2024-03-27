@@ -40,10 +40,10 @@
                         Settings
                     </button>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="Department">Departments</a></li>
-                        <li><a class="dropdown-item" href="AppUsers">User management</a></li>
+                        <li><a class="dropdown-item" asp-controller="Department" asp-action="Index">Departments</a></li>
+                        <li><a class="dropdown-item" asp-controller="AppUsers" asp-action="Index">User management</a></li>
                         <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="AdminPanel">Admin panel</a></li>
+                        <li><a class="dropdown-item" asp-controller="AdminPanel" asp-action="Index">Admin panel</a></li>
                     </ul>
                 </div>
                 <i class="bi bi-question-circle" role="button" onclick="NotImplemented()"></i>

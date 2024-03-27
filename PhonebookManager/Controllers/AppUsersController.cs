@@ -289,7 +289,9 @@ namespace PhonebookManager
                     if (Employees is not null || Employees.Count() != 0)
                     {
                         // var findExact = Employees.FirstOrDefault(x => x.EmployeeID == firstWord);
-                        List<string> result = new();
+                        //List<string> result = new();
+
+                        //Employees = Employees.Where(x => x.EmployeeID.Contains(searchText.Replace(" ", "")) || x.FullName.Contains(searchText.Replace(" ", ""))).ToList();
                         Employees = Employees.Where(x => x.EmployeeID == firstWord || x.FullName.ToLower().Contains(searchText.ToLower())).ToList();
 
                         //foreach (var e in Employees.Where(x => x != findExact).OrderBy(x => x.EmployeeID))

@@ -1,4 +1,4 @@
-﻿@model PhonebookManager.ViewModels.DashboardViewModel.DashboardDepartmentVM
+﻿@model PhonebookManager.Models.PhoneLine
 
 @{
     ViewData["Title"] = "Edit Phone Line | Phonebook Manager";
@@ -8,45 +8,64 @@
 <div class="list-container">
 
     <div class="d-flex justify-content-between">
-        @if (ViewBag.PhoneNumber != null)
+        <h4>Details for <span id="phoneNo">@Model?.PhoneNumber</span></h4>
+        @if (Model.LineUsers is not null && Model.LineUsers.Count > 0)
         {
-            <h4>Details for <span id="phoneNo">@ViewBag.PhoneNumber</span></h4>
+            <h4>Landline device - Multi use</h4>
         }
-        <h4>New service</h4>
-        <h4 style="color:#008A99">Unallocated</h4>
+        else
+        {
+            <h4>Landline device - Single line</h4>
+        }
+        <h4 style="color:#008A99">Allocated</h4>
     </div>
     <hr style="color:#000" />
 
     <br />
-
     <div class="d-flex gap-3">
 
         <p style="width: 15%; padding-top:5px;">Employee responsible:</p>
-        <div style="position: relative; display: inline-block; width: 35%;">
+        @if (string.IsNullOrEmpty(Model?.LineOwner?.Name))
+        {
+            <input class="input-no-border-disabled" readonly style="width: 35%; height: 45px; text-align:center;" placeholder="N/A" />
+        }
+        else
+        {
+            <input class="input-no-border-disabled" asp-for="LineOwner.Name" readonly style="width: 35%; height: 45px;" />
+        }
+        @*<div style="position: relative; display: inline-block; width: 35%;">
 
             <span class="small-spinner" id="spinner" style="display:none;position: absolute;left: 10px; top: 15%;transform: translateY(-50%);"></span>
             <input type="text" id="searchLineOwnerInput" autocomplete="off" placeholder="Search for employee" />
             <i class="bi bi-x-lg" id="resetLineOwnerInput" role="button" style="display:none;position: absolute;right: 10px; top: 35%;transform: translateY(-50%);"></i>
 
         </div>
-        <input type="hidden" id="lineOwnerId" value="">
+        <input type="hidden" id="lineOwnerId" value="">*@
 
         @*<select class="normal-select-box" asp-for="LineOwnerId" style="width: 35%;" id="selectOwner" onchange="ReverseOpacity()">
-                <option value=""></option>
-                @foreach (var user in Model.AppUsers ?? Enumerable.Empty<AppUser>())
-                {
-                    <option value="@user.Id">@user.Name</option>
-                }
-            </select>*@
+            <option value=""></option>
+            @foreach (var user in Model.AppUsers ?? Enumerable.Empty<AppUser>())
+            {
+                <option value="@user.Id">@user.Name</option>
+            }
+        </select>*@
 
         <p style="width: 15%; padding-top: 5px;">Assigned department:</p>
-        <select class="normal-select-box" asp-for="DepartmentId" style="width: 35%;" id="selectDepartments">
+        @if (string.IsNullOrEmpty(Model?.Department?.Name))
+        {
+            <input class="input-no-border-disabled" readonly style="width: 35%; height: 45px; text-align:center;" placeholder="N/A" />
+        }
+        else
+        {
+            <input class="input-no-border-disabled" asp-for="Department.Name" readonly style="width: 35%; height:45px;" />
+        }
+        @*<select class="normal-select-box" asp-for="Department" style="width: 35%;" id="selectDepartments">
             <option value=""></option>
             @foreach (var dep in Model.DepartmentList ?? Enumerable.Empty<Department>())
             {
                 <option value="@dep.Id">@dep.Name</option>
             }
-        </select>
+        </select>*@
 
     </div>
 
@@ -88,16 +107,32 @@
                     </tr>
                 </thead>
                 <tbody>
-
-                    @*<tr class="border-0">
+                    @if (string.IsNullOrEmpty(Model?.LineOwner?.Name))
+                    {
+                        <tr class="border-0">
+                            <td id="lineOwnerBadge">N/A</td>
+                            <td id="lineOwnerName">N/A</td>
+                            <td id="lineOwnerEmail">N/A</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    }
+                    else
+                    {
+                        <tr class="border-0">
                             <td id="lineOwnerBadge">@Model?.LineOwner?.Badge</td>
                             <td id="lineOwnerName">@Model?.LineOwner?.Name</td>
                             <td id="lineOwnerEmail">@Model?.LineOwner?.Email</td>
                             <td>Main user</td>
                             <td><span class="action-btn-disabled"> <i class="bi bi-trash-fill"></i> </span></td>
                         </tr>
+                    }
 
-                        @foreach (var line in Model?.LineUsers ?? Enumerable.Empty<PhoneUser>())
+
+
+                    @if (Model.LineUsers is not null)
+                    {
+                        foreach (var line in Model.LineUsers)
                         {
                             <tr class="border-0">
                                 <td>@line.Badge</td>
@@ -105,11 +140,12 @@
                                 <td>@line.Email</td>
                                 <td>Secondary user</td>
                                 <td>
-                                    <span class="action-btn-danger me-2" role="button" onclick="NotImplemented()"> <i class="bi bi-trash-fill"></i> </span>
+                                    <span class="action-btn-danger" role="button" onclick="NotImplemented()"> <i class="bi bi-trash-fill"></i> </span>
                                 </td>
                             </tr>
 
-                        }*@
+                        }
+                    }
 
                 </tbody>
             </table>
@@ -125,7 +161,7 @@
             <button class="btn btn-secondary" id="ownershipBtn" onclick="OpenModalChange(this)">Create request of ownership</button>
         </div>
 
-        <a class="btn btn-success" onclick="AllocateNumber()">Save</a>
+        <a class="btn btn-success" onclick="NotImplemented()">Save</a>
     </div>
 </div>
 

@@ -177,7 +177,7 @@ $(document).ready(function () {
                 document.getElementById("spinner").style.display = "none";
                 document.getElementById("resetLineOwnerInput").style.display = "block";
 
-                var result = Json.parse(data);
+                var result = JSON.parse(data);
 
                 var ownerExists = document.getElementById('ownerExists');
                 if (ownerExists) {
@@ -294,10 +294,12 @@ $(document).ready(function () {
                 var result = JSON.parse(data);
 
                 var userExists = document.getElementById(result.EmployeeID);
-                if (userExists) {
+                var ownerExists = document.getElementById('searchLineOwnerInput');
+
+                if (ownerExists.value.split(" ")[0] === result.EmployeeID) {
 
                     Toastify({
-                        text: "Already in the list",
+                        text: "Employee is the main user",
                         duration: 3000,
                         newWindow: true,
                         close: true,
@@ -334,6 +336,21 @@ $(document).ready(function () {
                     //}
                     // oldRow.parentNode.replaceChild(newRow, oldRow);
 
+                }
+                else if (userExists) {
+                    Toastify({
+                        text: "Already in the list",
+                        duration: 3000,
+                        newWindow: true,
+                        close: true,
+                        gravity: "bottom", // `top` or `bottom`
+                        position: "left", // `left`, `center` or `right`
+                        stopOnFocus: true, // Prevents dismissing of toast on hover
+                        style: {
+                            background: "linear-gradient(to right, #008A99, #55B1BB)",
+
+                        },
+                    }).showToast();
                 }
                 else {
                     const tbody = document.querySelector('.table tbody');

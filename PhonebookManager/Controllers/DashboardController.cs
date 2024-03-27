@@ -136,6 +136,17 @@ namespace PhonebookManager.Controllers
 
         }
 
+       
+        public async Task<IActionResult> EditPhoneLine(int id)
+        {
+            var dbPhoneLine = await _context.PhoneLines.Include(dep => dep.Department).Include(owner => owner.LineOwner)
+                .Include(lu=>lu.LineUsers).FirstOrDefaultAsync(x=>x.Id == id);
+
+            return View(dbPhoneLine);
+
+        }
+
+
         // GET: DashboardController/Delete/5
         public ActionResult Delete(int id)
         {
@@ -419,10 +430,12 @@ namespace PhonebookManager.Controllers
                                 {
                                     var dbline = await _context.PhoneLines.FirstOrDefaultAsync(x => x.PhoneNumber.Contains(csvLine.PhoneNumber));
 
-                                    var dbUser = dbPhoneUsers.FirstOrDefault(x => x.Badge == csvLine.LineOwnerBadge);
+                                    //var Employees = await _context.Employees.FromSqlRaw("SELECT * FROM All_employees").ToListAsync();
+                                    //var dbUser = dbPhoneUsers.FirstOrDefault(x => x.Badge == csvLine.LineOwnerBadge);
+                                    var viewUser = await _context.Employees.FromSqlRaw("SELECT * FROM All_employees").FirstOrDefaultAsync(x => x.EmployeeID == csvLine.LineOwnerBadge);
                                     var dbDep = dbDeps.FirstOrDefault(x => x.Code == csvLine.DepartmentCode);
 
-                                    if (dbUser is null && !string.IsNullOrEmpty(csvLine.LineOwnerBadge))
+                                    if (viewUser is null && !string.IsNullOrEmpty(csvLine.LineOwnerBadge))
                                     {
                                         // write to csv that the user does not exist
                                         errorCount++;
@@ -444,7 +457,7 @@ namespace PhonebookManager.Controllers
                                             PhoneNumber = csvLine.PhoneNumber,
                                             DepartmentCode = csvLine.DepartmentCode,
                                             LineOwnerBadge = csvLine.LineOwnerBadge,
-                                            LineOwnerBadgeIsNull = dbUser is null && !string.IsNullOrEmpty(csvLine.LineOwnerBadge) ? "User does not exist" : "",
+                                            LineOwnerBadgeIsNull = viewUser is null && !string.IsNullOrEmpty(csvLine.LineOwnerBadge) ? "User does not exist" : "",
                                             DepartmentCodeIsNull = "Department does not exist"
                                         });
                                     }
