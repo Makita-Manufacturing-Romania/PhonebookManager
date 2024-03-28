@@ -165,7 +165,7 @@
             }
             else
             {
-                <button class="btn btn-secondary" id="ownershipBtn" onclick="OpenModalEditChange(this)">Edit request of ownership</button>
+                <button class="btn btn-secondary" id="ownershipBtn" @*onclick="OpenModalEditChange(this)"*@ onclick="NotImplemented()">Edit request of ownership</button>
             }
 
         </div>
@@ -186,7 +186,7 @@
                 <h4 id="changeModalLabelTwo" class="d-none">Confirmation request</h4>
             </div>
             <div class="modal-body">
-                <span id="infoText" phone-number="@ViewBag.PhoneNumber">You are about to submit a request to IT&C Department for a change of ownership on @ViewBag.PhoneNumber</span>
+                <span id="infoText" phone-number="@ViewBag.PhoneNumber">You are about to submit a request to IT&C Department for a change of ownership on <b>@ViewBag.PhoneNumber</b></span>
 
                 <div style="padding: 80px 50px 20px 50px; display: flex; justify-content: center;">
 

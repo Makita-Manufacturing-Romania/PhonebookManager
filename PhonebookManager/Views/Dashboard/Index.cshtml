@@ -92,17 +92,7 @@
                                     <span style="margin-left: 30px;"></span>
                                 }
 
-
                                 <a class="action-btn me-2" asp-action="EditPhoneLine" asp-route-id="@line?.Id"><i class="bi bi-pencil-fill"></i></a>
-
-                                @*line-id="@line?.Id"
-                                    line-owner-name="@line?.LineOwner?.Name"
-                                    line-owner-badge="@line?.LineOwner?.Badge"
-                                    line-number="@line?.PhoneNumber"
-                                    line-department-name="@line?.Department?.Name"
-                                    line-department-code="@line?.Department?.Code"
-                                    onclick="DashboardEditFunction(this)"
-                                    onclick="NotImplemented()"*@
 
                                 <span class="action-btn-danger me-2" type="button">
                                     <i class="bi bi-trash-fill" onclick="DashboardDeleteFunction(this)" line-id="@line?.Id" line-number="@line?.PhoneNumber"></i>
@@ -263,17 +253,15 @@
 </div>
 
 @*VIEW MODAL*@
-
-<!-- Vertically centered modal -->
 <div class="modal fade" id="viewModal" tabindex="-1" aria-labelledby="viewModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 40%;">
         <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="viewModalLabel">Confirmation</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="modal-header border-0">
+                <h2 style="color: #008A99; text-decoration: underline 2px; text-underline-offset: 0.5em; ">Confirmation</h2>
             </div>
             <div class="modal-body">
-                <input hidden id="modalLineId"/>
+
+                <input hidden id="modalLineId" />
                 <div class="tall-input-box-disabled">
                     <label for="" class="control-label" disabled>Old Owner</label>
                     <input class="input-no-border" id="oldOwner" disabled />
@@ -284,10 +272,17 @@
                     <input class="input-no-border" id="newOwner" disabled />
                 </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-success" onclick="ConfirmRequest()">Confirm</button>
+
+
+            <div class="form-group w-100 p-3">
+                <input class="btn btn-success" style="width:80%;" onclick="ConfirmRequest()" value="Confirm" />
+                <input role="button" class="btn btn-secondary" data-bs-dismiss="modal" style="width:19%;" Value="Close" />
             </div>
         </div>
+
+        @*<div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-success" onclick="ConfirmRequest()">Confirm</button>
+            </div>*@
     </div>
 </div>
