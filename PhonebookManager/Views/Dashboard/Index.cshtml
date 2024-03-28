@@ -81,12 +81,18 @@
                                 <td>Single line</td>
                             }
                             <td>
-                                <!--<span class="action-btn me-2" type="button">
-                                <i class="bi bi-eye-fill"-->
-                                @*onclick="viewFunction(this)"*@
-                                <!--onclick="NotImplemented()"
-                                       emp-name="=" emp-id="=" emp-department="="></i>
-                                </span>-->
+                                @*IF USER ROLE IS ADMIN OR IT&C AND LINE HAS OPEN CHANGE => VIEW REQUEST*@
+
+                                @if (line?.Changes?.FirstOrDefault()?.Status == "OPEN")
+                                {
+                                    <span class="action-btn me-2" type="button"><i class="bi bi-eye-fill" line-id="@line?.Id" onclick="OpenViewModal(this)"></i></span>
+                                }
+                                else
+                                {
+                                    <span style="margin-left: 30px;"></span>
+                                }
+
+
                                 <a class="action-btn me-2" asp-action="EditPhoneLine" asp-route-id="@line?.Id"><i class="bi bi-pencil-fill"></i></a>
 
                                 @*line-id="@line?.Id"
@@ -256,8 +262,32 @@
     </div>
 </div>
 
+@*VIEW MODAL*@
 
-<script>
+<!-- Vertically centered modal -->
+<div class="modal fade" id="viewModal" tabindex="-1" aria-labelledby="viewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="viewModalLabel">Confirmation</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input hidden id="modalLineId"/>
+                <div class="tall-input-box-disabled">
+                    <label for="" class="control-label" disabled>Old Owner</label>
+                    <input class="input-no-border" id="oldOwner" disabled />
+                </div>
 
-
-</script>
+                <div class="tall-input-box-disabled">
+                    <label for="" class="control-label" disabled>New Owner</label>
+                    <input class="input-no-border" id="newOwner" disabled />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-success" onclick="ConfirmRequest()">Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>

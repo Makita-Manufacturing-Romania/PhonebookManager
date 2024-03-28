@@ -22,7 +22,7 @@ namespace PhonebookManager.Controllers
 
         }
         // [Authorize]
-        public IActionResult Test()
+        public IActionResult Index()
         {
             return View();
         }
@@ -41,13 +41,7 @@ namespace PhonebookManager.Controllers
             [Required]
             public string? Query { get; set; }
         }
-        [HttpPost]
-        public async Task<ActionResult> Index(SearchViewModel model)
-        {
-           
 
-            return View();
-        }
 
 
         //public async Task<Exception> SendNotification(string email, string subject, string body)

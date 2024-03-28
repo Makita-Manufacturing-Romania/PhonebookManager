@@ -5,21 +5,44 @@
 
 <h1>@ViewData["Title"]</h1>
 
+<div class="list-container" style="min-height: 1000px;">
+
+    @*<form method="get" action="@Url.Action("Index", "Home")">
+            <label for="search">Search</label>
+            <input type="text" name="search" id="search" />
+            <button type="submit">Perform Search</button>
+        </form>*@
 
 
-<form method="get" action="@Url.Action("Index", "Home")">
-    <label for="search">Search</label>
-    <input type="text" name="search" id="search" />
-    <button type="submit">Perform Search</button>
-</form>
+    <div class="toooltip">
+        <span>Hover over me</span>
+        <span class="toooltiptext">
+            drag and drop
+        </span>
+    </div>
+
+    <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)" style="border:1px solid black; min-height: 300px;">
+        <img src="~/images/logo.png" style="background-color:black;" draggable="true" ondragstart="drag(event)" id="drag1" width="336" height="69">
+
+        <div draggable="true" ondragstart="drag(event)" id="drag2" style="padding:20px;">
+            <span>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+                Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+            </span>
+
+            <input placeholder="write something" />
+
+        </div>
+    </div>
+    <br />
+    <br />
+    <div id="div2" ondrop="drop(event)" ondragover="allowDrop(event)" style="border:1px solid black; min-height: 200px;"></div>
+
+</div>
 
 
-
-
-
-<p class="one" id="demo">JavaScript can change the style of an HTML element.</p>
-
-<button type="button" onclick="changeClass('one')">Click Me</button>
 
 
 <style>
@@ -34,35 +57,62 @@
 
 <script>
 
-    function performSearch() {
-        const searchQuery = document.getElementById('searchbar').value;
-        // Process the search query (e.g., filter results on the frontend)
-        // Display the search results as needed
+    // drag and drop
+    function allowDrop(ev) {
+        ev.preventDefault();
+    }
+    function drag(ev) {
+        ev.dataTransfer.setData("text", ev.target.id);
+    }
+    function drop(ev) {
+        ev.preventDefault();
+        var data = ev.dataTransfer.getData("text");
+        ev.target.appendChild(document.getElementById(data));
+
+        // Get the position of the dropped element
+        var xPosition = ev.clientX; // X-coordinate relative to the viewport
+        var yPosition = ev.clientY; // Y-coordinate relative to the viewport
+
+        // Optionally, adjust the position based on the container's position
+        // For example, if your container has an offset, add it to the coordinates:
+        // xPosition += containerOffsetX;
+        // yPosition += containerOffsetY;
+
+        // Save the position data to your database (via AJAX or other means)
+        savePositionToDatabase(data, xPosition, yPosition);
+
+        // Append the dropped element to the target
+        ev.target.appendChild(droppedElement);
+    }
+    function savePositionToDatabase(elementId, x, y) {
+        // Implement your AJAX request here
+        // Send the element ID, x, and y coordinates to your server
+        // Update your database accordingly
+        // Example:
+        // $.ajax({
+        //     type: "POST",
+        //     url: "your_server_script",
+        //     data: {
+        //         elementId: elementId,
+        //         x: x,
+        //         y: y
+        //     },
+        //     success: function(response) {
+        //         console.log("Position saved:", response);
+        //     }
+        // });
     }
 
 
+    //function changeClass(className) {
+    //    const car = { type: "Fiat", model: "500", color: "white" };
 
-    function changeClass(className) {
-        const car = { type: "Fiat", model: "500", color: "white" };
-
-        var one = document.getElementById("demo");
-        one.className = "two";
-        one.textContent = "test";
-        setTimeout(function () { one.innerHTML = car.type, one.className = className; }, 3000);
-        //console.log("test");
-
-
-
-    }
-    //document.getElementById('demo').className = 'two'
+    //    var one = document.getElementById("demo");
+    //    one.className = "two";
+    //    one.textContent = "test";
+    //    setTimeout(function () { one.innerHTML = car.type, one.className = className; }, 3000);
+    //    console.log("test");
+    //}
 </script>
 
-@* <script src="https://www.w3schools.com/js/myScript.js"></script>
-    <script src="/js/myScript.js"></script>*@
 
-@*<script>
-        var x = 10;
-        var y = 20;
-        document.getElementById("demo").innerHTML =
-            "The result is: " + x + " " + y;
-    </script>*@

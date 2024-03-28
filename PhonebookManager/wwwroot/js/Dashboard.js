@@ -28,7 +28,7 @@ $(document).ready(function () {
             data: { "depId": id },
             type: "POST",
             success: function (data) {
-               // window.location.href = location.origin + "/Dashboard";
+                // window.location.href = location.origin + "/Dashboard";
                 window.location.href = location.origin + "/Dashboard?depId=" + selectedDepartment.value;
 
             },
@@ -467,7 +467,7 @@ function UploadFiles(inputId) {
         error: function () {
         },
         complete: function (status) {
-          //  console.log(status);
+            //  console.log(status);
 
         }
     });
@@ -495,7 +495,7 @@ function ImportFunction(clicked_id) {
 //        position: "left", // `left`, `center` or `right`
 //        stopOnFocus: true, // Prevents dismissing of toast on hover
 //        style: {
-//            background: "linear-gradient(to right, red, #55B1BB)",
+//            background: "linear-gradient(to right, #008A99, #55B1BB)",
 //        },
 //    }).showToast();
 
@@ -518,3 +518,82 @@ function ImportFunction(clicked_id) {
 //        },
 //    }).showToast();
 //});
+
+function OpenViewModal(clicked_id) {
+    const button = clicked_id;
+    let lineId = button.getAttribute('line-id');
+
+    let modalLineId = document.getElementById("modalLineId");
+    modalLineId.value = lineId;
+
+    $.ajax({
+        url: '/Dashboard/FetchLineData/',
+        data: {
+            "id": lineId
+        },
+        type: "GET",
+        success: function (data) {
+            if (data === "") {
+                Toastify({
+                    text: "No changes to this line",
+                    duration: 3000,
+                    newWindow: true,
+                    close: true,
+                    gravity: "bottom", // `top` or `bottom`
+                    position: "left", // `left`, `center` or `right`
+                    stopOnFocus: true, // Prevents dismissing of toast on hover
+                    style: {
+                        background: "linear-gradient(to right, #008A99, #55B1BB)",
+                    },
+                }).showToast();
+            }
+            else {
+                var result = JSON.parse(data);
+                console.log(result);
+                var oldOwner = document.getElementById("oldOwner");
+                var newOwner = document.getElementById("newOwner");
+
+                if (result.OldName == undefined) {
+                    oldOwner.value = "N/A";
+                }
+                else {
+                    oldOwner.value = result.OldName.Name;
+                }
+                newOwner.value = result.NewName.Name;
+                $('#viewModal').modal('show');
+            }
+
+
+        },
+        error: function (response) {
+            console.log(response);
+        },
+        failure: function (response) {
+        }
+    });
+
+}
+
+function ConfirmRequest() {
+    let modalLineId = document.getElementById("modalLineId");
+    
+    $.ajax({
+        url: '/Dashboard/ConfirmRequest/',
+        data: {
+            "id": modalLineId.value
+        },
+        type: "POST",
+        success: function (data) {
+            if (data === "CLOSED") {
+                location.reload(true);
+            }
+
+           //$('#viewModal').modal('hide');
+        },
+        error: function (response) {
+            console.log(response);
+        },
+        failure: function (response) {
+        }
+    });
+}

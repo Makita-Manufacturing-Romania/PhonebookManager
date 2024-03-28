@@ -1,11 +1,14 @@
 ﻿using AspNetCoreHero.ToastNotification.Abstractions;
+using Azure.Identity;
 using CsvHelper;
+using MailKit.Search;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PhonebookManager.Data;
 using PhonebookManager.Models;
 using System.Diagnostics;
 using System.Globalization;
+using System.Runtime.ConstrainedExecution;
 using static PhonebookManager.ViewModels.DashboardViewModel;
 
 namespace PhonebookManager.Controllers
@@ -140,7 +143,9 @@ namespace PhonebookManager.Controllers
         public async Task<IActionResult> EditPhoneLine(int id)
         {
             var dbPhoneLine = await _context.PhoneLines.Include(dep => dep.Department).Include(owner => owner.LineOwner)
-                .Include(lu=>lu.LineUsers).FirstOrDefaultAsync(x=>x.Id == id);
+                .Include(lu=>lu.LineUsers).Include(c=>c.Changes).FirstOrDefaultAsync(x=>x.Id == id);
+            ViewBag.PhoneNumber = dbPhoneLine?.PhoneNumber;
+            ViewBag.OldOwner = dbPhoneLine?.LineOwner?.Name;
 
             return View(dbPhoneLine);
 
@@ -537,6 +542,132 @@ namespace PhonebookManager.Controllers
 
         }
 
+        public async Task<JsonResult> AutocompleteSearchUsers(string searchText)
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(searchText))
+                {
+                    string[] words = searchText.Split(' ');
+                    string firstWord = words[0];
+                    List<Employee> Employees = new();
+                    try
+                    {
+                        Employees = await _context.Employees.FromSqlRaw("SELECT * FROM All_employees").ToListAsync();
+                    }
+                    catch { }
+
+                    if (Employees is not null || Employees.Count() != 0)
+                    {
+                        //Employees = Employees.Where(x => x.EmployeeID.Contains(searchText.Replace(" ", "")) || x.FullName.Contains(searchText.Replace(" ", ""))).ToList();
+                        Employees = Employees.Where(x => x.EmployeeID == firstWord || x.FullName.ToLower().Contains(searchText.ToLower())).ToList();
+                        var employeesFiltered = (from user in Employees
+                                                 select new
+                                                 {
+                                                     label = user.EmployeeID + " - " + user.FullName,
+                                                     val = user.EmployeeID
+                                                 }).ToList();
+                        if (employeesFiltered.Count != 0)
+                        {
+                            return Json(employeesFiltered);
+
+                        }
+                        else
+                        {
+                            _notifyService.Information("Employee not found");
+                            return Json("");
+                        }
+                    }
+
+                }
+
+                return Json("");
+
+            }
+            catch (Exception ex)
+            {
+                return Json("Error-" + ex.Message + " stackTrace-" + ex.StackTrace);
+            }
+        }
+
+        public async Task<JsonResult> FindUser(string searchText)
+        {
+            var dbUser = await _context.Employees.FromSqlRaw("SELECT * FROM All_employees").FirstOrDefaultAsync(x => x.EmployeeID == searchText.Replace(" ", ""));
+            if (dbUser == null)
+            {
+                return Json("");
+            }
+
+            string json = Newtonsoft.Json.JsonConvert.SerializeObject(dbUser);
+            return Json(json);
+        }
+
+        public async Task<IActionResult> ChangeOwnerRequest(string phoneNumber, string userId)
+        {
+            var dbLine = await _context.PhoneLines.Include(x => x.LineOwner).Include(y => y.Department).Include(z => z.LineUsers).Include(u => u.Changes)
+                .FirstOrDefaultAsync(x=>x.PhoneNumber == phoneNumber);
+            var viewUser = await _context.Employees.FromSqlRaw("SELECT * FROM All_employees").FirstOrDefaultAsync(x => x.EmployeeID == userId);
+            var appUsername = User.Identity?.Name.Substring(User.Identity.Name.IndexOf(@"\") + 1);
+            var dbAppUser = await _context.AppUsers.FirstOrDefaultAsync(x=>x.AdIdentity.ToLower() == appUsername.ToLower());
+            ChangeRequest req = new ChangeRequest
+            {
+                OldName = dbLine.LineOwner,
+                NewName = new PhoneUser { Badge = viewUser.EmployeeID, Email = viewUser.Email, Name = viewUser.FullName },
+                RequestDate = DateTime.Now,
+                RequesterId = dbAppUser,
+                PhoneLine = dbLine,
+                Status = "OPEN"
+            };
+            dbLine.Changes.Add(req);
+            _context.Update(dbLine);
+            await _context.SaveChangesAsync();
+            return Json("");
+        }
+
+        public async Task<JsonResult> FetchLineData(int id)
+        {
+            var dbLineChanges= await _context.ChangeRequests.Where(x=>x.PhoneLine.Id == id && x.Status == "OPEN")
+                .Include(on=>on.OldName).Include(nn => nn.NewName)
+                .FirstOrDefaultAsync();
+            if (dbLineChanges == null) 
+            { 
+                return Json("");
+            }
+            else
+            {
+                string json = Newtonsoft.Json.JsonConvert.SerializeObject(dbLineChanges);
+                return Json(json);
+            }
+        }
+        [HttpPost]
+        public async Task<IActionResult> ConfirmRequest(int id)
+        {
+            var dbLineChanges = await _context.ChangeRequests.Where(x => x.PhoneLine.Id == id && x.Status == "OPEN").Include(on => on.OldName).Include(nn => nn.NewName)
+                .FirstOrDefaultAsync();
+            var phoneLine = await _context.PhoneLines.FirstOrDefaultAsync(x => x.Id == id);
+
+            if (dbLineChanges == null || phoneLine == null)
+            {
+                return Json("");
+            }
+            else
+            {
+                var appUsername = User.Identity?.Name.Substring(User.Identity.Name.IndexOf(@"\") + 1);
+                var dbAppUser = await _context.AppUsers.FirstOrDefaultAsync(x => x.AdIdentity.ToLower() == appUsername.ToLower());
+
+                phoneLine.LineOwner = dbLineChanges.NewName;
+                dbLineChanges.ImplementationDate = DateTime.Now;
+                dbLineChanges.Status = "CLOSED";
+                dbLineChanges.ItOperator = dbAppUser;
+
+                _context.Update(phoneLine);
+                _context.Update(dbLineChanges);
+                await _context.SaveChangesAsync();
+                return Json("CLOSED");
+
+            }
+
+        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

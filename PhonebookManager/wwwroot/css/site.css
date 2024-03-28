@@ -19,8 +19,8 @@
     100% {
         transform: rotate(360deg);
     }
-} 
-  
+}
+
 
 html, body {
     font-size: 14px;
@@ -36,8 +36,8 @@ html, body {
 
 ::-webkit-file-upload-button {
     background-color: #008A99;
-    color:#fff;
-    border:none;
+    color: #fff;
+    border: none;
     border-radius: 10px;
     height: 30px;
 }
@@ -178,15 +178,16 @@ table {
     font-size: 20px;
     color: #424242;
 }
+
 .action-btn-disabled {
     font-size: 20px;
     color: #E8E8E8;
 }
 
 
-    .action-btn-danger:hover {
-        text-shadow: 0px 0px 20px red;
-    }
+.action-btn-danger:hover {
+    text-shadow: 0px 0px 20px red;
+}
 
 .tall-input-box-disabled {
     box-sizing: border-box;
@@ -264,14 +265,18 @@ input {
     border: none;
     height: 30px;
     text-align: left;
+    padding: 0 15px 0 15px;
 }
+
 .input-no-border-disabled {
     background-color: #F7F7F7;
     width: 100%;
     border: none;
     height: 30px;
     text-align: left;
+    padding: 0 15px 0 15px;
 }
+
 .normal-select-box {
     border: 1px solid #CED4DA;
     border-radius: 10px !important;
@@ -288,6 +293,7 @@ input {
     padding: 5px;
     text-align: left;
 }
+
     .select-box:focus, .large-select-box:focus, .normal-select-box {
         /*border: none;*/
         outline: none;
@@ -337,4 +343,27 @@ input {
     .dropdown-item:active {
         background-color: #008A99;
         color: #fff !important;
+    }
+
+/*TOOLTIP*/
+.toooltip {
+    position: relative;
+    display: inline-block;
+}
+    /* Position the tooltip */
+    /*Right */
+    .toooltip .toooltiptext {
+        visibility: hidden;
+        width: 120px;
+        background-color: #333;
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 5px 0;
+        position: absolute;
+        z-index: 1;
+    }
+
+    .toooltip:hover .toooltiptext {
+        visibility: visible;
     }
